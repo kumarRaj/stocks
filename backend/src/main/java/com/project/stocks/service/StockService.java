@@ -28,7 +28,7 @@ public class StockService {
 
     private Score calculateStockMetrics(Stock stock) {
         ScoreBuilder scoreBuilder = ScoreBuilder.getInstance();
-        scoreBuilder.withPE(stock.getPE().getValue())
+        scoreBuilder.withPE(stock.getPe().getValue())
                 .withOPM(stock.getOpmDetails().getYearInfo())
                 .withNPM(stock.getNpmDetails().getYearInfo())
                 .withRevenue(stock.getDebt().getRevenueDetails().getYearInfo())
