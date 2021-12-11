@@ -1,5 +1,6 @@
 const axios = require('axios');
 const resources = require('./constants/resources')
+const aws = require("./aws")
 
 
 function getCompanyNames() {
@@ -11,4 +12,10 @@ function getCompanyNames() {
     });
   }
 
-// getCompanyNames().then(x => console.log(x))
+async function fetchNifty50Companies(){
+  let companies = await getCompanyNames();
+  result = {name : "NIFTY50", company : companies}
+  await aws.save(result, "category")
+}
+
+// fetchNifty50Companies();

@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 const axios = require("axios");
 const fs = require("fs");
-const parser = require("../parseDetails")
+const parser = require("../parseHTML")
 
 const print = console.log;
 
@@ -26,7 +26,7 @@ function getStockDetails(stockId) {
       rawRatios.push(value);
     });
     // print(rawRatios)
-    ratios = {};
+    ratios = { stockId: stockId };
     const getMarketCap = () => parser.parse(rawRatios[0][1].trim());
     const getPe = () => parser.parse(rawRatios[3][0].trim());
     const getDividend = () => parser.parse(rawRatios[5][0].trim());

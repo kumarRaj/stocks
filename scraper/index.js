@@ -5,7 +5,7 @@ const aws = require("./aws")
 
 var testHandler = (exports.handler = async function (event, context) {
   const ratios = await getStockDetails(event);
-  await aws.saveToS3(ratios);
+  await aws.save(ratios, "inidividual");
 });
 
 function getStockDetails(stockId) {
