@@ -1,22 +1,23 @@
 package com.project.stocks.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.stocks.dto.Category;
 import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.Unit;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StockMapperTest {
+class DataMapperTest {
 
     @Test
     void testMapMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
-        assertNull(StockMapper.map(null));
+        assertNull(DataMapper.mapStock(null));
     }
 
     @Test
     void testMapMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
-        assertNull(StockMapper.map(""));
+        assertNull(DataMapper.mapStock(""));
     }
 
     @Test
@@ -41,12 +42,37 @@ class StockMapperTest {
                 ",\"value\":14166},{\"year\":2018,\"value\":14426},{\"year\":2019,\"value\":19118},{\"year\":2020,\"value\":21717},{\"year\":2021,\"value\":25835}," +
                 "{\"year\":2021,\"value\":31025}],\"unit\":\"Cr\"}}}";
 
-        Stock stock = StockMapper.map(input);
+        Stock stock = DataMapper.mapStock(input);
 
         assertEquals("INFY", stock.getId());
         assertEquals(34, stock.getPe().getValue());
         assertEquals(Unit.Percentage, stock.getOpmDetails().getUnit());
         assertEquals(27, stock.getOpmDetails().getTtm());
         assertEquals(Unit.Crore, stock.getNpmDetails().getUnit());
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
+        assertNull(DataMapper.mapCategory(null));
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
+        assertNull(DataMapper.mapCategory(""));
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseValidDataShouldReturnStockObjectWithValidValues() throws JsonProcessingException {
+        String input = "{\"name\":\"NIFTY50\",\"company\":[\"ASIANPAINT\",\"GRASIM\",\"SBILIFE\",\"SBIN\",\"BPCL\",\"TCS\"," +
+                "\"JSWSTEEL\",\"M&M\",\"BAJAJFINSV\",\"HDFCLIFE\",\"ICICIBANK\",\"IOC\",\"ONGC\",\"ITC\",\"HEROMOTOCO\",\"NTPC\"," +
+                "\"BAJAJ-AUTO\",\"TATASTEEL\",\"SUNPHARMA\",\"RELIANCE\",\"BRITANNIA\",\"ULTRACEMCO\",\"BAJFINANCE\",\"SHREECEM\",\"MARUTI\"," +
+                "\"TATAMOTORS\",\"CIPLA\",\"HDFCBANK\",\"DRREDDY\",\"INDUSINDBK\",\"ADANIPORTS\",\"HINDUNILVR\",\"HINDALCO\",\"NESTLEIND\"" +
+                ",\"INFY\",\"POWERGRID\",\"LT\",\"TECHM\",\"BHARTIARTL\",\"HCLTECH\",\"EICHERMOT\",\"WIPRO\",\"UPL\",\"COALINDIA\",\"AXISBANK\"" +
+                ",\"KOTAKBANK\",\"TATACONSUM\",\"HDFC\",\"TITAN\",\"DIVISLAB\"]}";
+
+        Category category = DataMapper.mapCategory(input);
+
+        assertEquals("NIFTY50", category.getName());
+        assertEquals(50, category.getCompanyList().size());
     }
 }
