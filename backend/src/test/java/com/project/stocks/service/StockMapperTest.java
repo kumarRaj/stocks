@@ -44,7 +44,7 @@ class StockMapperTest {
         Stock stock = StockMapper.map(input);
 
         assertEquals("INFY", stock.getId());
-        assertEquals(34, stock.getPE().getValue());
+        assertEquals(34, stock.getPe().getValue());
         assertEquals(Unit.Percentage, stock.getOpmDetails().getUnit());
         assertEquals(27, stock.getOpmDetails().getTtm());
         assertEquals(Unit.Crore, stock.getNpmDetails().getUnit());
