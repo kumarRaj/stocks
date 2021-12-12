@@ -3,10 +3,7 @@ package com.project.stocks.controller;
 import com.project.stocks.dto.Category;
 import com.project.stocks.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,4 +24,8 @@ public class CategoryController {
         return categoryService.getCategoryNames();
     }
 
+    @PostMapping(value = "/{category}")
+    public void loadCompanyData(@PathVariable(value = "category") String category){
+        categoryService.loadCompanyData(category);
+    }
 }
