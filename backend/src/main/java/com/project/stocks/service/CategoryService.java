@@ -1,7 +1,6 @@
 package com.project.stocks.service;
 
 import com.project.stocks.dto.Category;
-import com.project.stocks.dto.CategoryList;
 import com.project.stocks.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class CategoryService {
         return categoryRepository.getCategoryDetails(category);
     }
 
-    public CategoryList getCategoryNames() {
+    public List<String> getCategoryNames() {
         return categoryRepository.getCategoryNames();
     }
 }

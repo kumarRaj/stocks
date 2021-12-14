@@ -1,7 +1,6 @@
 package com.project.stocks.controller;
 
 import com.project.stocks.dto.Category;
-import com.project.stocks.dto.CategoryList;
 import com.project.stocks.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,8 @@ public class CategoryController {
     }
 
     @GetMapping(value = "/")
-    public CategoryList getCategoryNames(){
+    public List<String> getCategoryNames(){
         return categoryService.getCategoryNames();
     }
+
 }

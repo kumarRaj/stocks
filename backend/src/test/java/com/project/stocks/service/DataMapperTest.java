@@ -6,6 +6,8 @@ import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.Unit;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DataMapperTest {
@@ -62,17 +64,21 @@ class DataMapperTest {
     }
 
     @Test
-    void testMapCategoryMethodInCaseValidDataShouldReturnStockObjectWithValidValues() throws JsonProcessingException {
-        String input = "{\"name\":\"NIFTY50\",\"company\":[\"ASIANPAINT\",\"GRASIM\",\"SBILIFE\",\"SBIN\",\"BPCL\",\"TCS\"," +
-                "\"JSWSTEEL\",\"M&M\",\"BAJAJFINSV\",\"HDFCLIFE\",\"ICICIBANK\",\"IOC\",\"ONGC\",\"ITC\",\"HEROMOTOCO\",\"NTPC\"," +
-                "\"BAJAJ-AUTO\",\"TATASTEEL\",\"SUNPHARMA\",\"RELIANCE\",\"BRITANNIA\",\"ULTRACEMCO\",\"BAJFINANCE\",\"SHREECEM\",\"MARUTI\"," +
-                "\"TATAMOTORS\",\"CIPLA\",\"HDFCBANK\",\"DRREDDY\",\"INDUSINDBK\",\"ADANIPORTS\",\"HINDUNILVR\",\"HINDALCO\",\"NESTLEIND\"" +
-                ",\"INFY\",\"POWERGRID\",\"LT\",\"TECHM\",\"BHARTIARTL\",\"HCLTECH\",\"EICHERMOT\",\"WIPRO\",\"UPL\",\"COALINDIA\",\"AXISBANK\"" +
-                ",\"KOTAKBANK\",\"TATACONSUM\",\"HDFC\",\"TITAN\",\"DIVISLAB\"]}";
+    void testMapCategoryMethodInCaseValidDataShouldReturnCategoryObjectWithValidValues() throws JsonProcessingException {
+        String input = "{\"name\":\"ABC\",\"company\":[\"AB\",\"BC\",\"CD\"]}";
 
         Category category = DataMapper.mapCategory(input);
 
-        assertEquals("NIFTY50", category.getName());
-        assertEquals(50, category.getCompanyList().size());
+        assertEquals("ABC", category.getName());
+        assertEquals(3, category.getCompanyList().size());
+    }
+
+    @Test
+    void testMapCategoryNamesInCaseValidDataShouldReturnValidValues() throws JsonProcessingException {
+        String input = "[\"A\",\"B\",\"C\"]";
+
+        List<String> companyNames = DataMapper.mapCategoryList(input);
+
+        assertEquals(3, companyNames.size());
     }
 }
