@@ -15,7 +15,8 @@ function getCompanyNames() {
 async function fetchNifty50Companies(){
   let companies = await getCompanyNames();
   result = {name : "NIFTY50", company : companies}
-  await aws.save(result, "category")
+  const objectName = "category/" + result.name;
+  await aws.saveToS3(objectName, result)
 }
 
 // fetchNifty50Companies();

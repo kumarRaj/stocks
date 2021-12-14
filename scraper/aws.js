@@ -1,29 +1,11 @@
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
-async function save(data, type) {
-    console.log("Inside save() ");
-
-
-    const s3Bucket = "stock-ui-bucket";
-    const objectType = "application/json";
-    var objectName = "";
-
-    if(type === "inidividual")
-      objectName = "data/" + data.stockId;
-    if(type === "category"){
-      objectName = "category/" + data.name;
-    }
-  
-    await saveToS3(s3Bucket, objectName, data, objectType);
-
-    console.log("save() => Successfully saved");
-}
-
-
-
-async function saveToS3(s3Bucket, objectName, data, objectType) {
+async function saveToS3(objectName, data) {
   console.log("Inside saveToS3() ");
+
+  const s3Bucket = "stock-ui-bucket";
+  const objectType = "application/json";
 
   const params = {
     Bucket: s3Bucket,
@@ -37,4 +19,4 @@ async function saveToS3(s3Bucket, objectName, data, objectType) {
   console.log("saveToS3() => Successfully saved to S3 !!! ");
 }
 
-module.exports = {save};
+module.exports = {saveToS3};
