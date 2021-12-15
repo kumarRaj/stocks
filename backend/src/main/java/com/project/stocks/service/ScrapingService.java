@@ -14,7 +14,7 @@ public class ScrapingService {
         this.validatorService = validatorService;
         this.lambdaService = lambdaService;
     }
-
+    
     @Async
     public void add(String stockId){
         validatorService.validate(stockId); // TODO: future

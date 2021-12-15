@@ -15,17 +15,17 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping(value = "/{category}")
-    public Category getCategoryDetails(@PathVariable(value = "category") String category){
+    public Category getCategoryDetails(@PathVariable(value = "category") String category) {
         return categoryService.getCategoryDetails(category);
     }
 
     @GetMapping(value = "/")
-    public List<String> getCategoryNames(){
+    public List<String> getCategoryNames() {
         return categoryService.getCategoryNames();
     }
 
     @PostMapping(value = "/{category}")
-    public void loadCompanyData(@PathVariable(value = "category") String category){
+    public void loadCompanyData(@PathVariable(value = "category") String category) {
         categoryService.loadCompanyData(category);
     }
 }

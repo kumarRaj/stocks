@@ -7,11 +7,11 @@ import com.amazonaws.services.lambda.invoke.LambdaInvokerFactory;
 @Service
 public class LambdaService {
     public LambdaServiceInterface lambdaService;
-    
-    public LambdaService(){
+
+    public LambdaService() {
         lambdaService = LambdaInvokerFactory.builder()
-        .lambdaClient(AWSLambdaClientBuilder.defaultClient())
-        .build(LambdaServiceInterface.class);
+                .lambdaClient(AWSLambdaClientBuilder.defaultClient())
+                .build(LambdaServiceInterface.class);
     }
 
     public void generateStockInformation(String stockId) {

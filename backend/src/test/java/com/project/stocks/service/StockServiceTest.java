@@ -28,7 +28,7 @@ class StockServiceTest {
     void allMetricsShouldBeEvaluatedInScoreCalculation() {
         Stock stock = getStockObject();
 
-        try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)){
+        try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)) {
             scoreBuilderMock.when(ScoreBuilder::getInstance).thenReturn(scoreBuilder);
             when(stockRepository.getStockDetails(stock.getId())).thenReturn(stock);
             when(scoreBuilder.withPE(stock.getPe().getValue())).thenReturn(scoreBuilder);

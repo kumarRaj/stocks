@@ -17,7 +17,7 @@ public class ScrapingController {
     }
 
     @PostMapping(value = "/stock")
-    public void create(@RequestBody StockRequest stockRequest){
+    public void create(@RequestBody StockRequest stockRequest) {
         scrapingService.add(stockRequest.stockId);
     }
 }
