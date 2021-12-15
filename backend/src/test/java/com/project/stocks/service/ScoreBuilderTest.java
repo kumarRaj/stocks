@@ -1,16 +1,14 @@
 package com.project.stocks.service;
 
-import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ScoreBuilderTest {
     
