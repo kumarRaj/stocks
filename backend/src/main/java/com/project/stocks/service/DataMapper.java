@@ -5,15 +5,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.project.stocks.dto.Category;
 import com.project.stocks.dto.Stock;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DataMapper<T> {
 
-    public T map(String result, Class<T> classObject) throws JsonProcessingException {
+    private static DataMapper dataMapper = null;
+
+    private DataMapper() {
+    }
+
+    public static DataMapper getInstance() {
+        if(dataMapper == null)
+            dataMapper = new DataMapper();
+        return dataMapper;
+    }
+
+    public T map(String result, Class<T> classObject) {
         if(result == null || result.isEmpty()) return null;
-        T mappedObject = (T) getObjectMapper().readValue(result, classObject);
+        T mappedObject = null;
+        try {
+            mappedObject = getObjectMapper().readValue(result, classObject);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return mappedObject;
     }
 
@@ -22,4 +41,6 @@ public class DataMapper<T> {
         mapper.registerModule(new Jdk8Module());
         return mapper;
     }
+
+
 }

@@ -14,13 +14,13 @@ class DataMapperTest {
 
     @Test
     void testMapMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
-        DataMapper<Stock> dataMapper = new DataMapper();
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map(null, Stock.class));
     }
 
     @Test
     void testMapMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
-        DataMapper<Stock> dataMapper = new DataMapper();
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map("", Stock.class));
     }
 
@@ -46,7 +46,7 @@ class DataMapperTest {
                 ",\"value\":14166},{\"year\":2018,\"value\":14426},{\"year\":2019,\"value\":19118},{\"year\":2020,\"value\":21717},{\"year\":2021,\"value\":25835}," +
                 "{\"year\":2021,\"value\":31025}],\"unit\":\"Cr\"}}}";
 
-        DataMapper<Stock> dataMapper = new DataMapper();
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
         Stock stock = dataMapper.map(input, Stock.class);
 
         assertEquals("INFY", stock.getId());
@@ -58,20 +58,20 @@ class DataMapperTest {
 
     @Test
     void testMapCategoryMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
-        DataMapper<Category> dataMapper = new DataMapper();
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map(null, Category.class));
     }
 
     @Test
     void testMapCategoryMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
-        DataMapper<Category> dataMapper = new DataMapper();
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map("", Category.class));
     }
 
     @Test
     void testMapCategoryMethodInCaseValidDataShouldReturnCategoryObjectWithValidValues() throws JsonProcessingException {
         String input = "{\"name\":\"ABC\",\"company\":[\"AB\",\"BC\",\"CD\"]}";
-        DataMapper<Category> dataMapper = new DataMapper();
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
         Category category = dataMapper.map(input, Category.class);
 
         assertEquals("ABC", category.getName());
@@ -81,7 +81,7 @@ class DataMapperTest {
     @Test
     void testMapCategoryNamesInCaseValidDataShouldReturnValidValues() throws JsonProcessingException {
         String input = "[\"A\",\"B\",\"C\"]";
-        DataMapper<List> dataMapper = new DataMapper();
+        DataMapper<List> dataMapper = DataMapper.getInstance();
         List<String> companyNames = dataMapper.map(input, List.class);
 
         assertEquals(3, companyNames.size());
