@@ -13,19 +13,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class DataMapperTest {
 
     @Test
-    void testMapMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
+    void testMapMethodInCaseOfNullInputShouldReturnNull() {
         DataMapper<Stock> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map(null, Stock.class));
     }
 
     @Test
-    void testMapMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
+    void testMapMethodInCaseOfEmptyInputShouldReturnNull() {
         DataMapper<Stock> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map("", Stock.class));
     }
 
     @Test
-    void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() throws JsonProcessingException {
+    void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() {
         String input = "{\"stockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"PE\":{\"unit\":\"\",\"value\":34}" +
                 ",\"Dividend\":{\"unit\":\"%\",\"value\":1},\"FaceValue\":{\"unit\":\"\",\"value\":5},\"OPM\":{\"data\":" +
                 "[{\"year\":2010,\"value\":34},{\"year\":2011,\"value\":33},{\"year\":2012,\"value\":32},{\"year\":2013,\"value\":29}," +
@@ -57,19 +57,19 @@ class DataMapperTest {
     }
 
     @Test
-    void testMapCategoryMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
+    void testMapCategoryMethodInCaseOfNullInputShouldReturnNull() {
         DataMapper<Category> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map(null, Category.class));
     }
 
     @Test
-    void testMapCategoryMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
+    void testMapCategoryMethodInCaseOfEmptyInputShouldReturnNull() {
         DataMapper<Category> dataMapper = DataMapper.getInstance();
         assertNull(dataMapper.map("", Category.class));
     }
 
     @Test
-    void testMapCategoryMethodInCaseValidDataShouldReturnCategoryObjectWithValidValues() throws JsonProcessingException {
+    void testMapCategoryMethodInCaseValidDataShouldReturnCategoryObjectWithValidValues() {
         String input = "{\"name\":\"ABC\",\"company\":[\"AB\",\"BC\",\"CD\"]}";
         DataMapper<Category> dataMapper = DataMapper.getInstance();
         Category category = dataMapper.map(input, Category.class);
@@ -79,7 +79,7 @@ class DataMapperTest {
     }
 
     @Test
-    void testMapCategoryNamesInCaseValidDataShouldReturnValidValues() throws JsonProcessingException {
+    void testMapCategoryNamesInCaseValidDataShouldReturnValidValues() {
         String input = "[\"A\",\"B\",\"C\"]";
         DataMapper<List> dataMapper = DataMapper.getInstance();
         List<String> companyNames = dataMapper.map(input, List.class);
