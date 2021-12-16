@@ -1,6 +1,5 @@
 package com.project.stocks.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -11,11 +10,11 @@ public class Category {
     private String name;
 
     @JsonProperty("company")
-    private List<String> companyList;
+    private List<String> companies;
 
     public Category(String name, List<String> companyList) {
         this.name = name;
-        this.companyList = companyList;
+        this.companies = companyList;
     }
 
     public Category() {
@@ -29,11 +28,11 @@ public class Category {
         this.name = name;
     }
 
-    public List<String> getCompanyList() {
-        return companyList;
+    public List<String> getCompanies() {
+        return companies;
     }
 
-    public void setCompanyList(List<String> companyList) {
-        this.companyList = companyList;
+    public void setCompanies(List<String> companies) {
+        this.companies = companies;
     }
 }

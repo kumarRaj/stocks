@@ -70,7 +70,7 @@ class DataMapperTest {
         Category category = DataMapper.mapCategory(input);
 
         assertEquals("ABC", category.getName());
-        assertEquals(3, category.getCompanyList().size());
+        assertEquals(3, category.getCompanies().size());
     }
 
     @Test
