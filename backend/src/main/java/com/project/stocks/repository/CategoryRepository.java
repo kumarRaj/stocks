@@ -14,18 +14,18 @@ public class CategoryRepository {
 
     private final String bucketName = "stock-ui-bucket";
 
-    private S3AWSRepository s3AWSRepository;
+    private S3Repository s3Repository;
 
     @Autowired
-    public CategoryRepository(S3AWSRepository s3AWSRepository) {
-        this.s3AWSRepository = s3AWSRepository;
+    public CategoryRepository(S3Repository s3Repository) {
+        this.s3Repository = s3Repository;
     }
 
     public Category getCategoryDetails(String categoryName) {
         Category category = new Category();
         try {
             String key_name = "category/" + categoryName;
-            String result = s3AWSRepository.getData(bucketName, key_name);
+            String result = s3Repository.getData(bucketName, key_name);
             category = DataMapper.mapCategory(result);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -37,7 +37,7 @@ public class CategoryRepository {
         List<String> categoryNames = new ArrayList<>();
         try {
             String key_name = "categoryList";
-            String result = s3AWSRepository.getData(bucketName, key_name);
+            String result = s3Repository.getData(bucketName, key_name);
             categoryNames.addAll(DataMapper.mapCategoryList(result));
         } catch (JsonProcessingException e) {
             e.printStackTrace();

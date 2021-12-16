@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 @Component
-public class S3AWSRepository {
+public class S3Repository {
 
     private final String bucketName = "stock-ui-bucket";
 
