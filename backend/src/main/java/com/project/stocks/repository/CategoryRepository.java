@@ -26,7 +26,8 @@ public class CategoryRepository {
         try {
             String key_name = "category/" + categoryName;
             String result = s3Repository.getData(bucketName, key_name);
-            category = DataMapper.mapCategory(result);
+            DataMapper<Category> dataMapper = new DataMapper<>();
+            category = dataMapper.map(result, Category.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -38,7 +39,8 @@ public class CategoryRepository {
         try {
             String key_name = "categoryList";
             String result = s3Repository.getData(bucketName, key_name);
-            categoryNames.addAll(DataMapper.mapCategoryList(result));
+            DataMapper<List> dataMapper = new DataMapper<>();
+            categoryNames.addAll(dataMapper.map(result, List.class));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

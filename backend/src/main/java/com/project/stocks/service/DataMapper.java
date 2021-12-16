@@ -9,18 +9,12 @@ import com.project.stocks.dto.Stock;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataMapper {
+public class DataMapper<T> {
 
-    public static Stock mapStock(String result) throws JsonProcessingException {
+    public T map(String result, Class<T> classObject) throws JsonProcessingException {
         if(result == null || result.isEmpty()) return null;
-        Stock stock = getObjectMapper().readValue(result, Stock.class);
-        return stock;
-    }
-
-    public static Category mapCategory(String result) throws JsonProcessingException {
-        if(result == null || result.isEmpty()) return null;
-        Category category = getObjectMapper().readValue(result, Category.class);
-        return category;
+        T mappedObject = (T) getObjectMapper().readValue(result, classObject);
+        return mappedObject;
     }
 
     private static ObjectMapper getObjectMapper() {
@@ -28,12 +22,4 @@ public class DataMapper {
         mapper.registerModule(new Jdk8Module());
         return mapper;
     }
-
-    public static List<String> mapCategoryList(String result) throws JsonProcessingException {
-        if(result == null || result.isEmpty()) return null;
-        List<String> categoryNames = new ArrayList<>();
-        categoryNames.addAll(getObjectMapper().readValue(result, List.class));
-        return categoryNames;
-    }
-
 }
