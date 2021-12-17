@@ -1,6 +1,7 @@
 package com.project.stocks.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ public class ScrapingService {
         this.lambdaService = lambdaService;
     }
 
+    @Async
     public void add(String stockId){
         validatorService.validate(stockId); // TODO: future
         lambdaService.generateStockInformation(stockId);

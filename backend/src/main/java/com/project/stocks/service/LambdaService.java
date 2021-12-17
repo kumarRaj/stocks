@@ -15,6 +15,11 @@ public class LambdaService {
     }
 
     public void generateStockInformation(String stockId) {
-        lambdaService.generateStockInformation(stockId);
+        try {
+            lambdaService.generateStockInformation(stockId);
+        } catch (Exception e) {
+            System.out.println("Couldn't load data for stock : " + stockId +
+                    " Error : " + e.getMessage());
+        }
     }
 }
