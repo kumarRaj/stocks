@@ -1,14 +1,10 @@
 package com.project.stocks.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.stocks.dto.Stock;
 import com.project.stocks.service.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.xml.crypto.Data;
-import java.util.List;
 
 @Component
 public class StockRepository {

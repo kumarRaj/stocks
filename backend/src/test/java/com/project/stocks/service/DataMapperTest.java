@@ -1,6 +1,5 @@
 package com.project.stocks.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.stocks.dto.Category;
 import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.Unit;
@@ -8,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DataMapperTest {
 

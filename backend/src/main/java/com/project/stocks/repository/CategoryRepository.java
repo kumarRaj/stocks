@@ -1,6 +1,5 @@
 package com.project.stocks.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.stocks.dto.Category;
 import com.project.stocks.service.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
