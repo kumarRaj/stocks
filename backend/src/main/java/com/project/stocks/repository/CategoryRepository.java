@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.stocks.dto.Category;
 import com.project.stocks.service.DataMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.List;
 @Component
 public class CategoryRepository {
 
-    private final String bucketName = "stock-ui-bucket";
+    @Value("${bucket}")
+    private String bucketName;
 
     private S3Repository s3Repository;
 
