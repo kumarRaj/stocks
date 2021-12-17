@@ -1,26 +1,31 @@
 package com.project.stocks.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.stocks.dto.Category;
 import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.Unit;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class StockMapperTest {
+class DataMapperTest {
 
     @Test
-    void testMapMethodInCaseOfNullInputShouldReturnNull() throws JsonProcessingException {
-        assertNull(StockMapper.map(null));
+    void testMapMethodInCaseOfNullInputShouldReturnNull() {
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
+        assertNull(dataMapper.map(null, Stock.class));
     }
 
     @Test
-    void testMapMethodInCaseOfEmptyInputShouldReturnNull() throws JsonProcessingException {
-        assertNull(StockMapper.map(""));
+    void testMapMethodInCaseOfEmptyInputShouldReturnNull() {
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
+        assertNull(dataMapper.map("", Stock.class));
     }
 
     @Test
-    void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() throws JsonProcessingException {
+    void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() {
         String input = "{\"stockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"PE\":{\"unit\":\"\",\"value\":34}" +
                 ",\"Dividend\":{\"unit\":\"%\",\"value\":1},\"FaceValue\":{\"unit\":\"\",\"value\":5},\"OPM\":{\"data\":" +
                 "[{\"year\":2010,\"value\":34},{\"year\":2011,\"value\":33},{\"year\":2012,\"value\":32},{\"year\":2013,\"value\":29}," +
@@ -41,12 +46,44 @@ class StockMapperTest {
                 ",\"value\":14166},{\"year\":2018,\"value\":14426},{\"year\":2019,\"value\":19118},{\"year\":2020,\"value\":21717},{\"year\":2021,\"value\":25835}," +
                 "{\"year\":2021,\"value\":31025}],\"unit\":\"Cr\"}}}";
 
-        Stock stock = StockMapper.map(input);
+        DataMapper<Stock> dataMapper = DataMapper.getInstance();
+        Stock stock = dataMapper.map(input, Stock.class);
 
         assertEquals("INFY", stock.getId());
-        assertEquals(34, stock.getPE().getValue());
+        assertEquals(34, stock.getPe().getValue());
         assertEquals(Unit.Percentage, stock.getOpmDetails().getUnit());
         assertEquals(27, stock.getOpmDetails().getTtm());
         assertEquals(Unit.Crore, stock.getNpmDetails().getUnit());
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseOfNullInputShouldReturnNull() {
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
+        assertNull(dataMapper.map(null, Category.class));
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseOfEmptyInputShouldReturnNull() {
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
+        assertNull(dataMapper.map("", Category.class));
+    }
+
+    @Test
+    void testMapCategoryMethodInCaseValidDataShouldReturnCategoryObjectWithValidValues() {
+        String input = "{\"name\":\"ABC\",\"company\":[\"AB\",\"BC\",\"CD\"]}";
+        DataMapper<Category> dataMapper = DataMapper.getInstance();
+        Category category = dataMapper.map(input, Category.class);
+
+        assertEquals("ABC", category.getName());
+        assertEquals(3, category.getCompanies().size());
+    }
+
+    @Test
+    void testMapCategoryNamesInCaseValidDataShouldReturnValidValues() {
+        String input = "[\"A\",\"B\",\"C\"]";
+        DataMapper<List> dataMapper = DataMapper.getInstance();
+        List<String> companyNames = dataMapper.map(input, List.class);
+
+        assertEquals(3, companyNames.size());
     }
 }
