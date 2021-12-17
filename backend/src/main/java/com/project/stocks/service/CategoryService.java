@@ -30,12 +30,12 @@ public class CategoryService {
 
     public void loadCompanyData(String category) {
         Category data = getCategoryDetails(category);
-        List<String> companyList = data.getCompanyList();
-        for (int i = 0; i < companyList.size(); i++) {
+        List<String> companies = data.getCompanies();
+        for (int i = 0; i < companies.size(); i++) {
             try {
-                scrapingService.add(companyList.get(i));
+                scrapingService.add(companies.get(i));
             } catch (Exception e) {
-                System.out.println("Couldn't load data for stock : " + companyList.get(i) +
+                System.out.println("Couldn't load data for stock : " + companies.get(i) +
                         " Error : " + e.getMessage());
             }
         }
