@@ -35,8 +35,6 @@ const StyledTableRow = withStyles((theme) => ({
   
 // ];
 
-let rows = [];
-
 
 const useStyles = makeStyles({
   table: {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Fab from '@material-ui/core/Fab';
 // import styles from '../styles/ScoreButton.module.css'
 
 function ScoreButton() {
