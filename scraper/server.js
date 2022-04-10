@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 const scrapper = require("./index")
-const nifty = require("./nifty")
+const categories = require("./category/loadNSECategories")
 
 app.get('/ping', function (req, res) {
     res.end( "Successfull!!!" );
@@ -26,20 +26,8 @@ app.post('/stockDetails', async function (req, res) {
     }
 })
 
-app.post('/nifty50Companies', async function (req, res) {
-    try{
-        await nifty.fetchNifty50Companies();
-        res.end()
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json({
-            error: {
-                stockId : stockId,
-                message: error.message,
-            },
-        });
-    }
-})
+//Loads company names in specific category, Also stores the category names
+categories.fetchCategories()
 
 var server = app.listen(9000, function () {
    var host = server.address().address
