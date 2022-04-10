@@ -36,4 +36,8 @@ public class StockService {
                 .withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
         return scoreBuilder.build();
     }
+
+    public boolean isPresent(String stockId) {
+        return stockRepository.isPresent(stockId);
+    }
 }

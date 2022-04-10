@@ -25,6 +25,7 @@ public class ScrappingRepository {
             con.setRequestProperty("Content-Type", "application/json");
             con.setDoOutput(true);
             DataOutputStream out = new DataOutputStream(con.getOutputStream());
+            Thread.sleep(500);
             System.out.println("Response Code for "+ stockId + " is : " +con.getResponseCode());
             out.flush();
             out.close();
@@ -34,6 +35,8 @@ public class ScrappingRepository {
             protocolException.printStackTrace();
         } catch (IOException ioException) {
             ioException.printStackTrace();
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
         }
     }
 }
