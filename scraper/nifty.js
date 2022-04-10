@@ -1,6 +1,6 @@
 const axios = require('axios');
 const resources = require('./constants/resources')
-const aws = require("./aws")
+const saveLocal = require("./saveLocal")
 
 
 function getCompanyNames() {
@@ -15,8 +15,7 @@ function getCompanyNames() {
 async function fetchNifty50Companies(){
   let companies = await getCompanyNames();
   result = {name : "NIFTY50", company : companies}
-  const objectName = "category/" + result.name;
-  await aws.saveToS3(objectName, result)
+  await saveLocal.save(result,"category", result.name)
 }
 
-// fetchNifty50Companies();
+module.exports = {fetchNifty50Companies};

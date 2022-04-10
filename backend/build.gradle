@@ -21,8 +21,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 //	implementation 'com.amazonaws:aws-java-sdk:1.12.39'
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-lambda', version: '1.12.57'
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.57'
+//	implementation group: 'com.amazonaws', name: 'aws-java-sdk-lambda', version: '1.12.57'
+//	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.57'
     implementation 'junit:junit:3.8.2'
     compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
