@@ -8,8 +8,8 @@ cd deployment && docker compose up
 
 ## REST API
 ### backend(Port : 8081)
-| REST METHOD   |      API      |  Functionality |
-|----------|:-------------:|------:|
+| REST METHOD   |      API      | Functionality |
+|:----------:|:-------------|:------|
 | GET |  /stock/categories/{category} | Fetch comapanies present in a category |
 | POST |  /stock/categories/{category} | Load comapany details present in the category |
 | GET |  /stock/categories/ | Fetch category names |
@@ -19,8 +19,8 @@ cd deployment && docker compose up
 | GET |  /stock/score/all | Fetch score of all companies present in DB |
 
 ### scraper(Port : 9000)
-| REST METHOD   |      API      |  Functionality |
-|----------|:-------------:|------:|
+| REST METHOD   |      API      | Functionality |
+|:----------:|:-------------|:------|
 | POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
 
 
