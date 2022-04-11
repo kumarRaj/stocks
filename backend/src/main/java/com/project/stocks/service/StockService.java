@@ -6,6 +6,10 @@ import com.project.stocks.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Service
 public class StockService {
 
@@ -23,6 +27,7 @@ public class StockService {
     public Score calculateScore(String stockId) {
         Stock stock = getStockDetails(stockId);
         Score score = calculateStockMetrics(stock);
+        score.setStockId(stockId);
         return score;
     }
 
@@ -39,5 +44,17 @@ public class StockService {
 
     public boolean isPresent(String stockId) {
         return stockRepository.isPresent(stockId);
+    }
+
+    public List<Score> calculateScoreOfAllCompanies() {
+        List<Score> stockScores = new ArrayList<>();
+        List<String> stockIds = stockRepository.getAllStockNames();
+
+        for (String stockId : stockIds){
+            stockScores.add(calculateScore(stockId));
+        }
+
+        Collections.sort(stockScores, (a, b) -> b.getValue() - a.getValue());
+        return stockScores;
     }
 }

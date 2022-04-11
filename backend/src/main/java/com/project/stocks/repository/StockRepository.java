@@ -5,6 +5,8 @@ import com.project.stocks.service.DataMapper;
 import com.project.stocks.service.File;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StockRepository {
 
@@ -21,5 +23,11 @@ public class StockRepository {
     public boolean isPresent(String stockId) {
         String filePath = homeDirectory + "/stocks/data/" + stockId;
         return File.exists(filePath);
+    }
+
+    public List<String> getAllStockNames() {
+        String filePath = homeDirectory + "/stocks/data";
+        List<String> fileNames = File.getFilesInADirectory(filePath);
+        return fileNames;
     }
 }
