@@ -29,7 +29,7 @@ public class StocksController {
         return stockService.calculateScore(stockId);
     }
 
-    @GetMapping(value="/all")
+    @GetMapping(value="/score/all")
     private List<Score> calculateAllScores(){
         return stockService.calculateScoreOfAllCompanies();
     }
