@@ -21,7 +21,7 @@ cd deployment && docker compose up
 ### scraper(Port : 9000)
 | REST METHOD   |      API      |  Functionality |
 |----------|:-------------:|------:|
-| GET |  /stockDetails?stcokID={stockId} | Load data of given stockID |
+| POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
 
 
 
