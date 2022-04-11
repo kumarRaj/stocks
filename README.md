@@ -1,3 +1,32 @@
+## Docker commands
+
+Docker for backend
+``` 
+cd backend 
+docker build -t stocks-backend . 
+docker run -dp 8081:8081 stocks-backend
+docker tag stocks-backend:latest sunandanbose/stocks-backend:latest
+docker push
+```
+
+Docker for Scraper
+``` 
+cd scraper 
+docker build -t scraper . 
+docker run -dp 8081:8081 scraper
+docker tag scraper:latest sunandanbose/scraper:latest
+docker push
+```
+
+
+Run docker image in local system
+```
+docker run -dp 8081:8081 stocks-backend
+docker run -dp 9000:9000 scraper
+```
+
+
+
 ## Features
 
 - First Page is for stock list
