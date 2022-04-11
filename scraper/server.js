@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-const scrapper = require("./index")
+const scraper = require("./index")
 const categories = require("./category/loadNSECategories")
 
 app.get('/ping', function (req, res) {
@@ -12,7 +12,7 @@ app.post('/stockDetails', async function (req, res) {
     console.log(stockId)
     try{
         if (stockId){
-            await scrapper.testHandler(stockId)
+            await scraper.testHandler(stockId)
         }
         res.end()
     } catch (error) {
@@ -32,5 +32,5 @@ categories.fetchCategories()
 var server = app.listen(9000, function () {
    var host = server.address().address
    var port = server.address().port
-   console.log("Scrapper app listening at http://localhost:%s", port)
+   console.log("scraper app listening at http://localhost:%s", port)
 })
