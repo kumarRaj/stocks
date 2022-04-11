@@ -26,14 +26,14 @@ public class CategoryController {
     }
 
     @PostMapping(value = "/{category}")
-    public void loadCompanyData(@PathVariable(value = "category") String category){
-        categoryService.loadCompanyData(category);
+    public void loadAllCompanyDataInACategory(@PathVariable(value = "category") String category){
+        categoryService.loadAllCompanyDataInACategory(category);
     }
 
-    @PostMapping(value = "/all")
+    @PostMapping(value = "/loadData")
     @Async
-    public void loadCompanyData(){
-        categoryService.loadAllCompanyData();
+    public void loadAllCompanyDataForAllCategory(){
+        categoryService.loadAllCompanyDataForAllCategory();
     }
 
 }

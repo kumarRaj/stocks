@@ -1,7 +1,5 @@
 package com.project.stocks.model;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class Score {
 
     private int score = 0;
