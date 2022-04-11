@@ -1,3 +1,30 @@
+# Stocks Application
+
+## Start Application
+
+```
+cd deployment && docker compose up
+```
+
+## REST API
+### backend(Port : 8081)
+| REST METHOD   |      API      |  Functionality |
+|----------|:-------------:|------:|
+| GET |  /stock/categories/{category} | Fetch comapanies present in a category |
+| POST |  /stock/categories/{category} | Load comapany details present in the category |
+| GET |  /stock/categories/ | Fetch category names |
+| POST | /stock/categories/all |  Load comapany details present in the all the categories |
+| GET |  /stock/{stockId} | Fetch stock details for the given stock ID |
+| GET |  /stock/{stockId}/score | Fetch score of given stock ID |
+| GET |  /stock/score/all | Fetch score of all companies present in DB |
+
+### scraper(Port : 9000)
+| REST METHOD   |      API      |  Functionality |
+|----------|:-------------:|------:|
+| GET |  /stockDetails?stcokID={stockId} | Load data of given stockID |
+
+
+
 ## Docker commands
 
 Docker for backend
