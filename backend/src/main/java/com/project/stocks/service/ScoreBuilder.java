@@ -18,16 +18,19 @@ public class ScoreBuilder {
 
 
     public ScoreBuilder withPE(Integer pe) {
+        int sum = 0;
         if (pe >= 1 && pe <= 20)
-            score.addValue(5);
+            sum = 5;
         else if (pe >= 21 && pe <= 40)
-            score.addValue(4);
+            sum = 4;
         else if (pe >= 41 && pe <= 60)
-            score.addValue(3);
+            sum = 3;
         else if (pe >= 61 && pe <= 80)
-            score.addValue(2);
+            sum = 2;
         else
-            score.addValue(1);
+            sum = 1;
+        score.addValue(sum);
+        score.getScoreBreakdown().setPe(sum);
         return this;
     }
 
@@ -45,27 +48,37 @@ public class ScoreBuilder {
 
 
     public ScoreBuilder withOPM(List<YearInfo> opmList) {
-        score.addValue(calculateYearlyStatistics(opmList, Logic.Increasing));
+        int value = calculateYearlyStatistics(opmList, Logic.Increasing);
+        score.addValue(value);
+        score.getScoreBreakdown().setOperatingProfitMargin(value);
         return this;
     }
 
     public ScoreBuilder withNPM(List<YearInfo> npmList) {
-        score.addValue(calculateYearlyStatistics(npmList, Logic.Increasing));
+        int value = calculateYearlyStatistics(npmList, Logic.Increasing);
+        score.addValue(value);
+        score.getScoreBreakdown().setNetProfitMargin(value);
         return this;
     }
 
     public ScoreBuilder withRevenue(List<YearInfo> revenueDetails) {
-        score.addValue(calculateYearlyStatistics(revenueDetails, Logic.Increasing));
+        int value = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
+        score.addValue(value);
+        score.getScoreBreakdown().setRevenue(value);
         return this;
     }
 
     public ScoreBuilder withBorrowings(List<YearInfo> borrowingsDetails) {
-        score.addValue(calculateYearlyStatistics(borrowingsDetails, Decreasing));
+        int value = calculateYearlyStatistics(borrowingsDetails, Decreasing);
+        score.addValue(value);
+        score.getScoreBreakdown().setRevenue(value);
         return this;
     }
 
     public ScoreBuilder withOtherLiabilities(List<YearInfo> otherLiabilitiesDetails) {
-        score.addValue(calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing));
+        int value = calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing);
+        score.addValue(value);
+        score.getScoreBreakdown().setLiabilities(value);
         return this;
     }
 
