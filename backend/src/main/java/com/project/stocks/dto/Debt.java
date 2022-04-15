@@ -2,9 +2,6 @@ package com.project.stocks.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Debt {
 
     @JsonProperty("Revenue")

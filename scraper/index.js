@@ -1,12 +1,11 @@
 const cheerio = require("cheerio");
 const axios = require("axios");
 const parser = require("./parseHTML.js")
-const aws = require("./aws")
+const saveLocal = require("./saveLocal")
 
 var testHandler = (exports.handler = async function (event, context) {
   const ratios = await getStockDetails(event);
-  const objectName = "data/" + ratios.stockId;
-  await aws.saveToS3(objectName, ratios)
+  await saveLocal.save(ratios, "data", ratios.stockId);
 });
 
 function getStockDetails(stockId) {
@@ -103,3 +102,4 @@ function getOtherLiabilities(html) {
 }
 
 // testHandler("TCS");
+module.exports = {testHandler};

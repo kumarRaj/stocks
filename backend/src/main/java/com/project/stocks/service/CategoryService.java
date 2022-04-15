@@ -28,9 +28,14 @@ public class CategoryService {
         return categoryRepository.getCategoryNames();
     }
 
-    public void loadCompanyData(String category) {
+    public void loadAllCompanyDataInACategory(String category) {
         Category data = getCategoryDetails(category);
         List<String> companies = data.getCompanies();
-        companies.stream().parallel().forEach((company) -> scrapingService.add(company));
+        companies.stream().forEach((company) -> scrapingService.add(company));
+    }
+
+    public void loadAllCompanyDataForAllCategory() {
+        List<String> categoryNames = getCategoryNames();
+        categoryNames.stream().forEach((categoryName) -> loadAllCompanyDataInACategory(categoryName));
     }
 }
