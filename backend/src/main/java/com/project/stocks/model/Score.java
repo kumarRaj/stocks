@@ -7,6 +7,8 @@ public class Score {
 
     public String stockId;
 
+    private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
+
     public int getValue() {
         return score;
     }
@@ -21,5 +23,13 @@ public class Score {
 
     public void setStockId(String stockId) {
         this.stockId = stockId;
+    }
+
+    public ScoreBreakdown getScoreBreakdown() {
+        return scoreBreakdown;
+    }
+
+    public void setScoreBreakdown(ScoreBreakdown scoreBreakdown) {
+        this.scoreBreakdown = scoreBreakdown;
     }
 }
