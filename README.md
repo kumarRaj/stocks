@@ -3,7 +3,7 @@
 ## Start Application
 
 ```
-cd deployment && docker compose up
+docker compose up --build
 ```
 
 ## REST API

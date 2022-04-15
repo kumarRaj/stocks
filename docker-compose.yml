@@ -1,0 +1,25 @@
+version: '3'
+volumes:
+  stocks-vol: 
+      driver: local
+services:
+  scraper:
+    build:
+      context: scraper/
+      dockerfile: Dockerfile
+    image: scraper
+    container_name: scraper
+    ports:
+        - 9000:9000
+    volumes:
+        - stocks-vol:/root/
+  stocks-backend:
+    build:
+        context: backend/
+        dockerfile: Dockerfile
+    image: stocks-backend
+    container_name: stocks-backend
+    ports:
+        - 8081:8081
+    volumes:
+        - stocks-vol:/root/
