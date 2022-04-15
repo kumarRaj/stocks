@@ -13,10 +13,10 @@ docker compose up --build
 | GET |  /stock/categories/{category} | Fetch comapanies present in a category |
 | POST |  /stock/categories/{category} | Load comapany details present in the category |
 | GET |  /stock/categories/ | Fetch category names |
-| POST | /stock/categories/all |  Load comapany details present in the all the categories |
+| POST | /stock/categories/loadData |  Load comapany details present in the all the categories |
 | GET |  /stock/{stockId} | Fetch stock details for the given stock ID |
 | GET |  /stock/{stockId}/score | Fetch score of given stock ID |
-| GET |  /stock/score/all | Fetch score of all companies present in DB |
+| GET |  /stock/scores | Fetch score of all companies present in DB |
 
 ### scraper(Port : 9000)
 | REST METHOD   |      API      | Functionality |
