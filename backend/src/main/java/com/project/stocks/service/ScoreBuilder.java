@@ -14,8 +14,7 @@ import static com.project.stocks.dto.Logic.Decreasing;
 
 public class ScoreBuilder {
 
-    private Score score = new Score();
-    private ScoreBreakdown scoreBreakdown = score.getScoreBreakdown();
+    private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
 
     public ScoreBuilder withPE(Integer pe) {
         int pEScoreValue;
@@ -42,7 +41,7 @@ public class ScoreBuilder {
     }
 
     public Score build() {
-        score.calculate();
+        Score score = new Score(scoreBreakdown);
         return score;
     }
 

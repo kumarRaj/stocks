@@ -7,7 +7,12 @@ public class Score {
 
     public String stockId;
 
-    private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
+    private ScoreBreakdown scoreBreakdown;
+
+    public Score(ScoreBreakdown scoreBreakdown) {
+        this.scoreBreakdown = scoreBreakdown;
+        calculate();
+    }
 
     public int getScore() {
         return score;
@@ -25,7 +30,7 @@ public class Score {
         return scoreBreakdown;
     }
 
-    public void calculate() {
+    private void calculate() {
         score = scoreBreakdown.fetchBreakdownSummation();
     }
 }
