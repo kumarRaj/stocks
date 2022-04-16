@@ -9,7 +9,7 @@ public class Score {
 
     private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
 
-    public int getValue() {
+    public int getScore() {
         return score;
     }
 
@@ -26,6 +26,6 @@ public class Score {
     }
 
     public void calculate() {
-        score = scoreBreakdown.getBreakdownSummation();
+        score = scoreBreakdown.fetchBreakdownSummation();
     }
 }

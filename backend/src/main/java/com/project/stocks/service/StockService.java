@@ -54,7 +54,7 @@ public class StockService {
             stockScores.add(calculateScore(stockId));
         }
 
-        Collections.sort(stockScores, (a, b) -> b.getValue() - a.getValue());
+        Collections.sort(stockScores, (a, b) -> b.getScore() - a.getScore());
         return stockScores;
     }
 }

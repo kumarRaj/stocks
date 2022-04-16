@@ -16,7 +16,7 @@ class ScoreBreakdownTest {
         scoreBreakdown.setNetProfitMargin(1);
         scoreBreakdown.setOperatingProfitMargin(2);
 
-        int score = scoreBreakdown.getBreakdownSummation();
+        int score = scoreBreakdown.fetchBreakdownSummation();
 
         assertEquals(12, score);
     }
@@ -29,7 +29,7 @@ class ScoreBreakdownTest {
         scoreBreakdown.setNetProfitMargin(1);
         scoreBreakdown.setOperatingProfitMargin(2);
 
-        int score = scoreBreakdown.getBreakdownSummation();
+        int score = scoreBreakdown.fetchBreakdownSummation();
 
         assertEquals(6, score);
     }

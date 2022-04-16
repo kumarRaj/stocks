@@ -14,7 +14,7 @@ public class ScoreBreakdown {
 
     private int borrowings;
 
-    public int getBreakdownSummation() {
+    public int fetchBreakdownSummation() {
         int sum = pe + operatingProfitMargin + netProfitMargin +
                 revenue + liabilities +borrowings;
         return sum;
