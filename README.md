@@ -116,48 +116,8 @@ Cash flow
 
 Same as profit (Preferably positive)
 
-
-
-
 ROE??
 
 Price in the last one year 
 
 Is it downward - upward means 
-
-
-
-# Jenkins Setup
-
-## Plugins to install 
-- Pipeline Utility Steps
-- SSH Agent Plugin
-- Gradle
-- Gradle Repo Plugin
-- Pipeline: AWS Steps
-- NodeJS Plugin
-
-## Jobs(Pipeline Jobs)
-- Name : Launch_Instance -> Jenkinsfile : deployment/CreateInstanceJenkinsfile
-- Name : Start_Spring_Application -> Jenkinsfile : deployment/StartSpringApplicationJenkinsFile
-- Name : Delete_Instance -> Jenkinsfile : deployment/DeleteInstanceJenkinsfile
-- Name : Launch_UI_Application -> Jenkinsfile : deployment/LaunchUIJenkinsfile
-
-## Credential
-- Secret text
-    - CredentialID : AWS_ACCESS_KEY_ID
-        ID : AWS_ACCESS_KEY_ID
-        secret : <paste AWS Secret Key ID>
-    - CredentialID : AWS_SECRET_ACCESS_KEY
-        ID : AWS_SECRET_ACCESS_KEY
-        secret : <paste AWS Secret Access Key>
-- SSH username with private key
-    - CredentialID : stocks
-        username : <blank>
-        paraphrase : <blank>
-        privateKey : paste
-- AWS Credentials
-    - ID : AWS_Credentials
-        Access Key ID : <paste AWS Access Key ID>
-        Secret Access Key : <paste AWS Secret Access Key>
-
