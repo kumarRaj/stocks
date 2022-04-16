@@ -20,7 +20,7 @@ public class CategoryController {
         return categoryService.getCategoryDetails(category);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping
     public List<String> getCategoryNames(){
         return categoryService.getCategoryNames();
     }
