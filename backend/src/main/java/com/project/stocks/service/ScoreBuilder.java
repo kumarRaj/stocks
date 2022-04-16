@@ -4,6 +4,7 @@ package com.project.stocks.service;
 import com.project.stocks.dto.Logic;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
+import com.project.stocks.model.ScoreBreakdown;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,23 +15,21 @@ import static com.project.stocks.dto.Logic.Decreasing;
 public class ScoreBuilder {
 
     private Score score = new Score();
-    private ScoreBuilder scoreBuilder = null;
-
+    private ScoreBreakdown scoreBreakdown = score.getScoreBreakdown();
 
     public ScoreBuilder withPE(Integer pe) {
-        int sum = 0;
+        int pEScoreValue;
         if (pe >= 1 && pe <= 20)
-            sum = 5;
+            pEScoreValue = 5;
         else if (pe >= 21 && pe <= 40)
-            sum = 4;
+            pEScoreValue = 4;
         else if (pe >= 41 && pe <= 60)
-            sum = 3;
+            pEScoreValue = 3;
         else if (pe >= 61 && pe <= 80)
-            sum = 2;
+            pEScoreValue = 2;
         else
-            sum = 1;
-        score.addValue(sum);
-        score.getScoreBreakdown().setPe(sum);
+            pEScoreValue = 1;
+        scoreBreakdown.setPe(pEScoreValue);
         return this;
     }
 
@@ -43,42 +42,38 @@ public class ScoreBuilder {
     }
 
     public Score build() {
+        score.calculate();
         return score;
     }
 
 
     public ScoreBuilder withOPM(List<YearInfo> opmList) {
-        int value = calculateYearlyStatistics(opmList, Logic.Increasing);
-        score.addValue(value);
-        score.getScoreBreakdown().setOperatingProfitMargin(value);
+        int opmScoreValue = calculateYearlyStatistics(opmList, Logic.Increasing);
+        scoreBreakdown.setOperatingProfitMargin(opmScoreValue);
         return this;
     }
 
     public ScoreBuilder withNPM(List<YearInfo> npmList) {
-        int value = calculateYearlyStatistics(npmList, Logic.Increasing);
-        score.addValue(value);
-        score.getScoreBreakdown().setNetProfitMargin(value);
+        int npmScoreValue = calculateYearlyStatistics(npmList, Logic.Increasing);
+        scoreBreakdown.setNetProfitMargin(npmScoreValue);
         return this;
     }
 
     public ScoreBuilder withRevenue(List<YearInfo> revenueDetails) {
-        int value = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
-        score.addValue(value);
-        score.getScoreBreakdown().setRevenue(value);
+        int revenueScoreValue = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
+        scoreBreakdown.setRevenue(revenueScoreValue);
         return this;
     }
 
     public ScoreBuilder withBorrowings(List<YearInfo> borrowingsDetails) {
-        int value = calculateYearlyStatistics(borrowingsDetails, Decreasing);
-        score.addValue(value);
-        score.getScoreBreakdown().setRevenue(value);
+        int borrowingScoreValue = calculateYearlyStatistics(borrowingsDetails, Decreasing);
+        scoreBreakdown.setBorrowings(borrowingScoreValue);
         return this;
     }
 
     public ScoreBuilder withOtherLiabilities(List<YearInfo> otherLiabilitiesDetails) {
-        int value = calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing);
-        score.addValue(value);
-        score.getScoreBreakdown().setLiabilities(value);
+        int liabilitiesScoreValue = calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing);
+        scoreBreakdown.setLiabilities(liabilitiesScoreValue);
         return this;
     }
 

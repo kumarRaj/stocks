@@ -1,5 +1,7 @@
 package com.project.stocks.model;
 
+import java.lang.reflect.Field;
+
 public class ScoreBreakdown {
 
     private int pe;
@@ -13,6 +15,19 @@ public class ScoreBreakdown {
     private int liabilities;
 
     private int borrowings;
+
+    public int getBreakdownSummation() {
+        int sum = 0;
+        try {
+            Field[] allFields = this.getClass().getDeclaredFields();
+            for (Field field : allFields) {
+                sum += (int)field.get(this);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return sum;
+    }
 
     public int getPe() {
         return pe;
