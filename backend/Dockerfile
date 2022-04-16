@@ -14,9 +14,7 @@ RUN ./gradlew build
 
 FROM openjdk:11-jre-slim-buster
 
-#ARG JAR_FILE=build/libs/stocks-0.0.1-SNAPSHOT.jar
 COPY --from=BUILD_JAR /opt/app/build/libs/stocks-0.0.1-SNAPSHOT.jar app.jar
-#COPY ${JAR_FILE} app.jar
 
 EXPOSE 8081:8081
 
