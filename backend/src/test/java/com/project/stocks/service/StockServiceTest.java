@@ -2,6 +2,7 @@ package com.project.stocks.service;
 
 import com.project.stocks.dto.*;
 import com.project.stocks.model.Score;
+import com.project.stocks.model.ScoreBreakdown;
 import com.project.stocks.repository.StockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,8 @@ class StockServiceTest {
     @Test
     void allMetricsShouldBeEvaluatedInScoreCalculation() {
         Stock stock = getStockObject();
-        Score score = new Score();
+        ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
+        Score score = new Score(scoreBreakdown);
 
         try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)){
             scoreBuilderMock.when(ScoreBuilder::getInstance).thenReturn(scoreBuilder);

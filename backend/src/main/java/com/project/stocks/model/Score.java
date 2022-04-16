@@ -7,12 +7,15 @@ public class Score {
 
     public String stockId;
 
-    public int getValue() {
-        return score;
+    private ScoreBreakdown scoreBreakdown;
+
+    public Score(ScoreBreakdown scoreBreakdown) {
+        this.scoreBreakdown = scoreBreakdown;
+        calculate();
     }
 
-    public void addValue(int value) {
-        this.score += value;
+    public int getScore() {
+        return score;
     }
 
     public String getStockId() {
@@ -21,5 +24,13 @@ public class Score {
 
     public void setStockId(String stockId) {
         this.stockId = stockId;
+    }
+
+    public ScoreBreakdown getScoreBreakdown() {
+        return scoreBreakdown;
+    }
+
+    private void calculate() {
+        score = scoreBreakdown.fetchBreakdownSummation();
     }
 }

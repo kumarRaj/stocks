@@ -4,6 +4,7 @@ package com.project.stocks.service;
 import com.project.stocks.dto.Logic;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
+import com.project.stocks.model.ScoreBreakdown;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,21 +14,21 @@ import static com.project.stocks.dto.Logic.Decreasing;
 
 public class ScoreBuilder {
 
-    private Score score = new Score();
-    private ScoreBuilder scoreBuilder = null;
-
+    private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
 
     public ScoreBuilder withPE(Integer pe) {
+        int pEScoreValue;
         if (pe >= 1 && pe <= 20)
-            score.addValue(5);
+            pEScoreValue = 5;
         else if (pe >= 21 && pe <= 40)
-            score.addValue(4);
+            pEScoreValue = 4;
         else if (pe >= 41 && pe <= 60)
-            score.addValue(3);
+            pEScoreValue = 3;
         else if (pe >= 61 && pe <= 80)
-            score.addValue(2);
+            pEScoreValue = 2;
         else
-            score.addValue(1);
+            pEScoreValue = 1;
+        scoreBreakdown.setPe(pEScoreValue);
         return this;
     }
 
@@ -40,32 +41,38 @@ public class ScoreBuilder {
     }
 
     public Score build() {
+        Score score = new Score(scoreBreakdown);
         return score;
     }
 
 
     public ScoreBuilder withOPM(List<YearInfo> opmList) {
-        score.addValue(calculateYearlyStatistics(opmList, Logic.Increasing));
+        int opmScoreValue = calculateYearlyStatistics(opmList, Logic.Increasing);
+        scoreBreakdown.setOperatingProfitMargin(opmScoreValue);
         return this;
     }
 
     public ScoreBuilder withNPM(List<YearInfo> npmList) {
-        score.addValue(calculateYearlyStatistics(npmList, Logic.Increasing));
+        int npmScoreValue = calculateYearlyStatistics(npmList, Logic.Increasing);
+        scoreBreakdown.setNetProfitMargin(npmScoreValue);
         return this;
     }
 
     public ScoreBuilder withRevenue(List<YearInfo> revenueDetails) {
-        score.addValue(calculateYearlyStatistics(revenueDetails, Logic.Increasing));
+        int revenueScoreValue = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
+        scoreBreakdown.setRevenue(revenueScoreValue);
         return this;
     }
 
     public ScoreBuilder withBorrowings(List<YearInfo> borrowingsDetails) {
-        score.addValue(calculateYearlyStatistics(borrowingsDetails, Decreasing));
+        int borrowingScoreValue = calculateYearlyStatistics(borrowingsDetails, Decreasing);
+        scoreBreakdown.setBorrowings(borrowingScoreValue);
         return this;
     }
 
     public ScoreBuilder withOtherLiabilities(List<YearInfo> otherLiabilitiesDetails) {
-        score.addValue(calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing));
+        int liabilitiesScoreValue = calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing);
+        scoreBreakdown.setLiabilities(liabilitiesScoreValue);
         return this;
     }
 

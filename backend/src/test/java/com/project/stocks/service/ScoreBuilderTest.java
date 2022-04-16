@@ -1,16 +1,14 @@
 package com.project.stocks.service;
 
-import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ScoreBuilderTest {
     
@@ -25,35 +23,40 @@ class ScoreBuilderTest {
     void givenPERatio39ScoreShouldBe4() {
         Score score = scoreBuilder.withPE(39).build();
 
-        assertEquals(4, score.getValue());
+        assertEquals(4, score.getScore());
+        assertEquals(4, score.getScoreBreakdown().getPe());
     }
 
     @Test
     void givenPERatio1ScoreShouldBe5() {
         Score score = scoreBuilder.withPE(1).build();
 
-        assertEquals(5, score.getValue());
+        assertEquals(5, score.getScore());
+        assertEquals(5, score.getScoreBreakdown().getPe());
     }
 
     @Test
     void givenPERatio41ScoreShouldBe3() {
         Score score = scoreBuilder.withPE(41).build();
 
-        assertEquals(3, score.getValue());
+        assertEquals(3, score.getScore());
+        assertEquals(3, score.getScoreBreakdown().getPe());
     }
 
     @Test
     void givenPERatio61ScoreShouldBe2() {
         Score score = scoreBuilder.withPE(61).build();
 
-        assertEquals(2, score.getValue());
+        assertEquals(2, score.getScore());
+        assertEquals(2, score.getScoreBreakdown().getPe());
     }
 
     @Test
     void givenPERatio81ScoreShouldBe1() {
         Score score = scoreBuilder.withPE(81).build();
 
-        assertEquals(1, score.getValue());
+        assertEquals(1, score.getScore());
+        assertEquals(1, score.getScoreBreakdown().getPe());
     }
 
     @Test
@@ -66,7 +69,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2014,6));
         opmList.add(new YearInfo(2015,7));
         Score score = scoreBuilder.withOPM(opmList).build();
-        assertEquals(5, score.getValue());
+        assertEquals(5, score.getScore());
+        assertEquals(5, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -80,7 +84,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2015,7));
         Score score = scoreBuilder.withOPM(opmList).build();
 
-        assertEquals(4, score.getValue());
+        assertEquals(4, score.getScore());
+        assertEquals(4, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -94,7 +99,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2015,1));
         Score score = scoreBuilder.withOPM(opmList).build();
 
-        assertEquals(3, score.getValue());
+        assertEquals(3, score.getScore());
+        assertEquals(3, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -108,7 +114,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2015,1));
         Score score = scoreBuilder.withOPM(opmList).build();
 
-        assertEquals(2, score.getValue());
+        assertEquals(2, score.getScore());
+        assertEquals(2, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -122,7 +129,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2015,1));
         Score score = scoreBuilder.withOPM(opmList).build();
 
-        assertEquals(1, score.getValue());
+        assertEquals(1, score.getScore());
+        assertEquals(1, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -137,7 +145,8 @@ class ScoreBuilderTest {
         opmList.add(new YearInfo(2015,1));
         Score score = scoreBuilder.withOPM(opmList).build();
 
-        assertEquals(0, score.getValue());
+        assertEquals(0, score.getScore());
+        assertEquals(0, score.getScoreBreakdown().getOperatingProfitMargin());
     }
 
     @Test
@@ -151,7 +160,8 @@ class ScoreBuilderTest {
         npmList.add(new YearInfo(2015,7));
         Score score = scoreBuilder.withNPM(npmList).build();
 
-        assertEquals(4, score.getValue());
+        assertEquals(4, score.getScore());
+        assertEquals(4, score.getScoreBreakdown().getNetProfitMargin());
     }
 
     @Test
@@ -165,7 +175,8 @@ class ScoreBuilderTest {
         borrowingList.add(new YearInfo(2015,5));
         Score score = scoreBuilder.withBorrowings(borrowingList).build();
 
-        assertEquals(5, score.getValue());
+        assertEquals(5, score.getScore());
+        assertEquals(5, score.getScoreBreakdown().getBorrowings());
     }
 
     @Test
@@ -179,7 +190,8 @@ class ScoreBuilderTest {
         borrowingList.add(new YearInfo(2015,6));
         Score score = scoreBuilder.withBorrowings(borrowingList).build();
 
-        assertEquals(0, score.getValue());
+        assertEquals(0, score.getScore());
+        assertEquals(0, score.getScoreBreakdown().getBorrowings());
     }
 
     @Test
@@ -193,7 +205,8 @@ class ScoreBuilderTest {
         otherLiabilitiesList.add(new YearInfo(2015,5));
         Score score = scoreBuilder.withOtherLiabilities(otherLiabilitiesList).build();
 
-        assertEquals(5, score.getValue());
+        assertEquals(5, score.getScore());
+        assertEquals(5, score.getScoreBreakdown().getLiabilities());
     }
 
     @Test
@@ -207,7 +220,8 @@ class ScoreBuilderTest {
         otherLiabilitiesList.add(new YearInfo(2015,6));
         Score score = scoreBuilder.withBorrowings(otherLiabilitiesList).build();
 
-        assertEquals(0, score.getValue());
+        assertEquals(0, score.getScore());
+        assertEquals(0, score.getScoreBreakdown().getBorrowings());
     }
 
     @Test
@@ -221,7 +235,8 @@ class ScoreBuilderTest {
         revenueList.add(new YearInfo(2015,5));
         Score score = scoreBuilder.withRevenue(revenueList).build();
 
-        assertEquals(0, score.getValue());
+        assertEquals(0, score.getScore());
+        assertEquals(0, score.getScoreBreakdown().getRevenue());
     }
 
     @Test
@@ -235,7 +250,8 @@ class ScoreBuilderTest {
         revenueList.add(new YearInfo(2015,6));
         Score score = scoreBuilder.withRevenue(revenueList).build();
 
-        assertEquals(5, score.getValue());
+        assertEquals(5, score.getScore());
+        assertEquals(5, score.getScoreBreakdown().getRevenue());
     }
 
 }
