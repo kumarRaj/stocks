@@ -17,22 +17,25 @@ import java.util.List;
 @RequestMapping(value = "/stock")
 public class StocksController {
 
-    @Autowired
-    private StockService stockService;
+    private final StockService stockService;
 
-    @ApiOperation(value = "Fetch stock details for the given stock ID")
+    public StocksController(StockService stockService) {
+        this.stockService = stockService;
+    }
+
+    @ApiOperation(value = "Fetch stock details for the given stock id")
     @GetMapping(value = "/{stockId}")
     private Stock getStockDetails(@PathVariable(value = "stockId") String stockId) {
         return stockService.getStockDetails(stockId);
     }
 
-    @ApiOperation(value = "Fetch score of given stock ID")
+    @ApiOperation(value = "Fetch score for given stock id")
     @GetMapping(value = "/{stockId}/score")
     private Score calculateScore(@PathVariable(value = "stockId") String stockId) {
         return stockService.calculateScore(stockId);
     }
 
-    @ApiOperation(value = "Fetch score of all companies present in DB")
+    @ApiOperation(value = "Fetch score for all companies present in the application")
     @GetMapping(value="/scores")
     private List<Score> calculateAllScores(){
         return stockService.calculateScoreOfAllCompanies();

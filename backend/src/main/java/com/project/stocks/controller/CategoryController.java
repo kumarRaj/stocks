@@ -13,8 +13,11 @@ import java.util.List;
 @RequestMapping(value = "/stock/categories")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @ApiOperation(value = "Fetch companies present in a category")
     @GetMapping(value = "/{category}")
@@ -34,7 +37,7 @@ public class CategoryController {
         categoryService.loadAllCompanyDataInACategory(category);
     }
 
-    @ApiOperation(value = "Load comapany details present in the all the categories")
+    @ApiOperation(value = "Load company details present in all categories")
     @PostMapping(value = "/loadData")
     @Async
     public void loadAllCompanyDataForAllCategory(){
