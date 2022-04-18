@@ -22,16 +22,20 @@ export const StocksList: React.FC = () => {
             setCategories(categories.data);
             setStockScores(stockScores.data);
             setCategoryStocks(stocksByCategory.data.company);
+            setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores.data, stocksByCategory.data.company));
         });
-
-        // console.log(stockScores);
     }, []);
 
     useEffect(() => {
-        setCurrentStocks(filterStocksBasedOnCurrentCategory());
-    }, [stockScores, categoryStocks]);
+        getStocksByCategory(currentCategory)
+            .then(response => {
+                let companies = response.data.company;
+                setCategoryStocks(companies);
+                setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores, companies));
+            })
+    }, [currentCategory]);
 
-    const filterStocksBasedOnCurrentCategory = () => {
+    const filterStocksBasedOnCurrentCategory = (stockScores: any, categoryStocks: any) => {
         return stockScores.filter((stock: any) => categoryStocks.includes(stock.stockId));
     }
 
@@ -41,14 +45,14 @@ export const StocksList: React.FC = () => {
                 {
                     categories.map(category => {
                         return (
-                            <div key={category} className='category-item'>
+                            <div onClick={() => setCurrentCategory(category)} key={category} className='category-item'>
                                 {category}
                             </div>
                         )
                     })
                 }
             </div>
-            
+
             <div>
                 {
                     currentStocks.map((currentStock: any) => {
