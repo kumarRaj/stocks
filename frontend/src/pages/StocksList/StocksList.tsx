@@ -80,8 +80,9 @@ export const StocksList: React.FC = () => {
 
             <Grid item xs={12} md={12}>
                 <div className='stocks-container'>
-                    {
-                        currentStocks.map((currentStock: any) => {
+                    {currentStocks.length === 0 
+                        ? <p>No stocks in this category</p>
+                        : currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
                                 <Paper className='stock-item'>
