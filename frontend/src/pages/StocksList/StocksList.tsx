@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
 
-import { Grid, Input, MenuItem, Select, TextField } from '@mui/material';
+import { Grid, MenuItem, Select, TextField, Paper } from '@mui/material';
 import './StocksList.css';
 
 export const StocksList: React.FC = () => {
@@ -71,26 +71,27 @@ export const StocksList: React.FC = () => {
                 </div>
             </Grid>
 
-            <Grid item xs={10} md={10}>
+            <Grid item xs={12} md={12}>
                 <div className='stocks-container'>
                     {
                         currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
-                                <div className='stock-item'>
-                                    <p className='stock-item'>{stockId}</p>
-                                    <p>{score}</p>
-
-                                    <div>
-                                        <p>Breakdown:</p>
-                                        <p>Borrowings: {scoreBreakdown.borrowings}</p>
-                                        <p>Liabilities: {scoreBreakdown.liabilities}</p>
-                                        <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
-                                        <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
-                                        <p>PE Ratio: {scoreBreakdown.pe}</p>
-                                        <p>Revenue: {scoreBreakdown.revenue}</p>
-                                    </div>
-                                </div>
+                                <Paper className='stock-item'>
+                                        <div>
+                                            <p className='stock-caption'>{stockId}</p>
+                                            <p>{score}</p>
+                                        </div>
+                                        {/* <div>
+                                            <p>Breakdown:</p>
+                                            <p>Borrowings: {scoreBreakdown.borrowings}</p>
+                                            <p>Liabilities: {scoreBreakdown.liabilities}</p>
+                                            <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
+                                            <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
+                                            <p>PE Ratio: {scoreBreakdown.pe}</p>
+                                            <p>Revenue: {scoreBreakdown.revenue}</p>
+                                        </div> */}
+                                </Paper>
                             );
                         })
                     }
