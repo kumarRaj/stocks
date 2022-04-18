@@ -4,7 +4,7 @@ WORKDIR /opt/app
 
 COPY package.json yarn.lock .
 
-RUN yarn --silent
+RUN yarn
 
 COPY . .
 
