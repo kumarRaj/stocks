@@ -5,7 +5,8 @@ import { getAllStockScores } from '../../services/ScoreService';
 export const StocksList: React.FC = () => {
     let [categories, setCategories] = useState([]);
     let [stockScores, setStockScores] = useState([]);
-    let [categoryStocks, setCategoryStocks] = useState([]);
+    let [categoryStocks, setCategoryStocks] = useState<string[]>([]);
+    let [currentStocks, setCurrentStocks] = useState([]);
     let [currentCategory, setCurrentCategory] = useState('NIFTY50');
 
     // on component mount
@@ -22,11 +23,55 @@ export const StocksList: React.FC = () => {
             setStockScores(stockScores.data);
             setCategoryStocks(stocksByCategory.data.company);
         });
+
+        // console.log(stockScores);
     }, []);
+
+    useEffect(() => {
+        setCurrentStocks(filterStocksBasedOnCurrentCategory());
+    }, [stockScores, categoryStocks]);
+
+    const filterStocksBasedOnCurrentCategory = () => {
+        return stockScores.filter((stock: any) => categoryStocks.includes(stock.stockId));
+    }
 
     return (
         <div>
-            Stocks List Page
+            <div className='categories-main'>
+                {
+                    categories.map(category => {
+                        return (
+                            <div key={category} className='category-item'>
+                                {category}
+                            </div>
+                        )
+                    })
+                }
+            </div>
+            
+            <div>
+                {
+                    currentStocks.map((currentStock: any) => {
+                        let {stockId, scoreBreakdown, score} = currentStock;
+                        return (
+                            <div>
+                                <p>{stockId}</p>
+                                <p>{score}</p>
+
+                                <div>
+                                    <p>Breakdown:</p>
+                                    <p>Borrowings: {scoreBreakdown.borrowings}</p>
+                                    <p>Liabilities: {scoreBreakdown.liabilities}</p>
+                                    <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
+                                    <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
+                                    <p>PE Ratio: {scoreBreakdown.pe}</p>
+                                    <p>Revenue: {scoreBreakdown.revenue}</p>
+                                </div>
+                            </div>
+                        );
+                    })
+                }
+            </div>
         </div>
     );
 }
