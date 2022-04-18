@@ -5,7 +5,6 @@ import { getAllStockScores } from '../../services/ScoreService';
 export const StocksList: React.FC = () => {
     let [categories, setCategories] = useState([]);
     let [stockScores, setStockScores] = useState([]);
-    let [categoryStocks, setCategoryStocks] = useState<string[]>([]);
     let [currentStocks, setCurrentStocks] = useState([]);
     let [currentCategory, setCurrentCategory] = useState('NIFTY50');
 
@@ -21,7 +20,6 @@ export const StocksList: React.FC = () => {
             let [categories, stockScores, stocksByCategory] = response;
             setCategories(categories.data);
             setStockScores(stockScores.data);
-            setCategoryStocks(stocksByCategory.data.company);
             setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores.data, stocksByCategory.data.company));
         });
     }, []);
@@ -30,7 +28,6 @@ export const StocksList: React.FC = () => {
         getStocksByCategory(currentCategory)
             .then(response => {
                 let companies = response.data.company;
-                setCategoryStocks(companies);
                 setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores, companies));
             })
     }, [currentCategory]);
