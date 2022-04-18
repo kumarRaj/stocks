@@ -1,0 +1,16 @@
+.sector-container {
+    padding: 20px;
+    background-color: lightblue;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sector-selector-main {
+    display: flex;
+    align-items: center;
+}
+
+.sector-selector {
+    margin-left: 10px;
+    background-color: white;
+}

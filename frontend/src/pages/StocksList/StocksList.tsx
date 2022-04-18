@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
 
+import { Grid, Input, MenuItem, Select, TextField } from '@mui/material';
+import './StocksList.css';
+
 export const StocksList: React.FC = () => {
     let [sectors, setSectors] = useState([]);
     let [stockScores, setStockScores] = useState([]);
@@ -36,43 +39,64 @@ export const StocksList: React.FC = () => {
         return stockScores.filter((stock: any) => stocksBySector.includes(stock.stockId));
     }
 
+    const handleSectorChange = (event: any) => {
+        setCurrentSector(event.target.value);
+    }
+
     return (
-        <div>
-            <div className='sectors-main'>
-                {
-                    sectors.map(sector => {
-                        return (
-                            <div onClick={() => setCurrentSector(sector)} key={sector} className='sector-item'>
-                                {sector}
-                            </div>
-                        )
-                    })
-                }
-            </div>
+        <Grid container>
+            <Grid item xs={12} md={12}>
+                <div className='sector-container'>
+                    <div className='sector-selector-main'>
+                        <p>Sectors:</p>
+                        <Select
+                            key={'sector-selector'}
+                            defaultValue={currentSector ?? ' '}
+                            onChange={handleSectorChange}
+                            className='sector-selector'
+                        >
+                            {
+                                sectors.map(sector => {
+                                    return (
+                                        <MenuItem value={sector}>
+                                            {sector}
+                                        </MenuItem>
+                                    )
+                                })
+                            }
+                        </Select>
+                    </div>
 
-            <div>
-                {
-                    currentStocks.map((currentStock: any) => {
-                        let {stockId, scoreBreakdown, score} = currentStock;
-                        return (
-                            <div>
-                                <p>{stockId}</p>
-                                <p>{score}</p>
+                    <TextField className='stock-search' label="Search Stock" variant="outlined" disabled />
+                </div>
+            </Grid>
 
-                                <div>
-                                    <p>Breakdown:</p>
-                                    <p>Borrowings: {scoreBreakdown.borrowings}</p>
-                                    <p>Liabilities: {scoreBreakdown.liabilities}</p>
-                                    <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
-                                    <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
-                                    <p>PE Ratio: {scoreBreakdown.pe}</p>
-                                    <p>Revenue: {scoreBreakdown.revenue}</p>
+            <Grid item xs={10} md={10}>
+                <div className='stocks-container'>
+                    {
+                        currentStocks.map((currentStock: any) => {
+                            let { stockId, scoreBreakdown, score } = currentStock;
+                            return (
+                                <div className='stock-item'>
+                                    <p className='stock-item'>{stockId}</p>
+                                    <p>{score}</p>
+
+                                    <div>
+                                        <p>Breakdown:</p>
+                                        <p>Borrowings: {scoreBreakdown.borrowings}</p>
+                                        <p>Liabilities: {scoreBreakdown.liabilities}</p>
+                                        <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
+                                        <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
+                                        <p>PE Ratio: {scoreBreakdown.pe}</p>
+                                        <p>Revenue: {scoreBreakdown.revenue}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })
-                }
-            </div>
-        </div>
+                            );
+                        })
+                    }
+                </div>
+            </Grid>
+        </Grid >
+
     );
 }
