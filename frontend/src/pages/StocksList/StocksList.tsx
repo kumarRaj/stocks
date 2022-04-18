@@ -10,6 +10,7 @@ export const StocksList: React.FC = () => {
     let [stockScores, setStockScores] = useState([]);
     let [currentStocks, setCurrentStocks] = useState([]);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
+    let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
     let [currentSector, setCurrentSector] = useState('NIFTY50');
 
     // on component mount
@@ -42,6 +43,11 @@ export const StocksList: React.FC = () => {
 
     const handleSectorChange = (event: any) => {
         setCurrentSector(event.target.value);
+    }
+
+    const handleBreakdownToggle = (breakdown: any) => {
+        toggleBreakdownVisible(true);
+        setCurrentBreakdown(breakdown);
     }
 
     return (
@@ -79,7 +85,7 @@ export const StocksList: React.FC = () => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
                                 <Paper className='stock-item'>
-                                    <div onClick={() => setCurrentBreakdown(scoreBreakdown)}>
+                                    <div onClick={() => handleBreakdownToggle(scoreBreakdown)}>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>
                                     </div>
@@ -89,7 +95,7 @@ export const StocksList: React.FC = () => {
                     }
                 </div>
 
-                <Paper className='stock-breakdown'>
+                {isBreakdownVisible && <Paper className='stock-breakdown'>
                     <div>
                         <p>Breakdown:</p>
                         <p>Borrowings: {currentBreakdown.borrowings}</p>
@@ -98,8 +104,10 @@ export const StocksList: React.FC = () => {
                         <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
                         <p>PE Ratio: {currentBreakdown.pe}</p>
                         <p>Revenue: {currentBreakdown.revenue}</p>
+
+                        <button onClick={() => toggleBreakdownVisible(false)}>Close</button>
                     </div>
-                </Paper>
+                </Paper>}
             </Grid>
         </Grid >
 
