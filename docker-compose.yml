@@ -29,7 +29,5 @@ services:
         dockerfile: Dockerfile
     image: stocks-frontend
     container_name: stocks-frontend
-    environment:
-      BACKEND_URL: http://stocks-backend:8081
     ports:
         - 3000:3000

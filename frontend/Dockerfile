@@ -9,5 +9,3 @@ RUN yarn --silent
 COPY . .
 
 ENTRYPOINT yarn start
-
-
