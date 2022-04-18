@@ -23,3 +23,11 @@ services:
         - 8081:8081
     volumes:
         - stocks-vol:/root/
+  frontend:
+    build:
+        context: frontend/
+        dockerfile: Dockerfile
+    image: stocks-frontend
+    container_name: stocks-frontend
+    ports:
+        - 3000:3000
