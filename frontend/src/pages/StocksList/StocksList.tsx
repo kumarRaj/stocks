@@ -10,6 +10,7 @@ export const StocksList: React.FC = () => {
     let [stockScores, setStockScores] = useState([]);
     let [currentStocks, setCurrentStocks] = useState([]);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
+    let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
     let [currentSector, setCurrentSector] = useState('NIFTY50');
 
@@ -45,9 +46,10 @@ export const StocksList: React.FC = () => {
         setCurrentSector(event.target.value);
     }
 
-    const handleBreakdownToggle = (breakdown: any) => {
+    const handleBreakdownToggle = (breakdown: any, selectedStockId: string) => {
         toggleBreakdownVisible(true);
         setCurrentBreakdown(breakdown);
+        setSelectedStock(selectedStockId);
     }
 
     return (
@@ -86,7 +88,7 @@ export const StocksList: React.FC = () => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
                                 <Paper className='stock-item'>
-                                    <div onClick={() => handleBreakdownToggle(scoreBreakdown)}>
+                                    <div onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>
                                     </div>
@@ -98,12 +100,12 @@ export const StocksList: React.FC = () => {
 
                 {isBreakdownVisible && <Paper className='stock-breakdown'>
                     <div>
-                        <p>Breakdown:</p>
+                        <p>Breakdown for : {selectedStock}</p>
+                        <p>PE Ratio: {currentBreakdown.pe}</p>
+                        <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
+                        <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
                         <p>Borrowings: {currentBreakdown.borrowings}</p>
                         <p>Liabilities: {currentBreakdown.liabilities}</p>
-                        <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
-                        <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
-                        <p>PE Ratio: {currentBreakdown.pe}</p>
                         <p>Revenue: {currentBreakdown.revenue}</p>
 
                         <button onClick={() => toggleBreakdownVisible(false)}>Close</button>

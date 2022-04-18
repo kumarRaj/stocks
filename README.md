@@ -23,7 +23,19 @@ docker compose up --build
 |:----------:|:-------------|:------|
 | POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
 
+### frontend
 
+http://localhost:3000
+
+## Application commands
+### backend
+`./gradlew bootRun`
+
+###frontend
+```
+yarn
+yarn start
+```
 
 ## Docker commands
 
