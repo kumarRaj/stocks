@@ -1,49 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCategories, getStocksByCategory } from '../../services/CategoriesService';
+import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
 
 export const StocksList: React.FC = () => {
-    let [categories, setCategories] = useState([]);
+    let [sectors, setSectors] = useState([]);
     let [stockScores, setStockScores] = useState([]);
     let [currentStocks, setCurrentStocks] = useState([]);
-    let [currentCategory, setCurrentCategory] = useState('NIFTY50');
+    let [currentSector, setCurrentSector] = useState('NIFTY50');
 
     // on component mount
     useEffect(() => {
         Promise.all(
             [
-                getAllCategories(),
+                getAllSectors(),
                 getAllStockScores(),
-                getStocksByCategory(currentCategory)
+                getStocksBySector(currentSector)
             ]
         ).then(response => {
-            let [categories, stockScores, stocksByCategory] = response;
-            setCategories(categories.data);
+            let [sectors, stockScores, stocksBySector] = response;
+            setSectors(sectors.data);
             setStockScores(stockScores.data);
-            setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores.data, stocksByCategory.data.company));
+            setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores.data, stocksBySector.data.company));
         });
     }, []);
 
     useEffect(() => {
-        getStocksByCategory(currentCategory)
+        getStocksBySector(currentSector)
             .then(response => {
                 let companies = response.data.company;
-                setCurrentStocks(filterStocksBasedOnCurrentCategory(stockScores, companies));
+                setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores, companies));
             })
-    }, [currentCategory]);
+    }, [currentSector]);
 
-    const filterStocksBasedOnCurrentCategory = (stockScores: any, categoryStocks: any) => {
-        return stockScores.filter((stock: any) => categoryStocks.includes(stock.stockId));
+    const filterStocksBasedOnCurrentSector = (stockScores: any, stocksBySector: any) => {
+        return stockScores.filter((stock: any) => stocksBySector.includes(stock.stockId));
     }
 
     return (
         <div>
-            <div className='categories-main'>
+            <div className='sectors-main'>
                 {
-                    categories.map(category => {
+                    sectors.map(sector => {
                         return (
-                            <div onClick={() => setCurrentCategory(category)} key={category} className='category-item'>
-                                {category}
+                            <div onClick={() => setCurrentSector(sector)} key={sector} className='sector-item'>
+                                {sector}
                             </div>
                         )
                     })
