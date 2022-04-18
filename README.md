@@ -31,7 +31,7 @@ http://localhost:3000
 ### backend
 `./gradlew bootRun`
 
-###frontend
+### frontend
 ```
 yarn
 yarn start
