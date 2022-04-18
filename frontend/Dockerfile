@@ -6,8 +6,6 @@ COPY package.json yarn.lock .
 
 RUN yarn --silent
 
-COPY .env.development .env
-
 COPY . .
 
 ENTRYPOINT yarn start
