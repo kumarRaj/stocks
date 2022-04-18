@@ -10,9 +10,6 @@ public class Stock {
     @JsonProperty("MarketCap")
     private StockMetric marketCap;
 
-    @JsonProperty("PE")
-    private StockMetric pe;
-
     @JsonProperty("FaceValue")
     private StockMetric faceValue;
 
@@ -28,11 +25,10 @@ public class Stock {
     @JsonProperty("Debt")
     private Debt debt;
 
-    public Stock(String id, StockMetric marketCap, StockMetric pe, StockMetric faceValue,
+    public Stock(String id, StockMetric marketCap, StockMetric faceValue,
                  StockMetric dividend, YearlyDetail opmDetails, YearlyDetail npmDetails, Debt debt) {
         this.id = id;
         this.marketCap = marketCap;
-        this.pe = pe;
         this.faceValue = faceValue;
         this.dividend = dividend;
         this.opmDetails = opmDetails;
@@ -57,14 +53,6 @@ public class Stock {
 
     public void setMarketCap(StockMetric marketCap) {
         this.marketCap = marketCap;
-    }
-
-    public StockMetric getPe() {
-        return pe;
-    }
-
-    public void setPe(StockMetric pe) {
-        this.pe = pe;
     }
 
     public StockMetric getFaceValue() {
@@ -112,7 +100,6 @@ public class Stock {
         return "Stock{" +
                 "id='" + id + '\'' +
                 ", marketCap='" + marketCap + '\'' +
-                ", pe='" + pe + '\'' +
                 ", faceValue='" + faceValue + '\'' +
                 ", dividend='" + dividend + '\'' +
                 ", opmDetails=" + opmDetails +

@@ -10,9 +10,13 @@ async function fetchPE(stockId) {
     return await axios(config)
     .then(function (response) {
         let data = response.data;
-        let result = {name : data.symbol, sector : data.sector.trim(), pe: data.PE, sectorPE: data.sectorPE}
-        console.log(JSON.stringify(result));
-        return result
+        let result = {
+            name : data.symbol, 
+            sector : data.sector.trim(), 
+            pe: parseInt(data.PE), 
+            sectorPE: parseInt(data.sectorPE)
+        }
+        return JSON.stringify(result)
     })
     .catch(function (error) {
         console.log(error);

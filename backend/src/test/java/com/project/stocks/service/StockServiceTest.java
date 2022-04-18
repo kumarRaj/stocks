@@ -35,7 +35,7 @@ class StockServiceTest {
         try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)){
             scoreBuilderMock.when(ScoreBuilder::getInstance).thenReturn(scoreBuilder);
             when(stockRepository.getStockDetails(stock.getId())).thenReturn(stock);
-            when(scoreBuilder.withPE(stock.getPe().getValue())).thenReturn(scoreBuilder);
+//            when(scoreBuilder.withPE(stock.getPe().getValue())).thenReturn(scoreBuilder);
             when(scoreBuilder.withOPM(stock.getOpmDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withNPM(stock.getNpmDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo())).thenReturn(scoreBuilder);
@@ -45,7 +45,7 @@ class StockServiceTest {
 
             stockService.calculateScore(stock.getId());
 
-            verify(scoreBuilder, times(1)).withPE(stock.getPe().getValue());
+//            verify(scoreBuilder, times(1)).withPE(stock.getPe().getValue());
             verify(scoreBuilder, times(1)).withOPM(stock.getOpmDetails().getYearInfo());
             verify(scoreBuilder, times(1)).withNPM(stock.getNpmDetails().getYearInfo());
             verify(scoreBuilder, times(1)).withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
@@ -67,7 +67,7 @@ class StockServiceTest {
         debt.setRevenueDetails(yearlyDetail);
 
         stock.setId("A");
-        stock.setPe(stockMetric);
+//        stock.setPe(stockMetric);
         stock.setOpmDetails(yearlyDetail);
         stock.setNpmDetails(yearlyDetail);
         stock.setDebt(debt);

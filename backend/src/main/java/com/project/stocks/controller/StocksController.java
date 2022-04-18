@@ -1,6 +1,7 @@
 package com.project.stocks.controller;
 
 import com.project.stocks.dto.Stock;
+import com.project.stocks.dto.StockSummary;
 import com.project.stocks.model.Score;
 import com.project.stocks.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,4 +35,8 @@ public class StocksController {
         return stockService.calculateScoreOfAllCompanies();
     }
 
+    @GetMapping(value = "/{stockId}/summary")
+    private StockSummary getStockSummary(@PathVariable(value = "stockId") String stockId) {
+        return stockService.getStockSummary(stockId);
+    }
 }
