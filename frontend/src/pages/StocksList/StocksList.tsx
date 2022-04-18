@@ -9,6 +9,7 @@ export const StocksList: React.FC = () => {
     let [sectors, setSectors] = useState([]);
     let [stockScores, setStockScores] = useState([]);
     let [currentStocks, setCurrentStocks] = useState([]);
+    let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [currentSector, setCurrentSector] = useState('NIFTY50');
 
     // on component mount
@@ -78,24 +79,27 @@ export const StocksList: React.FC = () => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
                                 <Paper className='stock-item'>
-                                        <div>
-                                            <p className='stock-caption'>{stockId}</p>
-                                            <p>{score}</p>
-                                        </div>
-                                        {/* <div>
-                                            <p>Breakdown:</p>
-                                            <p>Borrowings: {scoreBreakdown.borrowings}</p>
-                                            <p>Liabilities: {scoreBreakdown.liabilities}</p>
-                                            <p>Net Profit Margin: {scoreBreakdown.netProfitMargin}</p>
-                                            <p>Operating Profit Margin: {scoreBreakdown.operatingProfitMargin}</p>
-                                            <p>PE Ratio: {scoreBreakdown.pe}</p>
-                                            <p>Revenue: {scoreBreakdown.revenue}</p>
-                                        </div> */}
+                                    <div onClick={() => setCurrentBreakdown(scoreBreakdown)}>
+                                        <p className='stock-caption'>{stockId}</p>
+                                        <p>{score}</p>
+                                    </div>
                                 </Paper>
                             );
                         })
                     }
                 </div>
+
+                <Paper className='stock-breakdown'>
+                    <div>
+                        <p>Breakdown:</p>
+                        <p>Borrowings: {currentBreakdown.borrowings}</p>
+                        <p>Liabilities: {currentBreakdown.liabilities}</p>
+                        <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
+                        <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
+                        <p>PE Ratio: {currentBreakdown.pe}</p>
+                        <p>Revenue: {currentBreakdown.revenue}</p>
+                    </div>
+                </Paper>
             </Grid>
         </Grid >
 

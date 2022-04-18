@@ -30,4 +30,15 @@
     width: 15%;
     padding: 20px;
     margin: 10px;
+    cursor: pointer;
+}
+
+.stock-breakdown {
+    margin-top: 110px;
+    padding: 20px;
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    right: 0;
 }
