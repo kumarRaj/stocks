@@ -1,0 +1,44 @@
+.sector-container {
+    padding: 20px;
+    background-color: lightblue;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    width: 97%;
+    z-index: 2;
+}
+
+.sector-selector-main {
+    display: flex;
+    align-items: center;
+}
+
+.sector-selector {
+    margin-left: 10px;
+    background-color: white;
+}
+
+.stocks-container {
+    margin-top: 110px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.stock-item {
+    width: 15%;
+    padding: 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.stock-breakdown {
+    margin-top: 110px;
+    padding: 20px;
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
