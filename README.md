@@ -22,6 +22,8 @@ docker compose up --build
 | REST METHOD   |      API      | Functionality |
 |:----------:|:-------------|:------|
 | POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
+| GET |  /getPEDetails?stcokID={stockId} | Fetch PE details of given stockID |
+| GET |  /getPeers?stcokID={stockId} | Fetch peers of given stockID |
 
 
 
