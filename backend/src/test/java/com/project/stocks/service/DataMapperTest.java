@@ -1,6 +1,5 @@
 package com.project.stocks.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.stocks.dto.Category;
 import com.project.stocks.dto.Stock;
 import com.project.stocks.dto.Unit;
@@ -8,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DataMapperTest {
 
@@ -26,8 +26,8 @@ class DataMapperTest {
 
     @Test
     void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() {
-        String input = "{\"stockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"PE\":{\"unit\":\"\",\"value\":34}" +
-                ",\"Dividend\":{\"unit\":\"%\",\"value\":1},\"FaceValue\":{\"unit\":\"\",\"value\":5},\"OPM\":{\"data\":" +
+        String input = "{\"stockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"Dividend\"" +
+                ":{\"unit\":\"%\",\"value\":1},\"FaceValue\":{\"unit\":\"\",\"value\":5},\"OPM\":{\"data\":" +
                 "[{\"year\":2010,\"value\":34},{\"year\":2011,\"value\":33},{\"year\":2012,\"value\":32},{\"year\":2013,\"value\":29}," +
                 "{\"year\":2014,\"value\":27},{\"year\":2015,\"value\":28},{\"year\":2016,\"value\":27},{\"year\":2017,\"value\":27}," +
                 "{\"year\":2018,\"value\":27},{\"year\":2019,\"value\":24},{\"year\":2020,\"value\":25},{\"year\":2021,\"value\":28}]," +
@@ -50,7 +50,6 @@ class DataMapperTest {
         Stock stock = dataMapper.map(input, Stock.class);
 
         assertEquals("INFY", stock.getId());
-        assertEquals(34, stock.getPe().getValue());
         assertEquals(Unit.Percentage, stock.getOpmDetails().getUnit());
         assertEquals(27, stock.getOpmDetails().getTtm());
         assertEquals(Unit.Crore, stock.getNpmDetails().getUnit());
