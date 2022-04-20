@@ -18,35 +18,22 @@ public class StockService {
 
     private StockRepository stockRepository;
 
-    @Autowired
     private ScrapingService scrapingService;
 
     @Autowired
-    public StockService(StockRepository stockRepository) {
+    public StockService(StockRepository stockRepository, ScrapingService scrapingService) {
         this.stockRepository = stockRepository;
+        this.scrapingService = scrapingService;
     }
 
-    public Stock getStockDetails(String stockId) {
+    private Stock getStockDetails(String stockId) {
         return stockRepository.getStockDetails(stockId);
     }
 
     public Score calculateScore(String stockId) {
-        Stock stock = getStockDetails(stockId);
-        Score score = calculateStockMetrics(stock);
-        score.setStockId(stockId);
+        StockSummary stockSummary = getStockSummary(stockId);
+        Score score = stockSummary.getScore();
         return score;
-    }
-
-    private Score calculateStockMetrics(Stock stock) {
-        ScoreBuilder scoreBuilder = ScoreBuilder.getInstance();
-        scoreBuilder
-//                .withPE(stock.getPe().getValue())
-                .withOPM(stock.getOpmDetails().getYearInfo())
-                .withNPM(stock.getNpmDetails().getYearInfo())
-                .withRevenue(stock.getDebt().getRevenueDetails().getYearInfo())
-                .withOtherLiabilities(stock.getDebt().getOtherLiabilitiesDetails().getYearInfo())
-                .withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
-        return scoreBuilder.build();
     }
 
     private Score calculateStockMetrics(StockSummary stockSummary) {
@@ -83,7 +70,6 @@ public class StockService {
 
         Score score = calculateStockMetrics(stockSummary);
         score.setStockId(stockId);
-
         stockSummary.setScore(score);
 
         return stockSummary;
