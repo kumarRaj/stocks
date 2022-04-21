@@ -28,12 +28,11 @@ app.post('/stockDetails', async function (req, res) {
     }
 })
 
-app.get('/getPEDetails', async function (req, res) {
+app.post('/getPEDetails', async function (req, res) {
     var stockId = req.query.stockId;
     try{
         if (stockId){
-            let response = await peInfo.fetchPE(stockId);
-            res.send(response)
+            await peInfo.fetchPE(stockId);
         }
         res.end()
     } catch (error) {
@@ -47,12 +46,11 @@ app.get('/getPEDetails', async function (req, res) {
     }
 })
 
-app.get('/getPeers', async function (req, res) {
+app.post('/getPeers', async function (req, res) {
     var stockId = req.query.stockId;
     try{
         if (stockId){
-            let response = await peerInfo.fetchPeers(stockId);
-            res.send(response)
+            await peerInfo.fetchPeers(stockId);
         }
         res.end()
     } catch (error) {

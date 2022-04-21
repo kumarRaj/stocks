@@ -1,7 +1,13 @@
 var axios = require('axios');
 const resources = require('./constants/resources')
+const saveLocal = require("./saveLocal")
 
 async function fetchPeers(stockId) {
+    let peers = await loadPeers(stockId)
+    await saveLocal.save(peers, "Peers", stockId);
+}
+
+async function loadPeers(stockId) {
     var config = {
         method: 'get',
         url: resources.peerURL+stockId,

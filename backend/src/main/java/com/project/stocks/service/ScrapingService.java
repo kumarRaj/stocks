@@ -31,12 +31,11 @@ public class ScrapingService {
         }
     }
 
-    public PEDetail getPEDetails(String stockId) {
-        PEDetail peDetail = scrapingClient.getPEDetails(stockId);
-        return peDetail;
+    public void getPEDetails(String stockId) {
+        scrapingClient.getPEDetails(stockId);
     }
 
-    public List<Peer> getPeersList(String stockId) {
-        return scrapingClient.getPeerDetails(stockId);
+    public void getPeersList(String stockId) {
+        scrapingClient.getPeerDetails(stockId);
     }
 }
