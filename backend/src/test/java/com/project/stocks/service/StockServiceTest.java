@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -43,9 +44,9 @@ class StockServiceTest {
 
         try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)){
             scoreBuilderMock.when(ScoreBuilder::getInstance).thenReturn(scoreBuilder);
-            when(scrapingService.getPEDetails(stock.getId())).thenReturn(peDetail);
-            when(scrapingService.getPeersList(stock.getId())).thenReturn(stockSummary.getPeers());
-            when(stockRepository.getStockDetails(stock.getId())).thenReturn(stock);
+            when(stockRepository.getPEDetails(stock.getId())).thenReturn(Optional.of(peDetail));
+            when(stockRepository.getPeersList(stock.getId())).thenReturn(stockSummary.getPeers());
+            when(stockRepository.getStockDetails(stock.getId())).thenReturn(Optional.of(stock));
             when(scoreBuilder.withPE(stockSummary.getPe())).thenReturn(scoreBuilder);
             when(scoreBuilder.withOPM(stock.getOpmDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withNPM(stock.getNpmDetails().getYearInfo())).thenReturn(scoreBuilder);
