@@ -38,7 +38,9 @@ public class ScrapingClient {
                     .build();
             Call call = client.newCall(request);
             Response response = call.execute();
-            System.out.println("Response Code for "+ stockId + " is : " + response.code());
+            int responseCode = response.code();
+            if(responseCode != 200)
+                System.out.println("Response Code for "+ stockId + " is : " + responseCode);
         } catch (IOException e) {
             System.out.println("Exception in ScrapingClient, method : add " + e.getMessage());
             e.printStackTrace();
