@@ -26,16 +26,8 @@ public class ScrapingService {
 
     public void add(String stockId){
         validatorService.validate(stockId);
-        if(!stockRepository.isPresent(stockId)) {
-            scrapingClient.add(stockId);
-        }
-    }
-
-    public void getPEDetails(String stockId) {
-        scrapingClient.getPEDetails(stockId);
-    }
-
-    public void getPeersList(String stockId) {
-        scrapingClient.getPeerDetails(stockId);
+        scrapingClient.add(stockId);
+        scrapingClient.addPE(stockId);
+        scrapingClient.addPeers(stockId);
     }
 }

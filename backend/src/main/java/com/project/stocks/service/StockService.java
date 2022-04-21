@@ -9,9 +9,9 @@ import com.project.stocks.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class StockService {
@@ -24,10 +24,6 @@ public class StockService {
     public StockService(StockRepository stockRepository, ScrapingService scrapingService) {
         this.stockRepository = stockRepository;
         this.scrapingService = scrapingService;
-    }
-
-    private Stock getStockDetails(String stockId) {
-        return stockRepository.getStockDetails(stockId);
     }
 
     public Score calculateScore(String stockId) {
@@ -51,9 +47,13 @@ public class StockService {
 
     public List<Score> calculateScoreOfAllCompanies() {
         List<Score> stockScores = new ArrayList<>();
-        List<String> stockIds = stockRepository.getAllStockNames();
+        List<String> stockIds = new ArrayList<>();
+        stockIds.addAll(stockRepository.getAllStockDetailsNames());
+        stockIds.addAll(stockRepository.getAllPEStockNames());
+        Set<String> temp = new HashSet<>();
+        Set<String> duplicateValues = stockIds.stream().filter(n -> !temp.add(n)).collect(Collectors.toSet());
 
-        for (String stockId : stockIds) {
+        for (String stockId : duplicateValues) {
             stockScores.add(calculateScore(stockId));
         }
 
@@ -62,16 +62,20 @@ public class StockService {
     }
 
     public StockSummary getStockSummary(String stockId) {
-        PEDetail peDetail = scrapingService.getPEDetails(stockId);
-        Stock stockDetail = getStockDetails(stockId);
-        List<Peer> peersList = scrapingService.getPeersList(stockId);
-        StockSummary stockSummary = new StockSummary(stockId, stockDetail, peDetail.getPe(), peDetail.getSectorPE(),
-                peDetail.getSector(), peersList);
+        Optional<PEDetail> peDetail = stockRepository.getPEDetails(stockId);
+        Optional<Stock> stockDetail = stockRepository.getStockDetails(stockId);
+        List<Peer> peersList = stockRepository.getPeersList(stockId);
 
-        Score score = calculateStockMetrics(stockSummary);
-        score.setStockId(stockId);
-        stockSummary.setScore(score);
+        if(peDetail.isPresent() && stockDetail.isPresent()) {
+            StockSummary stockSummary = new StockSummary(stockId, stockDetail.get(), peDetail.get().getPe(), peDetail.get().getSectorPE(),
+                    peDetail.get().getSector(), peersList);
 
-        return stockSummary;
+            Score score = calculateStockMetrics(stockSummary);
+            score.setStockId(stockId);
+            stockSummary.setScore(score);
+
+            return stockSummary;
+        }
+        return null;
     }
 }

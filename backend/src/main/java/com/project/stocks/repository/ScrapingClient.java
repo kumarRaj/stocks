@@ -20,12 +20,12 @@ public class ScrapingClient {
 
     }
 
-    public void getPEDetails(String stockId) {
+    public void addPE(String stockId) {
         String requestURL = scrapperServiceURL + "/getPEDetails";
         scrapeData(stockId, requestURL);
     }
 
-    public void getPeerDetails(String stockId) {
+    public void addPeers(String stockId) {
         String requestURL = scrapperServiceURL + "/getPeers";
 
         scrapeData(stockId, requestURL);
