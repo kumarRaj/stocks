@@ -21,9 +21,9 @@ docker compose up --build
 ### scraper(Port : 9000)
 | REST METHOD   |      API      | Functionality |
 |:----------:|:-------------|:------|
-| POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
-| GET |  /getPEDetails?stcokID={stockId} | Fetch PE details of given stockID |
-| GET |  /getPeers?stcokID={stockId} | Fetch peers of given stockID |
+| POST |  /stockDetails?stockId={stockId} | Load data of given stockID |
+| POST |  /getPEDetails?stockId={stockId} | Load PE details of given stockID |
+| POST |  /getPeers?stockId={stockId} | Load peers of given stockID |
 
 ### frontend
 
