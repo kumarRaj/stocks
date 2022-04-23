@@ -27,19 +27,6 @@ public class StockRepository {
         return stock;
     }
 
-
-    public Optional<PeDetail> getPEDetails(String stockId) {
-        String filePath = homeDirectory + "/stocks/PE/" + stockId;
-        if (!File.exists(filePath))
-            return Optional.empty();
-        String result = File.readFile(filePath);
-
-        DataMapper<PeDetail> dataMapper = DataMapper.getInstance();
-        PeDetail peDetail = dataMapper.map(result, PeDetail.class);
-        return Optional.of(peDetail);
-    }
-
-
     public boolean isPresent(String stockId) {
         String filePath = homeDirectory + "/stocks/data/" + stockId;
         return File.exists(filePath);
@@ -49,5 +36,16 @@ public class StockRepository {
         String filePath = homeDirectory + "/stocks/data";
         List<String> fileNames = File.getFilesInADirectory(filePath);
         return fileNames;
+    }
+
+    private Optional<PeDetail> getPEDetails(String stockId) {
+        String filePath = homeDirectory + "/stocks/PE/" + stockId;
+        if (!File.exists(filePath))
+            return Optional.empty();
+        String result = File.readFile(filePath);
+
+        DataMapper<PeDetail> dataMapper = DataMapper.getInstance();
+        PeDetail peDetail = dataMapper.map(result, PeDetail.class);
+        return Optional.of(peDetail);
     }
 }
