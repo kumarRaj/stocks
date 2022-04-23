@@ -1,10 +1,13 @@
 package com.project.stocks.repository;
 
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
 public class ScrapingClient {
@@ -12,32 +15,27 @@ public class ScrapingClient {
     @Value("${ScrapperServiceURL}")
     private String scrapperServiceURL;
 
-    private OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient();
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    public void add(String stockId)  {
-        try {
-            String requestURL = scrapperServiceURL + "/stockDetails";
+    public void add(String stockId) {
+        String requestURL = "/stockDetails";
+        scrapeData(stockId, requestURL);
+    }
 
-            HttpUrl.Builder urlBuilder
-                    = HttpUrl.parse(requestURL).newBuilder();
-            urlBuilder.addQueryParameter("stockId", stockId);
+    public void addPE(String stockId) {
+        String requestURL = "/stock/pe";
+        scrapeData(stockId, requestURL);
+    }
 
-            String url = urlBuilder.build().toString();
+    private void scrapeData(String stockId, String requestURL) {
+        Map<String, String> queryParameter = new HashMap<>();
+        queryParameter.put("stockId", stockId);
 
-            RequestBody body = RequestBody.create("", JSON);
+        Response response = OKHttpCallTemplate.postCall(scrapperServiceURL + requestURL, queryParameter, "");
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
-            Call call = client.newCall(request);
-            Response response = call.execute();
-            System.out.println("Response Code for "+ stockId + " is : " + response.code());
-        } catch (IOException e) {
-            System.out.println("Exception in ScrapingClient, method : add " + e.getMessage());
-            e.printStackTrace();
-        }
-
+        int responseCode = response.code();
+        if (responseCode != 200)
+            System.out.println("Could not get details for stock " + stockId + " for request " + requestURL);
     }
 }

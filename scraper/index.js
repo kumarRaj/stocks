@@ -3,9 +3,9 @@ const axios = require("axios");
 const parser = require("./parseHTML.js")
 const saveLocal = require("./saveLocal")
 
-var testHandler = (exports.handler = async function (event, context) {
-  const ratios = await getStockDetails(event);
-  await saveLocal.save(ratios, "data", ratios.stockId);
+const stockDetailsHandler = (exports.handler = async function (event, context) {
+    const ratios = await getStockDetails(event);
+    await saveLocal.save(ratios, "data", ratios.StockId);
 });
 
 function getStockDetails(stockId) {
@@ -25,7 +25,7 @@ function getStockDetails(stockId) {
         rawRatios.push(value);
       });
 
-      ratios = { stockId: stockId };
+      let ratios = {StockId: stockId};
       const getMarketCap = () => parser.parse(rawRatios[0][1].trim());
       const getPe = () => parser.parse(rawRatios[3][0].trim());
       const getDividend = () => parser.parse(rawRatios[5][0].trim());
@@ -101,5 +101,4 @@ function getOtherLiabilities(html) {
   return otherLiability
 }
 
-// testHandler("TCS");
-module.exports = {testHandler};
+module.exports = {stockDetailsHandler};

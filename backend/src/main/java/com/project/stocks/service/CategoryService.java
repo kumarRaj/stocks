@@ -31,7 +31,7 @@ public class CategoryService {
     public void loadAllCompanyDataInACategory(String category) {
         Category data = getCategoryDetails(category);
         List<String> companies = data.getCompanies();
-        companies.stream().forEach((company) -> scrapingService.add(company));
+        companies.stream().forEach((company) -> scrapingService.addNewStock(company));
     }
 
     public void loadAllCompanyDataForAllCategory() {
