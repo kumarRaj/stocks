@@ -1,10 +1,11 @@
 package com.project.stocks.repository;
 
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
