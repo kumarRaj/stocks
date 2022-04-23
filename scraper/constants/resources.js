@@ -14,6 +14,8 @@ var NSECategories = [
     { name : "PvtBank", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyPvtBankStockWatch.json"}
 ]
 
+var peerURL = "https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxPeerCompanies.jsp?symbol=";
+
 module.exports = {
-    NSECategories
+    NSECategories, peerURL
 }
