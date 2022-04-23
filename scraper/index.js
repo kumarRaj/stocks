@@ -3,7 +3,7 @@ const axios = require("axios");
 const parser = require("./parseHTML.js")
 const saveLocal = require("./saveLocal")
 
-const testHandler = (exports.handler = async function (event, context) {
+const stockDetailsHandler = (exports.handler = async function (event, context) {
     const ratios = await getStockDetails(event);
     await saveLocal.save(ratios, "data", ratios.StockId);
 });
@@ -101,5 +101,4 @@ function getOtherLiabilities(html) {
   return otherLiability
 }
 
-// testHandler("TCS");
-module.exports = {testHandler};
+module.exports = {stockDetailsHandler};
