@@ -104,16 +104,17 @@ public class Stock {
     public String toString() {
         return "Stock{" +
                 "id='" + id + '\'' +
-                ", marketCap='" + marketCap + '\'' +
-                ", pe='" + pe + '\'' +
-                ", faceValue='" + faceValue + '\'' +
-                ", dividend='" + dividend + '\'' +
+                ", marketCap=" + marketCap +
+                ", pe=" + pe +
+                ", faceValue=" + faceValue +
+                ", dividend=" + dividend +
                 ", opmDetails=" + opmDetails +
                 ", npmDetails=" + npmDetails +
                 ", debt=" + debt +
+                ", sectorPE=" + sectorPE +
+                ", sector='" + sector + '\'' +
                 '}';
     }
-
 
     public Integer getSectorPE() {
         return sectorPE;
