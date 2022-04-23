@@ -2,7 +2,7 @@ package com.project.stocks.model;
 
 public class PeDetail {
 
-    private String name;
+    private String stockId;
 
     private String sector;
 
@@ -10,12 +10,12 @@ public class PeDetail {
 
     private Integer sectorPE;
 
-    public String getName() {
-        return name;
+    public String getStockId() {
+        return stockId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStockId(String stockId) {
+        this.stockId = stockId;
     }
 
     public String getSector() {

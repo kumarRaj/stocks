@@ -4,7 +4,7 @@ const saveLocal = require("./saveLocal")
 
 async function fetchPE(stockId) {
     let peDetails = await loadPE(stockId)
-    await saveLocal.save(peDetails, "pe", peDetails.name);
+    await saveLocal.save(peDetails, "pe", peDetails.stockId);
 }
 
 async function loadPE(stockId) {
@@ -17,7 +17,7 @@ async function loadPE(stockId) {
         .then(function (response) {
             let data = response.data;
             let result = {
-                name: data.symbol,
+                stockId: data.symbol,
                 sector: data.sector.trim(),
                 pe: parseInt(data.PE),
                 sectorPE: parseInt(data.sectorPE)
