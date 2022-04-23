@@ -1,4 +1,4 @@
-var NSECategories = [
+const NSECategories = [
     { name : "NIFTY50", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json"},
     { name : "Bank", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/bankNiftyStockWatch.json" },
     { name : "Auto", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxAutoStockWatch.json" },
@@ -14,8 +14,9 @@ var NSECategories = [
     { name : "PvtBank", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyPvtBankStockWatch.json"}
 ]
 
-var peerURL = "https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxPeerCompanies.jsp?symbol=";
+const peerURL = "https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxPeerCompanies.jsp?symbol=";
+const peURL = "https://www1.nseindia.com/live_market/dynaContent/live_watch/get_quote/getPEDetails.jsp?symbol=";
 
 module.exports = {
-    NSECategories, peerURL
+    NSECategories, peerURL, peURL
 }
