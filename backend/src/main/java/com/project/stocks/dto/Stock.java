@@ -36,11 +36,11 @@ public class Stock {
     public Stock() {
     }
 
-    public String getId() {
+    public String getStockId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setStockId(String id) {
         this.id = id;
     }
 

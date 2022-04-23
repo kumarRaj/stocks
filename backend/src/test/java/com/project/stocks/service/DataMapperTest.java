@@ -49,7 +49,7 @@ class DataMapperTest {
         DataMapper<Stock> dataMapper = DataMapper.getInstance();
         Stock stock = dataMapper.map(input, Stock.class);
 
-        assertEquals("INFY", stock.getId());
+        assertEquals("INFY", stock.getStockId());
         assertEquals(34, stock.getPe().getValue());
         assertEquals(Unit.Percentage, stock.getOpmDetails().getUnit());
         assertEquals(27, stock.getOpmDetails().getTtm());
