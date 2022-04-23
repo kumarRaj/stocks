@@ -19,10 +19,11 @@ public class ScrapingService {
         this.stockService = stockService;
     }
 
-    public void add(String stockId){
+    public void add(String stockId) {
         validatorService.validate(stockId);
-        if(!stockService.isPresent(stockId)) {
+        if (!stockService.isPresent(stockId)) {
             scrapingClient.add(stockId);
+            scrapingClient.addPE(stockId);
         }
     }
 }
