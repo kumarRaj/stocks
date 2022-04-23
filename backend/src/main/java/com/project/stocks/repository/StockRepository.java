@@ -14,6 +14,7 @@ public class StockRepository {
 
     String homeDirectory = System.getProperty("user.home");
 
+    // TODO: Refactor this to be able to test it
     public Stock getStockDetails(String stockId) {
         String filePath = homeDirectory + "/stocks/data/" + stockId;
         String result = File.readFile(filePath);
