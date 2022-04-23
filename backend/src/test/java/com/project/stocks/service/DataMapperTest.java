@@ -26,7 +26,7 @@ class DataMapperTest {
 
     @Test
     void testMapMethodInCaseValidDataShouldReturnStockObjectWithValidValues() {
-        String input = "{\"stockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"PE\":{\"unit\":\"\",\"value\":34}" +
+        String input = "{\"StockId\":\"INFY\",\"MarketCap\":{\"unit\":\"Cr\",\"value\":711430},\"PE\":{\"unit\":\"\",\"value\":34}" +
                 ",\"Dividend\":{\"unit\":\"%\",\"value\":1},\"FaceValue\":{\"unit\":\"\",\"value\":5},\"OPM\":{\"data\":" +
                 "[{\"year\":2010,\"value\":34},{\"year\":2011,\"value\":33},{\"year\":2012,\"value\":32},{\"year\":2013,\"value\":29}," +
                 "{\"year\":2014,\"value\":27},{\"year\":2015,\"value\":28},{\"year\":2016,\"value\":27},{\"year\":2017,\"value\":27}," +
