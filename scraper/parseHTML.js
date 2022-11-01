@@ -30,7 +30,7 @@ function getDetails(html, yearSelector, dataSelector, sectionSelector) {
     let result = {}
     for (let i = 1; i < totalLength; i++) {
       let value = parse(dataValue[i][0]); 
-      if(yearData[i][0] === 'TTM'){
+      if(yearData[i][0].trim() === 'TTM'){
         isTTMPresent=true
         TTMValue=value
         continue
