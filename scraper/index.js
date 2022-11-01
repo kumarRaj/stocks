@@ -10,7 +10,7 @@ const stockDetailsHandler = (exports.handler = async function (event, context) {
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/`)
+    .get(`https://www.screener.in/company/${stockId}/consolidated/`)
     .then((response) => {
       const html = cheerio.load(response.data);
 
