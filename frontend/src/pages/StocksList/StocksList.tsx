@@ -100,6 +100,7 @@ export const StocksList: React.FC = () => {
 
                 {isBreakdownVisible && <Paper className='stock-breakdown'>
                     <div>
+                        <p>Screener Link : <a href={`https://www.screener.in/company/${selectedStock}/consolidated/`} target="_blank">{selectedStock}</a></p>
                         <p>Breakdown for : {selectedStock}</p>
                         <p>PE Ratio: {currentBreakdown.pe}</p>
                         <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
