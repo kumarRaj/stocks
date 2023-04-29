@@ -1,7 +1,7 @@
 const NSECategories = [
     { name : "NIFTY50", URL : "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%2050"},
-    // { name : "Bank", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/bankNiftyStockWatch.json" },
-    // { name : "Auto", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxAutoStockWatch.json" },
+    { name : "Bank", URL : "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20BANK" },
+    { name : "Auto", URL : "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20AUTO" },
     // { name : "Energy", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxEnergyStockWatch.json" },
     // { name : "Finance", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxFinanceStockWatch.json" },
     // { name : "FMCG", URL : "https://www1.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxFMCGStockWatch.json" },

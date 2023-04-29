@@ -102,6 +102,3 @@ function getOtherLiabilities(html) {
 }
 
 module.exports = {stockDetailsHandler};
-
-
-getStockDetails("AXISBANK").then((x) => console.log(JSON.stringify(x)))

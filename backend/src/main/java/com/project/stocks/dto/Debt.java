@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Debt {
 
-    @JsonProperty("Revenue")
+    @JsonProperty("Reserves")
     private YearlyDetail revenueDetails;
 
     @JsonProperty("Borrowings")

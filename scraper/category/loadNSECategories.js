@@ -9,7 +9,10 @@ function getCompanyNames(url) {
             companies = response.data.data;
             companyNames = companies.map( company => company.symbol)
             return companyNames
-        });
+        })
+        .catch(function (error) {
+            console.log("Error fetching companies for: " + url);
+        })
 }
 
 async function fetchCategories(){
