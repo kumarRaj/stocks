@@ -13,7 +13,6 @@ function getStockDetails(stockId) {
     .get(`https://www.screener.in/company/${stockId}/`)
     .then((response) => {
       const html = cheerio.load(response.data);
-
       const rawRatios = [];
       html("li", "#top-ratios").each((i, el) => {
         const stringValues = html(el)
@@ -37,9 +36,9 @@ function getStockDetails(stockId) {
       ratios["OPM"] = getOPM(html);
       ratios["NPM"] = getNPM(html);
       ratios["Debt"]= {
-        "Revenue": getRevenue(html),
-        "Borrowings": getBorrowing(html),
-        "OtherLiabilities": getOtherLiabilities(html)
+        // "Revenue": getRevenue(html),
+        // "Borrowings": getBorrowing(html),
+        // "OtherLiabilities": getOtherLiabilities(html)
       };
         return ratios;
       });
@@ -102,3 +101,6 @@ function getOtherLiabilities(html) {
 }
 
 module.exports = {stockDetailsHandler};
+
+
+getStockDetails("AXISBANK").then((x) => console.log(JSON.stringify(x)))
