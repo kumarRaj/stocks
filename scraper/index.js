@@ -5,6 +5,7 @@ const saveLocal = require("./saveLocal")
 
 const stockDetailsHandler = (exports.handler = async function (event, context) {
     const ratios = await getStockDetails(event);
+    console.log(ratios);
     await saveLocal.save(ratios, "data", ratios.StockId);
 });
 
@@ -36,9 +37,9 @@ function getStockDetails(stockId) {
       ratios["OPM"] = getOPM(html);
       ratios["NPM"] = getNPM(html);
       ratios["Debt"]= {
-        // "Revenue": getRevenue(html),
-        // "Borrowings": getBorrowing(html),
-        // "OtherLiabilities": getOtherLiabilities(html)
+        "Reserves": getReserves(html),
+        "Borrowings": getBorrowing(html),
+        "OtherLiabilities": getOtherLiabilities(html)
       };
         return ratios;
       });
@@ -66,13 +67,13 @@ function getNPM(html) {
   return NPMDetails
 }
 
-function getRevenue(html) {
+function getReserves(html) {
   let revenue = parser.getDetails(
     html,
     "thead tr th",
     "tbody tr:nth-child(2) td",
     "#balance-sheet",
-    "Revenue"
+    "Reserves"
   );
   revenue = {...revenue, unit : "Cr"}
   return revenue
