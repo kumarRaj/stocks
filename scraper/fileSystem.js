@@ -42,4 +42,17 @@ function readFileMetaData(additionalDirectory = '', fileName) {
     }
 }
 
-module.exports = {save, readFileMetaData};
+async function readFile(filePath) {
+    try {
+        const fileContents = fs.readFileSync(filePath, 'utf-8');
+        const fileStats = fs.statSync(filePath);
+        const lastUpdated = fileStats.mtime;
+        console.log(`File last updated: ${lastUpdated}`);
+        return fileContents;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
+module.exports = {save, readFileMetaData, readFile};

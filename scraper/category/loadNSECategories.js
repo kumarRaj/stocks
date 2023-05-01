@@ -53,6 +53,25 @@ async function seedCategories(override = false) {
     await saveCategoryNames()
 }
 
+async function generateCategories(){
+    const baseUrl = "https://www.nseindia.com/api/equity-stockIndices?index=";
+    let text = fileSystem.readFile("constants/categories.json");
+    return text
+        .then((categories) => {
+            let fileCategories = JSON.parse(categories);
+            const indices = ["NIFTY 50"];
+            indices.push(...fileCategories["Sectoral Indices"])
+            return indices.reduce((acc, index) => {
+                // console.log(index)
+                const key = index.replace(/ /g, ''); // remove spaces from the index name
+                 // encode the index name and append to the base URL
+                acc[key] = baseUrl + encodeURIComponent(index);
+                return acc;
+            }, {});
+        })
+
+}
+
 async function saveCategoryNames() {
     let categories = resources.NSECategories;
     let names = []
@@ -62,4 +81,4 @@ async function saveCategoryNames() {
     await fileSystem.save(names, "category", "CategoryNames")
 }
 
-module.exports = {seedCategories};
+module.exports = {seedCategories, generateCategories};
