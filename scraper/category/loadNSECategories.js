@@ -44,7 +44,7 @@ async function seedCategories(override = false) {
             console.log("Processing " + name)
             let fileMetaData = fileSystem.readFileMetaData("category",  name);
             if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
-                console.log("Skipping " + name)
+                console.log("Skipping because the data probably hasn't changed for: " + name)
                 continue;
             }
             let url = categories[name];
@@ -67,9 +67,9 @@ async function generateCategories(){
             indices.push(...fileCategories["Sectoral Indices"])
             return indices.reduce((acc, index) => {
                 // console.log(index)
-                const key = index.replace(/ /g, ''); // remove spaces from the index name
-                 // encode the index name and append to the base URL
-                acc[key] = baseUrl + encodeURIComponent(index);
+                const key = index.replace(/ /g, '') // remove spaces from the index name
+                    .replace(/[\\/:*?"<>|]/g, ''); // remove special characters from the index name
+                acc[key] = baseUrl + encodeURIComponent(index); // encode the index name and append to the base URL
                 return acc;
             }, {});
         })
