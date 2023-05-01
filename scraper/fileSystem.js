@@ -1,23 +1,45 @@
 const fs = require('fs');
 const os = require('os');
 
+
 async function save(data, additionalDirectory = '', fileName) {
-    let pathToSave = os.homedir() + "/stocks/"
-
+    let baseDir = os.homedir() + "/stocks/"
     if (additionalDirectory !== '')
-        pathToSave = pathToSave + additionalDirectory + '/'
-
-    if (!fs.existsSync(pathToSave)) {
-        fs.mkdirSync(pathToSave, {recursive: true})
+        baseDir = baseDir + additionalDirectory + '/'
+    if (!fs.existsSync(baseDir)) {
+        fs.mkdirSync(baseDir, {recursive: true})
     }
 
-    fs.writeFile(pathToSave + fileName, JSON.stringify(data), error => {
+    fs.access(baseDir, fs.constants.F_OK, (err) => {
+        if (err) {
+            // parent does not exist, create it
+            fs.mkdirSync(baseDir, {recursive: true});
+        } else {
+            // file exists, append to it
+        }
+    });
+
+    fs.writeFile(baseDir + fileName, JSON.stringify(data), error => {
         if (error) {
             console.error(error)
-            return
         }
     })
 }
 
+function readFileMetaData(additionalDirectory = '', fileName) {
+    let baseDir = os.homedir() + "/stocks/"
 
-module.exports = {save};
+    const filePath =  baseDir + additionalDirectory + '/' + fileName
+    try {
+        fs.accessSync(filePath, fs.constants.F_OK);
+
+        const fileStats = fs.statSync(filePath);
+        const lastModified = fileStats.mtime;
+        return { filePath, lastModified };
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
+module.exports = {save, readFileMetaData};

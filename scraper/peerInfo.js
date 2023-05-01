@@ -1,10 +1,10 @@
 var axios = require('axios');
 const resources = require('./constants/resources')
-const saveLocal = require("./saveLocal")
+const fileSystem = require("./fileSystem")
 
 async function fetchPeers(stockId) {
     let peers = await loadPeers(stockId)
-    await saveLocal.save(peers, "peers", stockId);
+    await fileSystem.save(peers, "peers", stockId);
 }
 
 async function loadPeers(stockId) {
