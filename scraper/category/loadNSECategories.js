@@ -38,19 +38,23 @@ function isFresh(fileMetaData, ttl) {
 }
 
 async function seedCategories(override = false) {
-    let categories = resources.NSECategories;
-    for (let i = 0; i < categories.length; i++) {
-        let fileMetaData = fileSystem.readFileMetaData("category",  categories[i].name);
-        if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
-            console.log("Skipping " + categories[i].name)
-            continue;
+    let categoriesPromise = generateCategories()
+    categoriesPromise.then((categories) => {
+        for (const name in categories) {
+            console.log("Processing " + name)
+            let fileMetaData = fileSystem.readFileMetaData("category",  name);
+            if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
+                console.log("Skipping " + name)
+                continue;
+            }
+            let url = categories[name];
+            getCompanyNames(url).then((companies) => {
+                let result = {name: name, company: companies}
+                fileSystem.save(result, "category", result.name)
+            })
         }
-        let companies = await getCompanyNames(categories[i].URL);
-        console.log(categories[i].name , companies)
-        let result = {name: categories[i].name, company: companies}
-        await fileSystem.save(result, "category", result.name)
-    }
-    await saveCategoryNames()
+        saveCategoryNames(categories)
+    })
 }
 
 async function generateCategories(){
@@ -72,13 +76,8 @@ async function generateCategories(){
 
 }
 
-async function saveCategoryNames() {
-    let categories = resources.NSECategories;
-    let names = []
-    for (let i = 0; i < categories.length; i++) {
-        names[i] = categories[i].name
-    }
-    await fileSystem.save(names, "category", "CategoryNames")
+async function saveCategoryNames(categories) {
+    await fileSystem.save(Object.keys(categories), "category", "CategoryNames")
 }
 
 module.exports = {seedCategories, generateCategories};
