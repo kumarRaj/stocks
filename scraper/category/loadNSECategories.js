@@ -8,24 +8,21 @@ const dateFormat = {
 };
 
 
-function getCompanyNames(url) {
-    return axios.get('https://www.nseindia.com/')
-        .then((response) => {
-            const options = {
-                headers: {
-                    'Cookie': (response.headers)['set-cookie']
-                }
-            }
-            return axios.get(url, options)
-                .then(function (response) {
-                    companies = response.data.data;
-                    companyNames = companies.map(company => company.symbol)
-                    return companyNames
-                })
-                .catch(function (error) {
-                    console.log("Error fetching companies for: " + url + " " + error);
-                });
-        });
+async function getCompanyNames(url) {
+    let initialres = await axios.get('https://www.nseindia.com/')
+        .catch((err) => console.log('[initial call] error calling the nseindia site initially:', err));
+
+    const options = {
+        headers: {
+            'Cookie': (initialres.headers)['set-cookie']
+        }
+    }
+    let finalres = await axios.get(url, options)
+        .catch((err) => console.log("[second call] second call to nseindia fails:", err));
+
+    companies = finalres.data?.data;
+    companyNames = companies.map(company => company.symbol);
+    return companyNames;
 }
 
 function isFresh(fileMetaData, ttl) {
@@ -34,7 +31,6 @@ function isFresh(fileMetaData, ttl) {
     const now = new Date();
     const dateInPast = new Date(now.getTime() - (oneWeekInMs * weeksAgo));
     return dateInPast.getTime() < fileMetaData.lastModified.getTime();
-
 }
 
 async function seedCategories(override = false) {
@@ -42,14 +38,14 @@ async function seedCategories(override = false) {
     categoriesPromise.then((categories) => {
         for (const name in categories) {
             console.log("Processing " + name)
-            let fileMetaData = fileSystem.readFileMetaData("category",  name);
+            let fileMetaData = fileSystem.readFileMetaData("category", name);
             if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
                 console.log("Skipping because the data probably hasn't changed for: " + name)
                 continue;
             }
             let url = categories[name];
             getCompanyNames(url).then((companies) => {
-                let result = {name: name, company: companies}
+                let result = { name: name, company: companies }
                 fileSystem.save(result, "category", result.name)
             })
         }
@@ -57,7 +53,7 @@ async function seedCategories(override = false) {
     })
 }
 
-async function generateCategories(){
+async function generateCategories() {
     const baseUrl = "https://www.nseindia.com/api/equity-stockIndices?index=";
     let text = fileSystem.readFile("constants/categories.json");
     return text
@@ -80,4 +76,4 @@ async function saveCategoryNames(categories) {
     await fileSystem.save(Object.keys(categories), "category", "CategoryNames")
 }
 
-module.exports = {seedCategories, generateCategories};
+module.exports = { seedCategories, generateCategories };
