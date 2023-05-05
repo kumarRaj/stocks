@@ -1,7 +1,9 @@
 package com.project.stocks.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock {
     @JsonProperty("StockId")
     private String id;

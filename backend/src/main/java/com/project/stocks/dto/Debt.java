@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Debt {
 
     @JsonProperty("Reserves")
-    private YearlyDetail revenueDetails;
+    private YearlyDetail reserves;
 
     @JsonProperty("Borrowings")
     private YearlyDetail borrowingsDetails;
@@ -13,12 +13,12 @@ public class Debt {
     @JsonProperty("OtherLiabilities")
     private YearlyDetail otherLiabilitiesDetails;
 
-    public YearlyDetail getRevenueDetails() {
-        return revenueDetails;
+    public YearlyDetail getReserves() {
+        return reserves;
     }
 
-    public void setRevenueDetails(YearlyDetail revenueDetails) {
-        this.revenueDetails = revenueDetails;
+    public void setReserves(YearlyDetail reserves) {
+        this.reserves = reserves;
     }
 
     public YearlyDetail getBorrowingsDetails() {
@@ -40,7 +40,7 @@ public class Debt {
     @Override
     public String toString() {
         return "Debt{" +
-                "revenueDetails=" + revenueDetails +
+                "revenueDetails=" + reserves +
                 ", borrowingsDetails=" + borrowingsDetails +
                 ", otherLiabilitiesDetails=" + otherLiabilitiesDetails +
                 '}';

@@ -20,8 +20,8 @@ async function getCompanyNames(url) {
     let finalres = await axios.get(url, options)
         .catch((err) => console.log("[second call] second call to nseindia fails:", err));
 
-    companies = finalres.data?.data;
-    companyNames = companies.map(company => company.symbol);
+    let companies = finalres.data?.data;
+    let companyNames = companies.map(company => company.symbol);
     return companyNames;
 }
 
@@ -33,6 +33,13 @@ function isFresh(fileMetaData, ttl) {
     return dateInPast.getTime() < fileMetaData.lastModified.getTime();
 }
 
+async function createCompanyFiles(companies) {
+    console.log("Creating files for " + companies)
+    for (const company of companies) {
+        await fileSystem.save({company}, "data", company)
+    }
+}
+
 async function seedCategories(override = false) {
     let categoriesPromise = generateCategories()
     categoriesPromise.then((categories) => {
@@ -40,13 +47,14 @@ async function seedCategories(override = false) {
             console.log("Processing " + name)
             let fileMetaData = fileSystem.readFileMetaData("category", name);
             if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
-                console.log("Skipping because the data probably hasn't changed for: " + name)
+                    console.log("Skipping because the data probably hasn't changed for: " + name)
                 continue;
             }
             let url = categories[name];
             getCompanyNames(url).then((companies) => {
                 let result = { name: name, company: companies }
                 fileSystem.save(result, "category", result.name)
+                createCompanyFiles(companies)
             })
         }
         saveCategoryNames(categories)

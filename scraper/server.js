@@ -68,7 +68,7 @@ app.post('/stock/pe', async function (req, res) {
 
 
 //Loads company names in specific category, Also stores the category names
-categories.seedCategories();
+categories.seedCategories(false)
 
 const server = app.listen(9000, function () {
     const host = server.address().address;
