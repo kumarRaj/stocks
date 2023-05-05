@@ -52,9 +52,11 @@ public class StockService {
         List<String> stockIds = stockRepository.getAllStockNames();
 
         for (String stockId : stockIds){
-            stockScores.add(new Score(stockId));
-//          TODO: Get this working.
-//            stockScores.add(calculateScore(stockId));
+            try {
+                stockScores.add(calculateScore(stockId));
+            } catch (Exception e){
+                stockScores.add(new Score(stockId));
+            }
         }
 
         Collections.sort(stockScores, (a, b) -> b.getScore() - a.getScore());
