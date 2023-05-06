@@ -1,10 +1,10 @@
 const axios = require('axios');
 const resources = require('./constants/resources')
-const saveLocal = require("./saveLocal")
+const fileSystem = require("./fileSystem")
 
 async function fetchPE(stockId) {
     let peDetails = await loadPE(stockId)
-    await saveLocal.save(peDetails, "pe", peDetails.stockId);
+    await fileSystem.save(peDetails, "pe", peDetails.stockId);
 }
 
 async function loadPE(stockId) {
