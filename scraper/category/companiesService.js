@@ -5,7 +5,11 @@ async function seedCompanies() {
     let files = fileSystem.readFileNamesFromDirectory("data");
     for (const file of files) {
         console.log("Fetching stock details for: " + file)
-        await scraper.stockDetailsHandler(file);
+        try {
+            await scraper.stockDetailsHandler(file);
+        } catch (error) {
+            console.log("Error saving stock details for: " + file)
+        }
     }
 }
 
