@@ -4,6 +4,7 @@ const scraper = require("./index")
 const categories = require("./category/loadNSECategories")
 const peerInfo = require("./peerInfo");
 const peInfo = require("./peInfo");
+const {seedCompanies} = require("./category/companiesService");
 
 app.get('/ping', function (req, res) {
     res.end("ok");
@@ -69,9 +70,10 @@ app.post('/stock/pe', async function (req, res) {
 
 app.post('/stock/seed', async function (req, res) {
     try {
-        //Loads company names in specific category, Also stores the category names
+        console.log("Seeding all categories")
         await categories.seedCategories(false)
-        // Loads all company information
+        console.log("Seeding all companies")
+        await seedCompanies()
 
         res.end()
     } catch (error) {
