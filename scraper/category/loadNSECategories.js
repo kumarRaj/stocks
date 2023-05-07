@@ -36,7 +36,7 @@ function isFresh(fileMetaData, ttl) {
 async function createCompanyFiles(companies) {
     console.log("Creating files for " + companies)
     for (const company of companies) {
-        await fileSystem.save({company}, "data", company)
+        await fileSystem.save({'StockId': company}, "data", company)
     }
 }
 
