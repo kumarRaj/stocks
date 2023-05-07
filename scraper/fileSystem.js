@@ -55,4 +55,14 @@ async function readFile(filePath) {
     }
 }
 
-module.exports = {save, readFileMetaData, readFile};
+async function readFileNamesFromDirectory(directoryPath) {
+    let baseDir = os.homedir() + "/stocks/"
+    try {
+        return fs.readdirSync(baseDir + directoryPath);
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+module.exports = {save, readFileMetaData, readFile, readFileNamesFromDirectory};

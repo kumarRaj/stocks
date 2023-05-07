@@ -67,8 +67,23 @@ app.post('/stock/pe', async function (req, res) {
 })
 
 
-//Loads company names in specific category, Also stores the category names
-categories.seedCategories(false)
+app.post('/stock/seed', async function (req, res) {
+    try {
+        //Loads company names in specific category, Also stores the category names
+        await categories.seedCategories(false)
+        // Loads all company information
+
+        res.end()
+    } catch (error) {
+        res.status(error.status || 500);
+        res.json({
+            error: {
+                message: error.message,
+            },
+        });
+    }
+})
+
 
 const server = app.listen(9000, function () {
     const host = server.address().address;
