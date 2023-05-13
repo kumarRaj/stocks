@@ -12,7 +12,6 @@ async function seedCompanies(override = false) {
             console.log("Skipping because the data probably hasn't changed for: " + file)
             continue;
         }
-
         try {
             await scraper.stockDetailsHandler(file);
         } catch (error) {

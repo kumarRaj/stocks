@@ -77,7 +77,6 @@ app.post('/stock/seed', async function (req, res) {
         await categories.seedCategories(false)
         console.log("Seeding all companies")
         await seedCompanies(false)
-
         res.end()
     } catch (error) {
         res.status(error.status || 500);
