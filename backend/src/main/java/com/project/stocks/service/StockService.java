@@ -55,6 +55,7 @@ public class StockService {
             try {
                 stockScores.add(calculateScore(stockId));
             } catch (Exception e){
+                System.out.println("Error in calculating score for " + stockId + "\n" + e.getMessage());
                 stockScores.add(new Score(stockId));
             }
         }

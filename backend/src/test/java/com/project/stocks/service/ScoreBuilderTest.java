@@ -1,5 +1,6 @@
 package com.project.stocks.service;
 
+import com.project.stocks.dto.Logic;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
 import org.junit.jupiter.api.BeforeEach;
@@ -253,5 +254,23 @@ class ScoreBuilderTest {
         assertEquals(5, score.getScore());
         assertEquals(5, score.getScoreBreakdown().getRevenue());
     }
+
+
+    @Test
+    void calculateYearlyStatisticsShouldIgnoreNulls() {
+        List<YearInfo> yearInfos = new ArrayList<>();
+        yearInfos.add(new YearInfo(2010,1));
+        yearInfos.add(new YearInfo(2011,2));
+        yearInfos.add(new YearInfo(2012,3));
+        yearInfos.add(new YearInfo(2013,4));
+        yearInfos.add(new YearInfo(2014,5));
+        yearInfos.add(new YearInfo(2015,6));
+        yearInfos.add(new YearInfo(null,6));
+
+        int score = scoreBuilder.calculateYearlyStatistics(yearInfos, Logic.Increasing);
+
+        assertEquals(5, score);
+    }
+
 
 }
