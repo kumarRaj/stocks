@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
 
-import { Grid, MenuItem, Select, TextField, Paper } from '@mui/material';
+import {Grid, MenuItem, Select, TextField, Paper, Button} from '@mui/material';
 import './StocksList.css';
 
 export const StocksList: React.FC = () => {
@@ -75,8 +75,10 @@ export const StocksList: React.FC = () => {
                             }
                         </Select>
                     </div>
-
-                    <TextField className='stock-search' label="Search Stock" variant="outlined" disabled />
+                    <div className='menu-container'>
+                        <div className='menu-item'><Button variant="contained">Seed</Button></div>
+                        <div className='menu-item'><TextField label="Search Stock" variant="outlined" disabled /></div>
+                    </div>
                 </div>
             </Grid>
 
