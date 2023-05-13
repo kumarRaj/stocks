@@ -5,13 +5,12 @@ const fileSystem = require("./fileSystem")
 
 const stockDetailsHandler = (exports.handler = async function (event, context) {
     const ratios = await getStockDetails(event);
-    console.log(ratios);
     await fileSystem.save(ratios, "data", ratios.StockId);
 });
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/`)
+    .get(`https://www.screener.in/company/${stockId}/`, {timeout: 2000})
     .then((response) => {
       const html = cheerio.load(response.data);
       const rawRatios = [];
@@ -20,14 +19,14 @@ function getStockDetails(stockId) {
           .text()
           .split("\n")
           .filter((x) => x.trim() !== "");
-        const key = stringValues.slice(0, 1).join("").trim();
+        const key = stringValues.slice(0, 1)?.join("")?.trim();
         const value = stringValues.slice(1, stringValues.length);
         rawRatios.push(value);
       });
 
       let ratios = {StockId: stockId};
       const getMarketCap = () => parser.parse(rawRatios[0][1].trim());
-      const getPe = () => parser.parse(rawRatios[3][0].trim());
+      const getPe = () => parser.parse(rawRatios[3][0]?.trim());
       const getDividend = () => parser.parse(rawRatios[5][0].trim());
       const getFaceValue = () => parser.parse(rawRatios[8][1].trim());
       ratios["MarketCap"] = { unit : "Cr", value : getMarketCap() };
@@ -42,6 +41,9 @@ function getStockDetails(stockId) {
         "OtherLiabilities": getOtherLiabilities(html)
       };
         return ratios;
+      })
+      .catch((err) => {
+          console.log("Error while fetching stock details for " + stockId + " : " + err);
       });
 }
 

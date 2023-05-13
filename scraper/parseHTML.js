@@ -51,6 +51,7 @@ function getDetails(html, yearSelector, dataSelector, sectionSelector) {
   }
 
   function parse(value){
+    value = value || ''
     value = value.replace('%', '')
     value = value.replace(',', '')
     return parseInt(value)
