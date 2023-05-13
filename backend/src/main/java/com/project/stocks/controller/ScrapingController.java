@@ -20,6 +20,6 @@ public class ScrapingController {
     @ApiOperation(value = "Load stock details of given stockID")
     @PostMapping(value = "/stock")
     public void create(@RequestBody StockRequest stockRequest){
-        scrapingService.add(stockRequest.stockId);
+        scrapingService.addNewStock(stockRequest.stockId);
     }
 }

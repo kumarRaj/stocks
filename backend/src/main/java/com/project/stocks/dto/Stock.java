@@ -1,10 +1,11 @@
 package com.project.stocks.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock {
-
-    @JsonProperty("stockId")
+    @JsonProperty("StockId")
     private String id;
 
     @JsonProperty("MarketCap")
@@ -28,26 +29,20 @@ public class Stock {
     @JsonProperty("Debt")
     private Debt debt;
 
-    public Stock(String id, StockMetric marketCap, StockMetric pe, StockMetric faceValue,
-                 StockMetric dividend, YearlyDetail opmDetails, YearlyDetail npmDetails, Debt debt) {
-        this.id = id;
-        this.marketCap = marketCap;
-        this.pe = pe;
-        this.faceValue = faceValue;
-        this.dividend = dividend;
-        this.opmDetails = opmDetails;
-        this.npmDetails = npmDetails;
-        this.debt = debt;
-    }
+    @JsonProperty("SectorPE")
+    private Integer sectorPE;
+
+    @JsonProperty("Sector")
+    private String sector;
 
     public Stock() {
     }
 
-    public String getId() {
+    public String getStockId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setStockId(String id) {
         this.id = id;
     }
 
@@ -111,15 +106,31 @@ public class Stock {
     public String toString() {
         return "Stock{" +
                 "id='" + id + '\'' +
-                ", marketCap='" + marketCap + '\'' +
-                ", pe='" + pe + '\'' +
-                ", faceValue='" + faceValue + '\'' +
-                ", dividend='" + dividend + '\'' +
+                ", marketCap=" + marketCap +
+                ", pe=" + pe +
+                ", faceValue=" + faceValue +
+                ", dividend=" + dividend +
                 ", opmDetails=" + opmDetails +
                 ", npmDetails=" + npmDetails +
                 ", debt=" + debt +
+                ", sectorPE=" + sectorPE +
+                ", sector='" + sector + '\'' +
                 '}';
     }
 
+    public Integer getSectorPE() {
+        return sectorPE;
+    }
 
+    public void setSectorPE(Integer sectorPE) {
+        this.sectorPE = sectorPE;
+    }
+
+    public String getSector() {
+        return sector;
+    }
+
+    public void setSector(String sector) {
+        this.sector = sector;
+    }
 }

@@ -1,6 +1,6 @@
 const axios = require('axios');
 const resources = require('./constants/resources')
-const saveLocal = require("./saveLocal")
+const fileSystem = require("./fileSystem")
 
 
 function getCompanyNames() {
@@ -15,7 +15,7 @@ function getCompanyNames() {
 async function fetchNifty50Companies(){
   let companies = await getCompanyNames();
   result = {name : "NIFTY50", company : companies}
-  await saveLocal.save(result,"category", result.name)
+  await fileSystem.save(result,"category", result.name)
 }
 
 module.exports = {fetchNifty50Companies};

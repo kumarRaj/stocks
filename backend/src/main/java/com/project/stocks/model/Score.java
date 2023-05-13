@@ -14,6 +14,10 @@ public class Score {
         calculate();
     }
 
+    public Score(String stockId) {
+        this.stockId = stockId;
+    }
+
     public int getScore() {
         return score;
     }
