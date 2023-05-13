@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
+import { seed } from '../../services/StockService';
 
-import { Grid, MenuItem, Select, TextField, Paper } from '@mui/material';
+import {Grid, MenuItem, Select, TextField, Paper, Button} from '@mui/material';
 import './StocksList.css';
 
 export const StocksList: React.FC = () => {
@@ -52,6 +53,11 @@ export const StocksList: React.FC = () => {
         setSelectedStock(selectedStockId);
     }
 
+    const handleSeedButton = () => {
+        seed();
+        console.log('seed button clicked')
+    }
+
     return (
         <Grid container>
             <Grid item xs={12} md={12}>
@@ -67,7 +73,7 @@ export const StocksList: React.FC = () => {
                             {
                                 sectors.map(sector => {
                                     return (
-                                        <MenuItem value={sector}>
+                                        <MenuItem key={sector} value={sector}>
                                             {sector}
                                         </MenuItem>
                                     )
@@ -75,8 +81,12 @@ export const StocksList: React.FC = () => {
                             }
                         </Select>
                     </div>
-
-                    <TextField className='stock-search' label="Search Stock" variant="outlined" disabled />
+                    <div className='menu-container'>
+                        <div className='menu-item'>
+                            <Button variant="contained" onClick={handleSeedButton}>Seed</Button>
+                        </div>
+                        <div className='menu-item'><TextField label="Search Stock" variant="outlined" disabled /></div>
+                    </div>
                 </div>
             </Grid>
 
@@ -87,7 +97,7 @@ export const StocksList: React.FC = () => {
                         : currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
-                                <Paper className='stock-item'>
+                                <Paper key={stockId} className='stock-item'>
                                     <div onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>

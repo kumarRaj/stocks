@@ -18,7 +18,9 @@ public class ScoreBuilder {
 
     public ScoreBuilder withPE(Integer pe) {
         int pEScoreValue;
-        if (pe >= 1 && pe <= 20)
+        if (pe == null)
+            pEScoreValue = 0;
+        else if (pe >= 1 && pe <= 20)
             pEScoreValue = 5;
         else if (pe >= 21 && pe <= 40)
             pEScoreValue = 4;
@@ -82,7 +84,7 @@ public class ScoreBuilder {
     2.  If logic is "Decreasing" then the score will increase if present
         year value is less than previous year value.
     */
-    private int calculateYearlyStatistics(List<YearInfo> inputList, Logic logic) {
+    public int calculateYearlyStatistics(List<YearInfo> inputList, Logic logic) {
         List<YearInfo> last6YearsOPMList = getLast6YearsRecordInDescendingOrder(inputList);
         int score = 0;
         for (int i = 1; i < last6YearsOPMList.size(); i++) {
@@ -101,6 +103,8 @@ public class ScoreBuilder {
 
     private List<YearInfo> getLast6YearsRecordInDescendingOrder(List<YearInfo> inputList) {
         List<YearInfo> last6Years = inputList.stream()
+                .filter(yearInfo -> yearInfo.getYear() != null)
+                .filter(yearInfo -> yearInfo.getValue() != null)
                 .sorted((a, b) -> b.getYear() - a.getYear())
                 .limit(6)
                 .collect(Collectors.toList());

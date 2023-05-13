@@ -1,5 +1,6 @@
 package com.project.stocks.service;
 
+import com.project.stocks.dto.Logic;
 import com.project.stocks.dto.YearInfo;
 import com.project.stocks.model.Score;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,13 @@ class ScoreBuilderTest {
 
         assertEquals(1, score.getScore());
         assertEquals(1, score.getScoreBreakdown().getPe());
+    }
+
+    @Test
+    void givenPERatioNullScoreShouldBe0() {
+        Score score = scoreBuilder.withPE(null).build();
+
+        assertEquals(0, score.getScore());
     }
 
     @Test
@@ -254,4 +262,35 @@ class ScoreBuilderTest {
         assertEquals(5, score.getScoreBreakdown().getRevenue());
     }
 
+    @Test
+    public void calculateYearlyStatisticsShouldIgnoreNullsForYear() {
+        List<YearInfo> yearInfos = new ArrayList<>();
+        yearInfos.add(new YearInfo(2010,1));
+        yearInfos.add(new YearInfo(2011,2));
+        yearInfos.add(new YearInfo(2012,3));
+        yearInfos.add(new YearInfo(2013,4));
+        yearInfos.add(new YearInfo(2014,5));
+        yearInfos.add(new YearInfo(2015,6));
+        yearInfos.add(new YearInfo(null,6));
+
+        int score = scoreBuilder.calculateYearlyStatistics(yearInfos, Logic.Increasing);
+
+        assertEquals(5, score);
+    }
+
+    @Test
+    public void calculateYearlyStatisticsShouldIgnoreNullsForValue() {
+        List<YearInfo> yearInfos = new ArrayList<>();
+        yearInfos.add(new YearInfo(2010,1));
+        yearInfos.add(new YearInfo(2011,2));
+        yearInfos.add(new YearInfo(2012,3));
+        yearInfos.add(new YearInfo(2013,4));
+        yearInfos.add(new YearInfo(2014,5));
+        yearInfos.add(new YearInfo(2015,6));
+        yearInfos.add(new YearInfo(2016,null));
+
+        int score = scoreBuilder.calculateYearlyStatistics(yearInfos, Logic.Increasing);
+
+        assertEquals(5, score);
+    }
 }

@@ -1,26 +1,25 @@
 const cheerio = require("cheerio");
 const axios = require("axios");
 const parser = require("./parseHTML.js")
-const saveLocal = require("./saveLocal")
+const fileSystem = require("./fileSystem")
 
 const stockDetailsHandler = (exports.handler = async function (event, context) {
     const ratios = await getStockDetails(event);
-    await saveLocal.save(ratios, "data", ratios.StockId);
+    await fileSystem.save(ratios, "data", ratios.StockId);
 });
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/consolidated/`)
+    .get(`https://www.screener.in/company/${stockId}/consolidated`, {timeout: 2000})
     .then((response) => {
       const html = cheerio.load(response.data);
-
       const rawRatios = [];
       html("li", "#top-ratios").each((i, el) => {
         const stringValues = html(el)
           .text()
           .split("\n")
           .filter((x) => x.trim() !== "");
-        const key = stringValues.slice(0, 1).join("").trim();
+        const key = stringValues.slice(0, 1)?.join("")?.trim();
         const value = stringValues.slice(1, stringValues.length);
         rawRatios.push(value);
       });
@@ -37,11 +36,14 @@ function getStockDetails(stockId) {
       ratios["OPM"] = getOPM(html);
       ratios["NPM"] = getNPM(html);
       ratios["Debt"]= {
-        "Revenue": getRevenue(html),
+        "Reserves": getReserves(html),
         "Borrowings": getBorrowing(html),
         "OtherLiabilities": getOtherLiabilities(html)
       };
         return ratios;
+      })
+      .catch((err) => {
+          console.log("Error while fetching stock details for " + stockId + " : " + err);
       });
 }
 
@@ -67,13 +69,13 @@ function getNPM(html) {
   return NPMDetails
 }
 
-function getRevenue(html) {
+function getReserves(html) {
   let revenue = parser.getDetails(
     html,
     "thead tr th",
     "tbody tr:nth-child(2) td",
     "#balance-sheet",
-    "Revenue"
+    "Reserves"
   );
   revenue = {...revenue, unit : "Cr"}
   return revenue

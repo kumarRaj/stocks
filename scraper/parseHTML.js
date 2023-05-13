@@ -29,8 +29,8 @@ function getDetails(html, yearSelector, dataSelector, sectionSelector) {
     let TTMValue=''
     let result = {}
     for (let i = 1; i < totalLength; i++) {
-      let value = parse(dataValue[i][0]); 
-      if(yearData[i][0].trim() === 'TTM'){
+      let value = dataValue[i][0] && parse(dataValue[i][0]);
+      if(yearData[i][0] === 'TTM'){
         isTTMPresent=true
         TTMValue=value
         continue
@@ -51,6 +51,7 @@ function getDetails(html, yearSelector, dataSelector, sectionSelector) {
   }
 
   function parse(value){
+    value = value || ''
     value = value.replace('%', '')
     value = value.replace(',', '')
     return parseInt(value)
