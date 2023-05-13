@@ -255,9 +255,8 @@ class ScoreBuilderTest {
         assertEquals(5, score.getScoreBreakdown().getRevenue());
     }
 
-
     @Test
-    void calculateYearlyStatisticsShouldIgnoreNulls() {
+    public void calculateYearlyStatisticsShouldIgnoreNullsForYear() {
         List<YearInfo> yearInfos = new ArrayList<>();
         yearInfos.add(new YearInfo(2010,1));
         yearInfos.add(new YearInfo(2011,2));
@@ -272,5 +271,19 @@ class ScoreBuilderTest {
         assertEquals(5, score);
     }
 
+    @Test
+    public void calculateYearlyStatisticsShouldIgnoreNullsForValue() {
+        List<YearInfo> yearInfos = new ArrayList<>();
+        yearInfos.add(new YearInfo(2010,1));
+        yearInfos.add(new YearInfo(2011,2));
+        yearInfos.add(new YearInfo(2012,3));
+        yearInfos.add(new YearInfo(2013,4));
+        yearInfos.add(new YearInfo(2014,5));
+        yearInfos.add(new YearInfo(2015,6));
+        yearInfos.add(new YearInfo(2016,null));
 
+        int score = scoreBuilder.calculateYearlyStatistics(yearInfos, Logic.Increasing);
+
+        assertEquals(5, score);
+    }
 }

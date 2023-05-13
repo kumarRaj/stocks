@@ -102,6 +102,7 @@ public class ScoreBuilder {
     private List<YearInfo> getLast6YearsRecordInDescendingOrder(List<YearInfo> inputList) {
         List<YearInfo> last6Years = inputList.stream()
                 .filter(yearInfo -> yearInfo.getYear() != null)
+                .filter(yearInfo -> yearInfo.getValue() != null)
                 .sorted((a, b) -> b.getYear() - a.getYear())
                 .limit(6)
                 .collect(Collectors.toList());
