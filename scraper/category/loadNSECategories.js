@@ -1,6 +1,7 @@
 const axios = require('axios');
 const resources = require('../constants/resources')
 const fileSystem = require("../fileSystem")
+const {isFresh} = require("../utils");
 const dateFormat = {
     day: 'numeric',
     month: 'short',
@@ -23,14 +24,6 @@ async function getCompanyNames(url) {
     let companies = finalres.data?.data;
     let companyNames = companies.map(company => company.symbol);
     return companyNames;
-}
-
-function isFresh(fileMetaData, ttl) {
-    const weeksAgo = parseInt(ttl.split("w")[0]);
-    const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
-    const now = new Date();
-    const dateInPast = new Date(now.getTime() - (oneWeekInMs * weeksAgo));
-    return dateInPast.getTime() < fileMetaData.lastModified.getTime();
 }
 
 async function createCompanyFiles(companies) {
