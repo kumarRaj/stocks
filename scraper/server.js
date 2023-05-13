@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const scraper = require("./index")
 const categories = require("./category/loadNSECategories")
@@ -6,6 +7,8 @@ const peerInfo = require("./peerInfo");
 const peInfo = require("./peInfo");
 const {seedCompanies} = require("./category/companiesService");
 
+
+app.use(cors());
 app.get('/ping', function (req, res) {
     res.end("ok");
 })
