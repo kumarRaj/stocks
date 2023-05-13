@@ -73,7 +73,7 @@ export const StocksList: React.FC = () => {
                             {
                                 sectors.map(sector => {
                                     return (
-                                        <MenuItem value={sector}> key={sector}
+                                        <MenuItem key={sector} value={sector}>
                                             {sector}
                                         </MenuItem>
                                     )
@@ -97,7 +97,7 @@ export const StocksList: React.FC = () => {
                         : currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
                             return (
-                                <Paper className='stock-item'>
+                                <Paper key={stockId} className='stock-item'>
                                     <div onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>
