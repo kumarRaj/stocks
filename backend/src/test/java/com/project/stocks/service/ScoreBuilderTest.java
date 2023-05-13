@@ -61,6 +61,13 @@ class ScoreBuilderTest {
     }
 
     @Test
+    void givenPERatioNullScoreShouldBe0() {
+        Score score = scoreBuilder.withPE(null).build();
+
+        assertEquals(0, score.getScore());
+    }
+
+    @Test
     void givenOPMListScoreShouldBe5ForLast6Years() {
         List<YearInfo> opmList = new ArrayList<>();
         opmList.add(new YearInfo(2010,2));

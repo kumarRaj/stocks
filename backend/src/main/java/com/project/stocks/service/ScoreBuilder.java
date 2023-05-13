@@ -18,7 +18,9 @@ public class ScoreBuilder {
 
     public ScoreBuilder withPE(Integer pe) {
         int pEScoreValue;
-        if (pe >= 1 && pe <= 20)
+        if (pe == null)
+            pEScoreValue = 0;
+        else if (pe >= 1 && pe <= 20)
             pEScoreValue = 5;
         else if (pe >= 21 && pe <= 40)
             pEScoreValue = 4;
