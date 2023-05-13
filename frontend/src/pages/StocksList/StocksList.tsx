@@ -73,7 +73,7 @@ export const StocksList: React.FC = () => {
                             {
                                 sectors.map(sector => {
                                     return (
-                                        <MenuItem value={sector}>
+                                        <MenuItem value={sector}> key={sector}
                                             {sector}
                                         </MenuItem>
                                     )
