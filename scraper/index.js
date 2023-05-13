@@ -10,7 +10,7 @@ const stockDetailsHandler = (exports.handler = async function (event, context) {
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/`, {timeout: 2000})
+    .get(`https://www.screener.in/company/${stockId}/consolidated`, {timeout: 2000})
     .then((response) => {
       const html = cheerio.load(response.data);
       const rawRatios = [];
@@ -26,7 +26,7 @@ function getStockDetails(stockId) {
 
       let ratios = {StockId: stockId};
       const getMarketCap = () => parser.parse(rawRatios[0][1].trim());
-      const getPe = () => parser.parse(rawRatios[3][0]?.trim());
+      const getPe = () => parser.parse(rawRatios[3][0] ? rawRatios[3][0].trim() : "-999999"  );
       const getDividend = () => parser.parse(rawRatios[5][0].trim());
       const getFaceValue = () => parser.parse(rawRatios[8][1].trim());
       ratios["MarketCap"] = { unit : "Cr", value : getMarketCap() };
