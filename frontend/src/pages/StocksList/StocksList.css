@@ -13,6 +13,18 @@
     align-items: center;
 }
 
+.menu-container {
+    display: flex;
+    align-items: center;
+}
+
+.menu-item {
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .sector-selector {
     margin-left: 10px;
     background-color: white;

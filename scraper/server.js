@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const scraper = require("./index")
 const categories = require("./category/loadNSECategories")
@@ -6,6 +7,8 @@ const peerInfo = require("./peerInfo");
 const peInfo = require("./peInfo");
 const {seedCompanies} = require("./category/companiesService");
 
+
+app.use(cors());
 app.get('/ping', function (req, res) {
     res.end("ok");
 })
@@ -73,8 +76,7 @@ app.post('/stock/seed', async function (req, res) {
         console.log("Seeding all categories")
         await categories.seedCategories(false)
         console.log("Seeding all companies")
-        await seedCompanies()
-
+        await seedCompanies(false)
         res.end()
     } catch (error) {
         res.status(error.status || 500);
