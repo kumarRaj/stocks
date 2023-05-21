@@ -6,6 +6,7 @@ const fileSystem = require("./fileSystem")
 const stockDetailsHandler = (exports.handler = async function (event, context) {
     const ratios = await getStockDetails(event);
     await fileSystem.save(ratios, "data", ratios.StockId);
+    return ratios;
 });
 
 function getStockDetails(stockId) {

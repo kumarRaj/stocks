@@ -5,6 +5,7 @@ import { seed } from '../../services/StockService';
 
 import {Grid, MenuItem, Select, TextField, Paper, Button} from '@mui/material';
 import './StocksList.css';
+import {StocksDetail} from "./StocksDetail";
 
 export const StocksList: React.FC = () => {
     let [sectors, setSectors] = useState([]);
@@ -107,26 +108,13 @@ export const StocksList: React.FC = () => {
                         })
                     }
                 </div>
+                <StocksDetail
+                    stockId={selectedStock}
+                    isBreakdownVisible={isBreakdownVisible}
+                    toggleBreakdownVisible={toggleBreakdownVisible}
+                    currentBreakdown={currentBreakdown}
 
-                {isBreakdownVisible && <Paper className='stock-breakdown'>
-                    <div>
-                        <p>Breakdown for : <a href={`https://www.screener.in/company/${selectedStock}/consolidated/`} target="_blank">{selectedStock}</a></p>
-                    </div>
-                    {!currentBreakdown && <div>
-                            <p>Data not available</p>
-                        </div>
-                    }
-                    {currentBreakdown && <div>
-                        <p>PE Ratio: {currentBreakdown.pe}</p>
-                        <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
-                        <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
-                        <p>Borrowings: {currentBreakdown.borrowings}</p>
-                        <p>Liabilities: {currentBreakdown.liabilities}</p>
-                        <p>Revenue: {currentBreakdown.revenue}</p>
-
-                        <button onClick={() => toggleBreakdownVisible(false)}>Close</button>
-                    </div>}
-                </Paper>}
+                />
             </Grid>
         </Grid >
 
