@@ -17,7 +17,7 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
         <div>
             {isBreakdownVisible && <Paper className='stock-breakdown'>
                 <div>
-                    <p>Breakdown for : <a href={`https://www.screener.in/company/${stockId}/consolidated/`}
+                    <p>Score breakdown for : <a href={`https://www.screener.in/company/${stockId}/consolidated/`}
                                           target="_blank">{stockId}</a></p>
                 </div>
                 {!currentBreakdown && <div>

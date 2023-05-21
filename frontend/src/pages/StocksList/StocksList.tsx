@@ -26,7 +26,9 @@ export const StocksList: React.FC = () => {
             ]
         ).then(response => {
             let [sectors, stockScores, stocksBySector] = response;
-            setSectors(sectors.data);
+            const sectorsData = sectors.data;
+            sectorsData.push('ALL')
+            setSectors(sectorsData);
             setStockScores(stockScores.data);
             setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores.data, stocksBySector.data.company));
         });
@@ -36,6 +38,8 @@ export const StocksList: React.FC = () => {
         getStocksBySector(currentSector)
             .then(response => {
                 let companies = response.data.company;
+                if (!response.data)
+                    companies = stockScores.map((stock: any) => stock.stockId);
                 setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores, companies));
             })
     }, [currentSector]);
@@ -113,7 +117,6 @@ export const StocksList: React.FC = () => {
                     isBreakdownVisible={isBreakdownVisible}
                     toggleBreakdownVisible={toggleBreakdownVisible}
                     currentBreakdown={currentBreakdown}
-
                 />
             </Grid>
         </Grid >
