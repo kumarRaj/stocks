@@ -110,8 +110,13 @@ export const StocksList: React.FC = () => {
 
                 {isBreakdownVisible && <Paper className='stock-breakdown'>
                     <div>
-                        <p>Screener Link : <a href={`https://www.screener.in/company/${selectedStock}/consolidated/`} target="_blank">{selectedStock}</a></p>
-                        <p>Breakdown for : {selectedStock}</p>
+                        <p>Breakdown for : <a href={`https://www.screener.in/company/${selectedStock}/consolidated/`} target="_blank">{selectedStock}</a></p>
+                    </div>
+                    {!currentBreakdown && <div>
+                            <p>Data not available</p>
+                        </div>
+                    }
+                    {currentBreakdown && <div>
                         <p>PE Ratio: {currentBreakdown.pe}</p>
                         <p>Operating Profit Margin: {currentBreakdown.operatingProfitMargin}</p>
                         <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
@@ -120,7 +125,7 @@ export const StocksList: React.FC = () => {
                         <p>Revenue: {currentBreakdown.revenue}</p>
 
                         <button onClick={() => toggleBreakdownVisible(false)}>Close</button>
-                    </div>
+                    </div>}
                 </Paper>}
             </Grid>
         </Grid >
