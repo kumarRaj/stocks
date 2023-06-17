@@ -50,6 +50,7 @@ export const StocksList: React.FC = () => {
     }
 
     const handleSectorChange = (event: any) => {
+        setSearchStockId([]);
         setCurrentSector(event.target.value);
     }
 
@@ -72,7 +73,7 @@ export const StocksList: React.FC = () => {
             result.push(...stockScores.filter((stock: any) => (stock.stockId.includes(stockToSearch.trim().toUpperCase()))));
         });
         console.log(result);
-        setCurrentStocks(result.sort((a: any, b: any) => a.score - b.score));
+        setCurrentStocks(result.sort((a: any, b: any) => b.score - a.score));
     }
 
     return (
@@ -117,14 +118,11 @@ export const StocksList: React.FC = () => {
                         ? <p>No stocks in this category</p>
                         : currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
-                            console.log("currentStock")
-                            console.log(currentStock)
                             return (
-                                <Paper key={stockId} className='stock-item'>
-                                    <div onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}>
+                                <Paper onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)} key={stockId} className='stock-item'>
+                                    <div>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>
-                                        {/*hello*/}
                                     </div>
                                 </Paper>
                             );
