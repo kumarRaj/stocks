@@ -13,6 +13,12 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
         console.log(`seed button clicked for ${stockId}`)
     }
 
+    function formattedDate(date: string): string {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        // @ts-ignore
+        return date && new Date(Date.parse(date)).toLocaleDateString('en-US', options);
+    }
+
     return (
         <div>
             {isBreakdownVisible && <Paper className='stock-breakdown'>
@@ -31,6 +37,7 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
                     <p>Borrowings: {currentBreakdown.borrowings}</p>
                     <p>Liabilities: {currentBreakdown.liabilities}</p>
                     <p>Revenue: {currentBreakdown.revenue}</p>
+                    <p>LastUpdatedAt: {formattedDate(currentBreakdown.lastUpdatedAt)}</p>
                 </div>}
                 <p><Button onClick={() => handleSeedButton()}>Refresh</Button></p>
                 <p><button onClick={() => toggleBreakdownVisible(false)}>Close</button></p>

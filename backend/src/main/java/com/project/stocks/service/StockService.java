@@ -2,7 +2,6 @@ package com.project.stocks.service;
 
 import com.project.stocks.dto.Stock;
 import com.project.stocks.model.Score;
-import com.project.stocks.model.ScoreBreakdown;
 import com.project.stocks.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,7 @@ public class StockService {
     private Score calculateStockMetrics(Stock stock) {
         ScoreBuilder scoreBuilder = ScoreBuilder.getInstance();
         scoreBuilder.withPE(stock.getPe().getValue())
+                .withDate(stock.getLastUpdatedAt())
                 .withOPM(stock.getOpmDetails().getYearInfo())
                 .withNPM(stock.getNpmDetails().getYearInfo())
                 .withRevenue(stock.getDebt().getReserves().getYearInfo())

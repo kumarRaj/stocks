@@ -10,7 +10,7 @@ export const seed = () => {
 export const seedThis = (stockId: String) => {
     let endpoint = `${process.env.REACT_APP_SCRAPER_URL}/stockDetails?stockId=${stockId}`;
     console.log(stockId)
-    axios.post(endpoint, {})
+    axios.post(endpoint, [])
         .then((response) => {   console.log(response)} )
         .catch((error) => { console.log(error) });
 }

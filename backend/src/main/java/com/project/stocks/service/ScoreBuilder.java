@@ -54,6 +54,11 @@ public class ScoreBuilder {
         return this;
     }
 
+    public ScoreBuilder withDate(String lastUpdatedAt) {
+        scoreBreakdown.setLastUpdatedAt(lastUpdatedAt);
+        return this;
+    }
+
     public ScoreBuilder withNPM(List<YearInfo> npmList) {
         int npmScoreValue = calculateYearlyStatistics(npmList, Logic.Increasing);
         scoreBreakdown.setNetProfitMargin(npmScoreValue);

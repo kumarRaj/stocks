@@ -13,6 +13,7 @@ public class ScoreBreakdown {
     private int liabilities;
 
     private int borrowings;
+    private String lastUpdatedAt;
 
     public int fetchBreakdownSummation() {
         int sum = pe + operatingProfitMargin + netProfitMargin +
@@ -66,5 +67,13 @@ public class ScoreBreakdown {
 
     public void setBorrowings(int borrowings) {
         this.borrowings = borrowings;
+    }
+
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }

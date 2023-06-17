@@ -35,6 +35,9 @@ public class Stock {
     @JsonProperty("Sector")
     private String sector;
 
+    @JsonProperty("lastUpdatedAt")
+    private String lastUpdatedAt;
+
     public Stock() {
     }
 
@@ -132,5 +135,13 @@ public class Stock {
 
     public void setSector(String sector) {
         this.sector = sector;
+    }
+
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 }

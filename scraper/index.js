@@ -2,11 +2,12 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const parser = require("./parseHTML.js")
 const fileSystem = require("./fileSystem")
+const lastUpdatedAt = new Date()
 
 const stockDetailsHandler = (exports.handler = async function (event) {
     console.log("Fetching stock details for: " + event)
     const ratios = await getStockDetails(event);
-    await fileSystem.save(ratios, "data", ratios.StockId);
+    await fileSystem.save({lastUpdatedAt, ...ratios}, "data", ratios.StockId);
     return ratios;
 });
 
