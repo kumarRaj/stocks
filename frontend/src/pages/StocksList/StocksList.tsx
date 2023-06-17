@@ -9,8 +9,9 @@ import {StocksDetail} from "./StocksDetail";
 
 export const StocksList: React.FC = () => {
     let [sectors, setSectors] = useState([]);
-    let [stockScores, setStockScores] = useState([]);
-    let [currentStocks, setCurrentStocks] = useState([]);
+    let [searchStockId, setSearchStockId] = useState([]);
+    let [stockScores, setStockScores] =  useState<any[]>([]);
+    let [currentStocks, setCurrentStocks] = useState<any[]>([]);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
@@ -60,7 +61,18 @@ export const StocksList: React.FC = () => {
 
     const handleSeedButton = () => {
         seed();
-        console.log('seed button clicked')
+    }
+
+    function handleSearch(event:any) {
+        let textToSearch = event.target.value;
+        setSearchStockId(textToSearch);
+        let stocksToSearch = textToSearch.split(',');
+        const result: any[] = []
+        stocksToSearch.forEach((stockToSearch: any) => {
+            result.push(...stockScores.filter((stock: any) => (stock.stockId.includes(stockToSearch.trim().toUpperCase()))));
+        });
+        console.log(result);
+        setCurrentStocks(result.sort((a: any, b: any) => a.score - b.score));
     }
 
     return (
@@ -90,7 +102,11 @@ export const StocksList: React.FC = () => {
                         <div className='menu-item'>
                             <Button variant="contained" onClick={handleSeedButton}>Seed</Button>
                         </div>
-                        <div className='menu-item'><TextField label="Search Stock" variant="outlined" disabled /></div>
+                        <div className='menu-item'>
+                            <TextField style={{ backgroundColor: 'whiteSmoke' }} label="Search Stock" variant="outlined"
+                                                              onChange={handleSearch}
+                                                              value={searchStockId}
+                        /></div>
                     </div>
                 </div>
             </Grid>
@@ -101,11 +117,14 @@ export const StocksList: React.FC = () => {
                         ? <p>No stocks in this category</p>
                         : currentStocks.map((currentStock: any) => {
                             let { stockId, scoreBreakdown, score } = currentStock;
+                            console.log("currentStock")
+                            console.log(currentStock)
                             return (
                                 <Paper key={stockId} className='stock-item'>
                                     <div onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}>
                                         <p className='stock-caption'>{stockId}</p>
                                         <p>{score}</p>
+                                        {/*hello*/}
                                     </div>
                                 </Paper>
                             );
