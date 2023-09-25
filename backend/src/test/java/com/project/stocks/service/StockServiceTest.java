@@ -35,6 +35,7 @@ class StockServiceTest {
         try (MockedStatic<ScoreBuilder> scoreBuilderMock = Mockito.mockStatic(ScoreBuilder.class)){
             scoreBuilderMock.when(ScoreBuilder::getInstance).thenReturn(scoreBuilder);
             when(stockRepository.getStockDetails(stock.getStockId())).thenReturn(stock);
+            when(scoreBuilder.withDate(stock.getLastUpdatedAt())).thenReturn(scoreBuilder);
             when(scoreBuilder.withPE(stock.getPe().getValue())).thenReturn(scoreBuilder);
             when(scoreBuilder.withOPM(stock.getOpmDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withNPM(stock.getNpmDetails().getYearInfo())).thenReturn(scoreBuilder);
