@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## To-Do List
+
+### General Tasks:
+- [ ] Fix multi search, appends the results to the list, instead of simple filter
+- [ ] Put add new stocks in the home page
+- [ ] Add stockdetails to the route so that it's easily accessible
+
 
 ## Available Scripts
 
