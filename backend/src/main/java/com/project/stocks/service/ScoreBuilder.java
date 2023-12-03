@@ -20,13 +20,13 @@ public class ScoreBuilder {
         int pEScoreValue;
         if (pe == null)
             pEScoreValue = 0;
-        else if (pe >= 1 && pe <= 20)
+        else if (pe >= 1 && pe < 20)
             pEScoreValue = 5;
-        else if (pe >= 21 && pe <= 40)
+        else if (pe >= 20 && pe < 40)
             pEScoreValue = 4;
-        else if (pe >= 41 && pe <= 60)
+        else if (pe >= 40 && pe < 60)
             pEScoreValue = 3;
-        else if (pe >= 61 && pe <= 80)
+        else if (pe >= 60 && pe < 80)
             pEScoreValue = 2;
         else
             pEScoreValue = 1;
