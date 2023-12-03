@@ -73,15 +73,15 @@ function getNPM(html) {
 }
 
 function getReserves(html) {
-  let revenue = parser.getDetails(
+  let reserves = parser.getDetails(
     html,
     "thead tr th",
     "tbody tr:nth-child(2) td",
     "#balance-sheet",
     "Reserves"
   );
-  revenue = {...revenue, unit : "Cr"}
-  return revenue
+  reserves = {...reserves, unit : "Cr"}
+  return reserves
 }
 
 function getBorrowing(html) {

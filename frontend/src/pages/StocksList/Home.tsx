@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {Button, Grid, Paper, TextField} from '@mui/material';
+import {Button, Grid, TextField} from '@mui/material';
 import './StocksList.css';
 import {seedThis} from '../../services/StockService';
 import {StocksDetail} from "./StocksDetail";

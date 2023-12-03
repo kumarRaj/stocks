@@ -36,7 +36,7 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
                     <p>Net Profit Margin: {currentBreakdown.netProfitMargin}</p>
                     <p>Borrowings: {currentBreakdown.borrowings}</p>
                     <p>Liabilities: {currentBreakdown.liabilities}</p>
-                    <p>Revenue: {currentBreakdown.revenue}</p>
+                    <p>Reserves: {currentBreakdown.reserves}</p>
                     <p>LastUpdatedAt: {formattedDate(currentBreakdown.lastUpdatedAt)}</p>
                 </div>}
                 <p><Button onClick={() => handleSeedButton()}>Refresh</Button></p>

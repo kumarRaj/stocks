@@ -8,7 +8,7 @@ public class ScoreBreakdown {
 
     private int netProfitMargin;
 
-    private int revenue;
+    private int reserves;
 
     private int liabilities;
 
@@ -17,7 +17,7 @@ public class ScoreBreakdown {
 
     public int fetchBreakdownSummation() {
         int sum = pe + operatingProfitMargin + netProfitMargin +
-                revenue + liabilities +borrowings;
+            reserves + liabilities +borrowings;
         return sum;
     }
 
@@ -45,12 +45,12 @@ public class ScoreBreakdown {
         this.netProfitMargin = netProfitMargin;
     }
 
-    public int getRevenue() {
-        return revenue;
+    public int getReserves() {
+        return reserves;
     }
 
     public void setRevenue(int revenue) {
-        this.revenue = revenue;
+        this.reserves = revenue;
     }
 
     public int getLiabilities() {
