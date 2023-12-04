@@ -32,6 +32,7 @@ http://localhost:3000
 yarn
 yarn start
 ```
+Click on Seed to fetch data
 
 ### scraper
 ```
