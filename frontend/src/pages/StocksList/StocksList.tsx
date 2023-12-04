@@ -72,10 +72,8 @@ export const StocksList: React.FC = () => {
         stocksToSearch.forEach((stockToSearch: any) => {
             result.push(...stockScores.filter((stock: any) => (stock.stockId.includes(stockToSearch.trim().toUpperCase()))));
         });
-        console.log(result);
-        setCurrentStocks(result.sort((a: any, b: any) => b.score - a.score));
+        setCurrentStocks([...result.sort((a: any, b: any) => b.score - a.score)]);
     }
-
     return (
         <Grid container>
             <Grid item xs={12} md={12}>
@@ -111,22 +109,20 @@ export const StocksList: React.FC = () => {
                     </div>
                 </div>
             </Grid>
-
             <Grid item xs={12} md={12}>
-                <div className='stocks-container'>
-                    {currentStocks.length === 0 
-                        ? <p>No stocks in this category</p>
-                        : currentStocks.map((currentStock: any) => {
-                            let { stockId, scoreBreakdown, score } = currentStock;
-                            return (
-                                <Paper onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)} key={stockId} className='stock-item'>
-                                    <div>
-                                        <p className='stock-caption'>{stockId}</p>
-                                        <p>{score}</p>
-                                    </div>
-                                </Paper>
-                            );
-                        })
+                <div className='stocks-container' key={currentStocks.length}>
+                    {currentStocks.map((currentStock: any) => {
+                        let {stockId, scoreBreakdown, score} = currentStock;
+                        return (
+                            <Paper onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)} key={stockId}
+                                   className='stock-item'>
+                                <div>
+                                    <p className='stock-caption'>{stockId}</p>
+                                    <p>{score}</p>
+                                </div>
+                            </Paper>
+                        );
+                    })
                     }
                 </div>
                 <StocksDetail
