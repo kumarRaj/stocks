@@ -2,10 +2,6 @@
 
 ## Start Application
 
-```
-docker compose up --build
-```
-
 ## REST API
 ### backend(Port : 8081)
 | REST METHOD   |      API      | Functionality |
@@ -35,6 +31,11 @@ http://localhost:3000
 ```
 yarn
 yarn start
+```
+
+### scraper
+```
+npm start
 ```
 
 ## Docker commands
