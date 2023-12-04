@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllSectors, getStocksBySector } from '../../services/SectorService';
 import { getAllStockScores } from '../../services/ScoreService';
 import { seed } from '../../services/StockService';
@@ -8,6 +9,7 @@ import './StocksList.css';
 import {StocksDetail} from "./StocksDetail";
 
 export const StocksList: React.FC = () => {
+    const navigate = useNavigate();
     let [sectors, setSectors] = useState([]);
     let [searchStockId, setSearchStockId] = useState([]);
     let [stockScores, setStockScores] =  useState<any[]>([]);
@@ -55,6 +57,7 @@ export const StocksList: React.FC = () => {
     }
 
     const handleBreakdownToggle = (breakdown: any, selectedStockId: string) => {
+        navigate(`/${selectedStockId}`)
         toggleBreakdownVisible(true);
         setCurrentBreakdown(breakdown);
         setSelectedStock(selectedStockId);
