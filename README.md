@@ -106,3 +106,8 @@ ROE??
 Price in the last one year 
 
 Is it downward - upward means 
+
+Other liabilities - Can read more about SEC filing or annual report
+
+What is cash flow? 
+Positive and negative meaning
