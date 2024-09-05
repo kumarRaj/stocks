@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileTest {
     private final String TEST_DIRECTORY = "src/test/resources";
-    private final String RANDOM_TEST_DIRECTORY = "src/test/random";
     private final String TEST_FILE = "test.json";
 
     @BeforeEach
@@ -40,6 +39,7 @@ class FileTest {
 
     @Test
     void shouldReturnEmptyListIfDirectoryDoesNotExist() {
+        String RANDOM_TEST_DIRECTORY = "src/test/random";
         List<String> filesInADirectory = File.getFilesInADirectory(RANDOM_TEST_DIRECTORY);
 
         assertEquals(0, filesInADirectory.size());
