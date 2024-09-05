@@ -7,7 +7,7 @@ const dateFormat = {
     month: 'short',
     year: 'numeric'
 };
-
+axios.defaults.timeout = 2000;
 
 async function getCompanyNames(url) {
     // TODO: Add global timeouts to axios
