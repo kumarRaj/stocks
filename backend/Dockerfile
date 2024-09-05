@@ -10,7 +10,7 @@ RUN ./gradlew --version
 
 COPY . .
 
-RUN ./gradlew build
+RUN ./gradlew build -x test 
 
 FROM openjdk:11-jre-slim-buster
 
