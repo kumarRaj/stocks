@@ -40,7 +40,7 @@ public class Debt {
     @Override
     public String toString() {
         return "Debt{" +
-                "revenueDetails=" + reserves +
+                "reserveDetails=" + reserves +
                 ", borrowingsDetails=" + borrowingsDetails +
                 ", otherLiabilitiesDetails=" + otherLiabilitiesDetails +
                 '}';

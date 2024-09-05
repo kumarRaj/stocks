@@ -65,9 +65,9 @@ public class ScoreBuilder {
         return this;
     }
 
-    public ScoreBuilder withRevenue(List<YearInfo> revenueDetails) {
+    public ScoreBuilder withReserve(List<YearInfo> revenueDetails) {
         int revenueScoreValue = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
-        scoreBreakdown.setRevenue(revenueScoreValue);
+        scoreBreakdown.setReserves(revenueScoreValue);
         return this;
     }
 

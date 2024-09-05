@@ -37,7 +37,7 @@ public class StockService {
                 .withDate(stock.getLastUpdatedAt())
                 .withOPM(stock.getOpmDetails().getYearInfo())
                 .withNPM(stock.getNpmDetails().getYearInfo())
-                .withRevenue(stock.getDebt().getReserves().getYearInfo())
+                .withReserve(stock.getDebt().getReserves().getYearInfo())
                 .withOtherLiabilities(stock.getDebt().getOtherLiabilitiesDetails().getYearInfo())
                 .withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
         return scoreBuilder.build();

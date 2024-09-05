@@ -49,8 +49,8 @@ public class ScoreBreakdown {
         return reserves;
     }
 
-    public void setRevenue(int revenue) {
-        this.reserves = revenue;
+    public void setReserves(int reserve) {
+        this.reserves = reserve;
     }
 
     public int getLiabilities() {

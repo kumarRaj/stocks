@@ -41,7 +41,7 @@ class StockServiceTest {
             when(scoreBuilder.withNPM(stock.getNpmDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.withOtherLiabilities(stock.getDebt().getOtherLiabilitiesDetails().getYearInfo())).thenReturn(scoreBuilder);
-            when(scoreBuilder.withRevenue(stock.getDebt().getReserves().getYearInfo())).thenReturn(scoreBuilder);
+            when(scoreBuilder.withReserve(stock.getDebt().getReserves().getYearInfo())).thenReturn(scoreBuilder);
             when(scoreBuilder.build()).thenReturn(score);
 
             stockService.calculateScore(stock.getStockId());
@@ -51,7 +51,7 @@ class StockServiceTest {
             verify(scoreBuilder, times(1)).withNPM(stock.getNpmDetails().getYearInfo());
             verify(scoreBuilder, times(1)).withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
             verify(scoreBuilder, times(1)).withOtherLiabilities(stock.getDebt().getOtherLiabilitiesDetails().getYearInfo());
-            verify(scoreBuilder, times(1)).withRevenue(stock.getDebt().getReserves().getYearInfo());
+            verify(scoreBuilder, times(1)).withReserve(stock.getDebt().getReserves().getYearInfo());
         }
     }
 

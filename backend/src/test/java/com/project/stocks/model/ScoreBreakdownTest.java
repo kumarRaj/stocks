@@ -9,7 +9,7 @@ class ScoreBreakdownTest {
     @Test
     void calculateScoreIfAllValuesArePresent() {
         ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
-        scoreBreakdown.setRevenue(1);
+        scoreBreakdown.setReserves(1);
         scoreBreakdown.setBorrowings(2);
         scoreBreakdown.setPe(3);
         scoreBreakdown.setLiabilities(3);
@@ -24,7 +24,7 @@ class ScoreBreakdownTest {
     @Test
     void calculateScoreIfSomeValuesAreMissing() {
         ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
-        scoreBreakdown.setRevenue(1);
+        scoreBreakdown.setReserves(1);
         scoreBreakdown.setBorrowings(2);
         scoreBreakdown.setNetProfitMargin(1);
         scoreBreakdown.setOperatingProfitMargin(2);

@@ -203,7 +203,7 @@ class ScoreBuilderTest {
     }
 
     @Test
-    void givenRevenueListScoreShouldBe5ForLast6YearsForDecreasingLiabilities() {
+    void givenReserveListScoreShouldBe5ForLast6YearsForDecreasingLiabilities() {
         List<YearInfo> otherLiabilitiesList = new ArrayList<>();
         otherLiabilitiesList.add(new YearInfo(2010,10));
         otherLiabilitiesList.add(new YearInfo(2011,9));
@@ -233,7 +233,7 @@ class ScoreBuilderTest {
     }
 
     @Test
-    void givenRevenueListScoreShouldBe0ForLast6YearsForDecreasingRevenue() {
+    void givenReserveListScoreShouldBe0ForLast6YearsForDecreasingReserve() {
         List<YearInfo> revenueList = new ArrayList<>();
         revenueList.add(new YearInfo(2010,10));
         revenueList.add(new YearInfo(2011,9));
@@ -241,14 +241,14 @@ class ScoreBuilderTest {
         revenueList.add(new YearInfo(2013,7));
         revenueList.add(new YearInfo(2014,6));
         revenueList.add(new YearInfo(2015,5));
-        Score score = scoreBuilder.withRevenue(revenueList).build();
+        Score score = scoreBuilder.withReserve(revenueList).build();
 
         assertEquals(0, score.getScore());
-        assertEquals(0, score.getScoreBreakdown().getRevenue());
+        assertEquals(0, score.getScoreBreakdown().getReserves());
     }
 
     @Test
-    void givenRevenueListScoreShouldBe5ForLast6YearsForIncreasingRevenue() {
+    void givenReserveListScoreShouldBe5ForLast6YearsForIncreasingReserve() {
         List<YearInfo> revenueList = new ArrayList<>();
         revenueList.add(new YearInfo(2010,1));
         revenueList.add(new YearInfo(2011,2));
@@ -256,10 +256,10 @@ class ScoreBuilderTest {
         revenueList.add(new YearInfo(2013,4));
         revenueList.add(new YearInfo(2014,5));
         revenueList.add(new YearInfo(2015,6));
-        Score score = scoreBuilder.withRevenue(revenueList).build();
+        Score score = scoreBuilder.withReserve(revenueList).build();
 
         assertEquals(5, score.getScore());
-        assertEquals(5, score.getScoreBreakdown().getRevenue());
+        assertEquals(5, score.getScoreBreakdown().getReserves());
     }
 
     @Test
