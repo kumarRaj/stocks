@@ -1,45 +1,47 @@
 package com.project.stocks.service;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class File {
 
     public static String readFile(String filePath){
         try {
-            java.io.File myObj = new java.io.File(filePath);
-            Scanner myReader = new Scanner(myObj);
-
-            StringBuilder sb = new StringBuilder();
-            while (myReader.hasNextLine()) {
-                sb.append(myReader.nextLine());
-            }
-
-            String result = sb.toString();
-            return result;
-        } catch (FileNotFoundException e) {
-            System.out.println("Exception in reading file content : "+ e.getMessage());
+            // Read all bytes from the file and convert it to a string using the default charset
+            return Files.readString(Paths.get(filePath), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.out.println("Exception in reading file content: " + e.getMessage());
             e.printStackTrace();
+            return "";
         }
-        return "";
     }
 
     public static boolean exists(String filePath) {
-        java.io.File file = new java.io.File(filePath);
-        return file.exists();
+        return Files.exists(Paths.get(filePath));
     }
 
-    public static List<String> getFilesInADirectory(String filePath) {
-        List<String> fileNames = new ArrayList<>();
-        java.io.File directory = new java.io.File(filePath);
-        java.io.File[] listOfFiles = directory.listFiles();
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                fileNames.add(listOfFiles[i].getName());
-            }
+    public static List<String> getFilesInADirectory(String directoryPath) {
+        if (!exists(directoryPath)){
+            System.out.println("Directory does not exist");
+            return Collections.emptyList();
         }
-        return fileNames;
+        try {
+            Path dirPath = Paths.get(directoryPath);
+            return Files.list(dirPath)
+                    .filter(Files::isRegularFile)  // Only include regular files
+                    .map(Path::getFileName)        // Get just the file name
+                    .map(Path::toString)           // Convert to String
+                    .collect(Collectors.toList()); // Collect into a List
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as per your requirements
+            return Collections.emptyList();
+        }
     }
 }

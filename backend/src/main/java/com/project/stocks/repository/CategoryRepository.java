@@ -13,15 +13,17 @@ public class CategoryRepository {
 
     String homeDirectory = System.getProperty("user.home");
 
+    // Todo: Check for file existence before reading
     public Category getCategoryDetails(String categoryName) {
         Category category;
         String filePath = homeDirectory + "/stocks/category/" + categoryName;
+
         String result = File.readFile(filePath);
         DataMapper<Category> dataMapper = DataMapper.getInstance();
         category = dataMapper.map(result, Category.class);
         return category;
     }
-
+    // Todo: Check for file existence before reading
     public List<String> getCategoryNames() {
         List<String> categoryNames = new ArrayList<>();
         String filePath = homeDirectory + "/stocks/category/CategoryNames";

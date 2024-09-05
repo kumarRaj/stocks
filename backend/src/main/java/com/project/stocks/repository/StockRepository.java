@@ -35,8 +35,7 @@ public class StockRepository {
 
     public List<String> getAllStockNames() {
         String filePath = homeDirectory + "/stocks/data";
-        List<String> fileNames = File.getFilesInADirectory(filePath);
-        return fileNames;
+        return File.getFilesInADirectory(filePath);
     }
 
     private Optional<PeDetail> getPEDetails(String stockId) {
