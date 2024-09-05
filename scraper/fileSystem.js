@@ -26,19 +26,23 @@ async function save(data, additionalDirectory = '', fileName) {
     })
 }
 
+// Should check if file exists, if not should not throw exception. Should return a date two years past
 function readFileMetaData(additionalDirectory = '', fileName) {
-    let baseDir = os.homedir() + "/stocks/"
-
-    const filePath =  baseDir + additionalDirectory + '/' + fileName
+    let baseDir = os.homedir() + "/stocks/";
+    const filePath = baseDir + additionalDirectory + '/' + fileName;
+    
     try {
         fs.accessSync(filePath, fs.constants.F_OK);
-
+        
         const fileStats = fs.statSync(filePath);
         const lastModified = fileStats.mtime;
         return { filePath, lastModified };
     } catch (err) {
-        console.error(err);
-        return null;
+        // If the file does not exist, return a date two years past
+        const twoYearsAgo = new Date();
+        twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+        console.error(`[readFileMetaData] file not found, returning date two years past: ${twoYearsAgo}`);
+        return { filePath, lastModified: twoYearsAgo };
     }
 }
 
