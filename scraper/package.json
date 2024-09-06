@@ -4,7 +4,7 @@
   "description": "Get stock information",
   "main": "server.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "start": "nodemon server.js"
   },
   "author": "sunandan",
