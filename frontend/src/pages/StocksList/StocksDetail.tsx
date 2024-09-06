@@ -27,7 +27,7 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
                                           target="_blank">{stockId}</a></p>
                 </div>
                 {!currentBreakdown && <div>
-                    <p>Data not available</p>
+                    <p className='stock-data-not-available'>Data not available</p>
                 </div>
                 }
                 {currentBreakdown && <div>
