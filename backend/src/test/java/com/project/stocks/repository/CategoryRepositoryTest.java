@@ -22,5 +22,4 @@ class CategoryRepositoryTest {
 
         assertEquals(0, categoryRepository.getCategoryNames().size());
     }
-
 }
