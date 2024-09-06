@@ -1,5 +1,9 @@
 #### Commands
 
+To run app:
+`yarn start`
+
+
 To run tests:
 
 ```
