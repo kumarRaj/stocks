@@ -30,7 +30,6 @@ async function save(data, additionalDirectory = '', fileName) {
 function readFileMetaData(additionalDirectory = '', fileName) {
     let baseDir = os.homedir() + "/stocks/";
     const filePath = baseDir + additionalDirectory + '/' + fileName;
-    
     try {
         fs.accessSync(filePath, fs.constants.F_OK);
         

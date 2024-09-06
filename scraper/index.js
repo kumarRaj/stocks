@@ -5,6 +5,7 @@ const fileSystem = require("./fileSystem")
 const lastUpdatedAt = new Date()
 
 const stockDetailsHandler = (exports.handler = async function (event) {
+    // TODO: Fetch only if it doesn't exist
     console.log("Fetching stock details for: " + event)
     const ratios = await getStockDetails(event);
     await fileSystem.save({lastUpdatedAt, ...ratios}, "data", ratios.StockId);
