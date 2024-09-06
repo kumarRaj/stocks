@@ -12,11 +12,15 @@ import java.util.List;
 @Repository
 public class CategoryRepository {
 
-    String homeDirectory = System.getProperty("user.home");
+    public static final String USER_HOME = "USER_HOME";
+    String homeDirectory = System.getProperty(USER_HOME);
+    private final String CATEGORY_NAMES = "/stocks/category/CategoryNames";
+    private final String CATEGORY_LIST = "/stocks/category/";
 
     // Todo: Check for file existence before reading
     public Category getCategoryDetails(String categoryName) {
-        String filePath = homeDirectory + "/stocks/category/" + categoryName;
+
+        String filePath = homeDirectory + CATEGORY_LIST + categoryName;
         if (!File.exists(filePath)) {
             return new Category(categoryName, Collections.emptyList());
         }
@@ -29,7 +33,10 @@ public class CategoryRepository {
     // Todo: Check for file existence before reading
     public List<String> getCategoryNames() {
         List<String> categoryNames = new ArrayList<>();
-        String filePath = homeDirectory + "/stocks/category/CategoryNames";
+        String filePath = homeDirectory + CATEGORY_NAMES;
+        if (!File.exists(filePath)) {
+            return Collections.emptyList();
+        }
         String result = File.readFile(filePath);
         DataMapper<List> dataMapper = DataMapper.getInstance();
         categoryNames.addAll(dataMapper.map(result, List.class));
