@@ -1,38 +1,48 @@
+const { json } = require('express/lib/response');
 const resources = require('../constants/resources');
 const fileSystem = require("../fileSystem");
-const { isFresh } = require("../utils");
+const { isFresh, fetchWithTimeout } = require("../utils");
+let cookie = ''
+
+const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+    // signal: AbortSignal.timeout(5000)
+};
 
 async function getCompanyNames(url) {    
     let initialres;
-    const requestOptions = {
-        method: "GET",
-        redirect: "follow"
-    };
     try {
-        initialres = await fetch("https://www.nseindia.com/", requestOptions);
-        console.log(initialres.headers);
+        if (cookie == ''){
+            initialres = await fetchWithTimeout("https://www.nseindia.com/", requestOptions);
+            cookie = initialres.headers.get('set-cookie')
+            console.log("Got headers successfully. Using cookie from here");
+        }
+        else {
+            console.log("Using cookie from previous call")
+        }
+        
     } catch (err) {
-        console.error(`[initial call] error: ${err.message || 'An unknown error occurred'}`);
+        const exception = `[initial call] error: ${err.message || 'An unknown error occurred'}`;
+        console.error(exception);
+        throw exception
     }
 
     const options = {
-        method: "GET",
         headers: {
-            'Cookie': initialres.headers.get('set-cookie')
-        }
+            'Cookie': cookie
+        },
+        ...requestOptions
     };
 
-    let finalres;
-    try {
-        finalres = await fetch(url, options);
-    } catch (err) {
-        console.log("[second call] second call to nseindia fails:", err);
-    }
-
-    const data = await finalres.json();
-    let companies = data?.data;
-    let companyNames = companies.map(company => company.symbol);
+    console.log("Calling at: " + url);
+    const finalres = await fetchWithTimeout(url, options);
+    const companies = await finalres.json()?.data;
+    const companyNames = companies.map(company => company.symbol);
+    console.log(`Got company names ${companyNames}`);
     return companyNames;
+    // const message = "[second call] second call to nseindia fails:" + err.message
+    // console.error(message);
 }
 
 async function createCompanyFiles(companies) {
@@ -52,13 +62,15 @@ async function seedCategories(override = false) {
             continue;
         }
         let url = categories[name];
-        console.log("Processing " + name + " at: " + url);
-        let companies = await getCompanyNames(url);
-
-        console.log("Got following companies", companies);
-        let result = { name: name, company: companies };
-        fileSystem.save(result, "category", result.name);
-        createCompanyFiles(companies);
+        try {
+            let companies = await getCompanyNames(url);
+            let result = { name: name, company: companies };
+            fileSystem.save(result, "category", result.name);
+            createCompanyFiles(companies);    
+        } catch (error) {
+            
+            console.log(`Error while getting data for ${name} in ${url}`, error.message)
+        }
     }
     saveCategoryNames(categories);
 }

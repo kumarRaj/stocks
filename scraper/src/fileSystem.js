@@ -35,7 +35,7 @@ function readFileMetaData(additionalDirectory = '', fileName) {
         
         const fileStats = fs.statSync(filePath);
         const lastModified = fileStats.mtime;
-        return { filePath, lastModified };
+        return { filePath, lastModified, size: fileStats.size };
     } catch (err) {
         // If the file does not exist, return a date two years past
         const twoYearsAgo = new Date();
