@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const fileSystem = require('../fileSystem');
+const fileSystem = require('../src/fileSystem');
 
 describe('myapp', function() {
     it('should read all companies from path', function() {

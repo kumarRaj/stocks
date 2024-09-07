@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const categories = require('../category/loadNSECategories');
+const categories = require('../src/category/loadNSECategories');
 
 describe('myapp', function() {
     it('should read categories from constant categories', function() {
@@ -10,7 +10,7 @@ describe('myapp', function() {
             "NIFTYCONSUMERDURABLES": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20CONSUMER%20DURABLES",
             "NIFTYENERGY": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20ENERGY",
             "NIFTYFINANCIALSERVICES": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20FINANCIAL%20SERVICES",
-            "NIFTYFINANCIALSERVICES25/50": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20FINANCIAL%20SERVICES%2025%2F50",
+            "NIFTYFINANCIALSERVICES2550": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20FINANCIAL%20SERVICES%2025%2F50",
             "NIFTYFMCG": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20FMCG",
             "NIFTYHEALTHCAREINDEX": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20HEALTHCARE%20INDEX",
             "NIFTYIT": "https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20IT",
@@ -26,7 +26,7 @@ describe('myapp', function() {
         return categories.generateCategories()
             .then((result) => {
                 console.log("result", result)
-                assert.deepStrictEqual(result, expected, "should fail")
+                assert.deepStrictEqual(expected, result, "should fail")
             })
     });
 });

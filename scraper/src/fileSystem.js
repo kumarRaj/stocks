@@ -59,6 +59,7 @@ async function readFile(filePath) {
 }
 
 function readFileNamesFromDirectory(directoryPath) {
+    console.log(os.homedir())
     let baseDir = os.homedir() + "/stocks/"
     try {
         return fs.readdirSync(baseDir + directoryPath);

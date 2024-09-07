@@ -2,7 +2,7 @@ const resources = require('../constants/resources');
 const fileSystem = require("../fileSystem");
 const { isFresh } = require("../utils");
 
-async function getCompanyNames(url) {
+async function getCompanyNames(url) {    
     let initialres;
     const requestOptions = {
         method: "GET",
@@ -65,13 +65,14 @@ async function seedCategories(override = false) {
 
 async function generateCategories() {
     const baseUrl = "https://www.nseindia.com/api/equity-stockIndices?index=";
-    let text = await fileSystem.readFile("constants/categories.json");
+    let text = await fileSystem.readFile("src/constants/categories.json");
     let fileCategories = JSON.parse(text);
 
     const indices = ["NIFTY 50"];
     indices.push(...fileCategories["Sectoral Indices"]);
     console.log("indices", indices);
     return indices.reduce((acc, index) => {
+        // console.log(index)
         const key = index.replace(/[\\/:*?"<>|]/g, ''); // remove special characters from the index name
         acc[key] = baseUrl + encodeURIComponent(index); // encode the index name and append to the base URL
         return acc;

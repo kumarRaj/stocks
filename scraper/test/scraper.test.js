@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
-const fileSystem = require('../fileSystem');
-const scraper = require("../index");
+const fileSystem = require('../src/fileSystem');
+const scraper = require("../src/index");
 
 describe('myapp', function() {
     it('should write file data to disk', async function () {
