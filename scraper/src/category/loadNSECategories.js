@@ -1,7 +1,7 @@
 const { json } = require('express/lib/response');
 const resources = require('../constants/resources');
 const fileSystem = require("../fileSystem");
-const { isFresh, fetchWithTimeout } = require("../utils");
+const { isFresh, fetchWithTimeout, fetchJsonWithTimeout } = require("../utils");
 let cookie = ''
 
 const requestOptions = {
@@ -16,6 +16,7 @@ async function getCompanyNames(url) {
         if (cookie == ''){
             initialres = await fetchWithTimeout("https://www.nseindia.com/", requestOptions);
             cookie = initialres.headers.get('set-cookie')
+            console.log(cookie)
             console.log("Got headers successfully. Using cookie from here");
         }
         else {
@@ -36,7 +37,7 @@ async function getCompanyNames(url) {
     };
 
     console.log("Calling at: " + url);
-    const finalres = await fetchWithTimeout(url, options);
+    const finalres = await fetchJsonWithTimeout(url, options);
     const companies = await finalres.json()?.data;
     const companyNames = companies.map(company => company.symbol);
     console.log(`Got company names ${companyNames}`);
@@ -68,7 +69,7 @@ async function seedCategories(override = false) {
             fileSystem.save(result, "category", result.name);
             createCompanyFiles(companies);    
         } catch (error) {
-            
+
             console.log(`Error while getting data for ${name} in ${url}`, error.message)
         }
     }

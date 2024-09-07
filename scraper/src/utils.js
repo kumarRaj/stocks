@@ -19,7 +19,7 @@ function hasLatestData(fileMetaData, ttl) {
 }
 
 
-async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+async function fetchJsonWithTimeout(url, options = {}, timeout = 50000) {
     const controller = new AbortController();
     const { signal } = controller;
     options.signal = signal;
@@ -41,7 +41,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
         if (!contentType.includes("application/json")) {
             throw new Error("Expected JSON, but received a non-JSON response");
         }
-        
+
         return response;
     } catch (err) {
         if (err.name === 'AbortError') {
@@ -53,4 +53,27 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
     }
 }
 
-module.exports = {isFresh: hasLatestData, fetchWithTimeout};
+async function fetchWithTimeout(url, options = {}, timeout = 50000) {
+    const controller = new AbortController();
+    const { signal } = controller;
+    options.signal = signal;
+
+    // Create a timeout promise that will abort the fetch if it exceeds the time limit
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, options);
+        clearTimeout(timeoutId); // Clear the timeout if the request succeeds
+        return response;
+    } catch (err) {
+        if (err.name === 'AbortError') {
+            console.error(`Fetch request timed out after ${timeout} ms`);
+        } else {
+            console.error(`Fetch request failed: ${err.message}`);
+        }
+        throw err;
+    }
+}
+
+
+module.exports = {isFresh: hasLatestData, fetchWithTimeout, fetchJsonWithTimeout};
