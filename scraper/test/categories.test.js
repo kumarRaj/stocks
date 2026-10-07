@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
 const categories = require('../src/category/loadNSECategories');
 
 describe('myapp', function() {

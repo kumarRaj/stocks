@@ -1,5 +1,4 @@
-const assert = require('chai').assert;
-const fileSystem = require('../src/fileSystem');
+const { describe, it } = require('node:test');
 const scraper = require("../src/index");
 
 describe('myapp', function() {
