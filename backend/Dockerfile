@@ -1,4 +1,4 @@
-FROM openjdk:11.0.6-jdk-slim-buster AS build_jar
+FROM eclipse-temurin:17-jdk-jammy AS build_jar
 
 WORKDIR /opt/build
 
@@ -12,7 +12,7 @@ COPY . .
 
 RUN ./gradlew build -x test 
 
-FROM openjdk:11-jre-slim-buster
+FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /opt/app
 
