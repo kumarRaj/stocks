@@ -1,11 +1,13 @@
-FROM node:14.18.1-alpine
+FROM node:22-alpine
 
 WORKDIR /opt/app
 
+RUN npm install --global yarn@1.22.22
+
 COPY package.json yarn.lock ./
 
-RUN yarn
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
-ENTRYPOINT yarn start
+ENTRYPOINT ["yarn", "start"]

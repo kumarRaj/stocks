@@ -83,6 +83,7 @@ stocks-vol
 /.nb-gradle/
 frontend/node_modules
 **/*node_modules
+frontend/dist
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -121,4 +122,3 @@ backend/out
 # Pem
 
 *.pem
-
