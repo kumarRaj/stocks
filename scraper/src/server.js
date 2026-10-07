@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 const app = express();
 const scraper = require("./index")
 const categories = require("./category/loadNSECategories")
@@ -10,10 +13,82 @@ const {seedCompanies} = require("./category/companiesService");
 app.use(express.json());
 app.use(cors());
 
+// Swagger setup
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Stock Scraper API",
+            version: "1.0.0",
+            description: "API documentation for the Stock Scraper application",
+        },
+        servers: [
+            {
+                url: "/",
+            },
+        ],
+    },
+    apis: [path.join(__dirname, "**/*.js")],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+/**
+ * @openapi
+ * /ping:
+ *   get:
+ *     summary: Check that the scraper service is running
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: ok
+ */
 app.get('/ping', function (req, res) {
     res.end("ok");
 })
 
+/**
+ * @openapi
+ * /stockDetails:
+ *   post:
+ *     summary: Fetch stock details
+ *     description: Fetch details for the stock IDs in the request body and optional stockId query parameter.
+ *     parameters:
+ *       - in: query
+ *         name: stockId
+ *         required: false
+ *         description: Stock ID to fetch details for
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: string
+ *           example: ["ADANIGREEN", "INFY"]
+ *     responses:
+ *       200:
+ *         description: Stock details fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   stockId:
+ *                     type: string
+ *                   message:
+ *                     type: string
+ */
 app.post('/stockDetails', async function (req, res) {
     const stockId = req.query.stockId;
     let stocks = new Set()
@@ -37,6 +112,23 @@ app.post('/stockDetails', async function (req, res) {
 })
 
 
+/**
+ * @openapi
+ * /stock/peers:
+ *   post:
+ *     summary: Fetch peer information for a stock
+ *     parameters:
+ *       - in: query
+ *         name: stockId
+ *         required: false
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Peer information fetched successfully
+ *       500:
+ *         description: Peer information could not be fetched
+ */
 app.post('/stock/peers', async function (req, res) {
     const stockId = req.query.stockId;
     try {
@@ -56,6 +148,23 @@ app.post('/stock/peers', async function (req, res) {
 })
 
 
+/**
+ * @openapi
+ * /stock/pe:
+ *   post:
+ *     summary: Fetch the price to earnings ratio for a stock
+ *     parameters:
+ *       - in: query
+ *         name: stockId
+ *         required: false
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Price to earnings data fetched successfully
+ *       500:
+ *         description: Price to earnings data could not be fetched
+ */
 app.post('/stock/pe', async function (req, res) {
     const stockId = req.query.stockId;
     try {
@@ -75,6 +184,17 @@ app.post('/stock/pe', async function (req, res) {
 })
 
 
+/**
+ * @openapi
+ * /stock/seed:
+ *   post:
+ *     summary: Seed stock categories and companies
+ *     responses:
+ *       200:
+ *         description: Seeding completed successfully
+ *       500:
+ *         description: Seeding failed
+ */
 app.post('/stock/seed', async function (req, res) {
     try {
         console.log("Seeding all categories")
