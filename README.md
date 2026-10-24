@@ -1,123 +1,41 @@
-# Stocks Application
+# Stock Scores
 
-## Start Application
+A fundamental-analysis dashboard for Indian stocks. It scores companies listed on screener.in by the quality of their financials — profitability, debt, and retained earnings — and ranks them so the healthiest companies in an index or sector float to the top.
 
-```sh
-make run          # starts scraper + backend + frontend, waits for each to be ready
-make stop         # stops all three
-make restart      # stop + run
-make status       # check what's running
-make logs         # tail all service logs
-```
+## What It Does
 
-Services: scaper http://localhost:9000, backend http://localhost:8081, frontend http://localhost:3000
+Each company is evaluated on six financial metrics and given a score out of **30**, updated with data refreshed from screener.in:
 
-## REST API
-### backend(Port : 8081)
-| REST METHOD   |      API      | Functionality |
-|:----------:|:-------------|:------|
-| GET |  /stock/categories/{category} | Fetch comapanies present in a category |
-| POST |  /stock/categories/{category} | Load comapany details present in the category |
-| GET |  /stock/categories/ | Fetch category names |
-| POST | /stock/categories/loadData |  Load comapany details present in the all the categories |
-| GET |  /stock/{stockId} | Fetch stock details for the given stock ID |
-| GET |  /stock/{stockId}/score | Fetch score of given stock ID |
-| GET |  /stock/scores | Fetch score of all companies present in DB |
+| Metric | Max points | What it measures |
+|:-------|:----------:|:-----------------|
+| PE Ratio | 5 | Valuation — PE 1–20 earns the full 5 points; the score steps down in tiers as the ratio climbs |
+| Operating Profit Margin | 6 | Profitability from core operations before interest and taxes — one point per improving year in the last 6 |
+| Net Profit Margin | 6 | Profit left after all expenses — one point per improving year in the last 6 |
+| Borrowings | 6 | Loan and debt burden — one point per falling year in the last 6 |
+| Other Liabilities | 6 | Long-dated liabilities besides borrowings — one point per falling year in the last 6 |
+| Reserves | 6 | Retained earnings kept out of dividends — one point per improving year in the last 6 |
 
-### scraper(Port : 9000)
-| REST METHOD   |      API      | Functionality |
-|:----------:|:-------------|:------|
-| POST |  /stockDetails?stcokID={stockId} | Load data of given stockID |
+Scores are colour-coded so quality is visible at a glance: green for 24+, amber for 16+, red below that.
 
-### frontend
+## Dashboard
 
-http://localhost:3000
+The main view lists every seeded company in the selected sector (e.g. NIFTY 50) ranked by score, with a score ring per company. Use the search box to add symbols that are not seeded yet.
 
-## Application commands
-### backend
-`./gradlew bootRun`
+![Dashboard](docs/dashboard.png)
 
-### frontend
-```
-yarn
-yarn start
-```
-Click on Seed to fetch data
+Clicking a stock opens a breakdown of its score — each metric shown as a progress bar against its maximum, with a tooltip explaining how that metric is scored and a link to the full report on screener.in.
 
-### scraper
-```
-npm start
-```
+![Score breakdown](docs/dashboard-detail.png)
 
-## Features
+## How It Works
 
-- First Page is for stock list
+The application is composed of three services:
 
-- Stock Analysis
-- Second page is for checklist with comments
+- **Scraper** — an Express app that fetches company financials from screener.in and exposes the parsed data.
+- **Backend** — a Spring Boot service that pulls data from the scraper, computes the score breakdown per metric, and stores the results.
+- **Frontend** — a React (Material UI) dashboard that renders the ranked list and per-stock score breakdowns.
 
-## TODO
-- Get an API that gives us this data
-- Parse it
-- calculate and display below scores 
+## Related Docs
 
-peRatio [tick] [negative] [50] [Comments]
-
-
-
-
-P/E ratio
-
-1 - 20 - 5pts
-
-80 - 100 - 1pts
-
-
-Operating profit margin
-
-Primary business earnings - cost in primary business
-
-
-Net profit margin = Total Earnings - Total Cost
-
-Score for net and operating
-
-if profit is more than previous year +1 and profit is less than previous year -1
-
-Dividend - The dividend is always declared by the company on the face value (FV) of a share irrespective of its market value. The rate of dividend is expressed as a percentage of the face value of a share per annum.
-
-find percentage of dividend with market share price and if it falls above 10 % give it score from 1 to 5
-
-Debt (Loan)
-
-
-Debt/Revenue
-
-if debt and revenue both increase - OK
-if debt increases and revenue does not - BAD
-if debt decreases and revenue increases - GOOD
-
-Reducing debt to revenue means a good score for the company 
-
-Profit
-
-If increasing then good
-
-Reserves
-
-Same as profit
-
-Cash flow 
-
-Same as profit (Preferably positive)
-
-ROE??
-
-Price in the last one year 
-
-Is it downward - upward means 
-
-Other liabilities - Can read more about SEC filing or annual report
-
-What is cash flow? 
-Positive and negative meaning
+- `Common Definitions.md` — financial term definitions used by the scoring model
+- `FactorsForChosingStock.md` — investing ideas and company-study notes behind the chosen factors
