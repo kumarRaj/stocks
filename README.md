@@ -38,4 +38,3 @@ The application is composed of three services:
 ## Related Docs
 
 - `Common Definitions.md` — financial term definitions used by the scoring model
-- `FactorsForChosingStock.md` — investing ideas and company-study notes behind the chosen factors
