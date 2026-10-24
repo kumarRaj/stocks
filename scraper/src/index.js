@@ -3,13 +3,43 @@ const axios = require("axios");
 const parser = require("./parseHTML.js")
 const fileSystem = require("./fileSystem")
 
+const HTTP_TOO_MANY_REQUESTS = 429;
+const SLEEP = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const RETRY_MAX_ATTEMPTS = 5;
+const RETRY_BASE_DELAY_MS = 2000;
+const RETRY_MAX_DELAY_MS = 60000;
+
 const stockDetailsHandler = (exports.handler = async function (event) {
     // TODO: Fetch only if it doesn't exist
     console.log("Fetching stock details for: " + event)
-    const ratios = await getStockDetails(event);
+    const ratios = await withRateLimitRetry(event, (stockId) => getStockDetails(stockId));
     await fileSystem.save({lastUpdatedAt: new Date(), ...ratios}, "data", ratios.StockId);
     return ratios;
 });
+
+function withRateLimitRetry(stockId, task, attempt = 0) {
+    return task(stockId).catch(async (error) => {
+        if (!isRateLimited(error) || attempt >= RETRY_MAX_ATTEMPTS) {
+            throw error;
+        }
+        const delay = retryDelayFor(error, attempt);
+        console.log(`Rate limited for ${stockId}, retrying after ${Math.round(delay / 1000)}s (attempt ${attempt + 1} of ${RETRY_MAX_ATTEMPTS})`);
+        await SLEEP(delay);
+        return withRateLimitRetry(stockId, task, attempt + 1);
+    });
+}
+
+function isRateLimited(error) {
+    return error?.response?.status === HTTP_TOO_MANY_REQUESTS;
+}
+
+function retryDelayFor(error, attempt) {
+    const retryAfter = Number(error.response?.headers?.["retry-after"]);
+    if (Number.isFinite(retryAfter) && retryAfter > 0) {
+        return Math.min(retryAfter * 1000, RETRY_MAX_DELAY_MS);
+    }
+    return Math.min(RETRY_BASE_DELAY_MS * 2 ** attempt, RETRY_MAX_DELAY_MS);
+}
 
 function getStockDetails(stockId) {
   return axios
