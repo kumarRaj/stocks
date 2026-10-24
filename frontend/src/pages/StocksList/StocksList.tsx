@@ -17,7 +17,7 @@ export const StocksList: React.FC = () => {
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
-    let [currentSector, setCurrentSector] = useState('NIFTY50');
+    let [currentSector, setCurrentSector] = useState('');
     let [isSeeding, setIsSeeding] = useState(false);
     let [seedMessage, setSeedMessage] = useState('');
 
@@ -26,20 +26,24 @@ export const StocksList: React.FC = () => {
         Promise.all(
             [
                 getAllSectors(),
-                getAllStockScores(),
-                getStocksBySector(currentSector)
+                getAllStockScores()
             ]
         ).then(response => {
-            let [sectors, stockScores, stocksBySector] = response;
+            let [sectors, stockScores] = response;
             const sectorsData = sectors.data;
-            sectorsData.push('ALL')
-            setSectors(sectorsData);
+            const withAll = [...sectorsData, 'ALL'];
+            setSectors(withAll);
             setStockScores(stockScores.data);
-            setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores.data, stocksBySector.data.company));
+            setCurrentSector(sectorsData.includes('NIFTY 50') ? 'NIFTY 50' : withAll[0]);
         });
     }, []);
 
     useEffect(() => {
+        if (!currentSector) return;
+        if (currentSector === 'ALL') {
+            setCurrentStocks([...stockScores]);
+            return;
+        }
         getStocksBySector(currentSector)
             .then(response => {
                 let companies = response.data.company;
@@ -47,7 +51,7 @@ export const StocksList: React.FC = () => {
                     companies = stockScores.map((stock: any) => stock.stockId);
                 setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores, companies));
             })
-    }, [currentSector]);
+    }, [currentSector, stockScores]);
 
     const filterStocksBasedOnCurrentSector = (stockScores: any, stocksBySector: any) => {
         return stockScores.filter((stock: any) => stocksBySector.includes(stock.stockId));
@@ -79,10 +83,12 @@ export const StocksList: React.FC = () => {
             setSectors([...sectorsData, 'ALL']);
             const scores = scoresResponse.data || [];
             setStockScores(scores);
-            setCurrentStocks(filterStocksBasedOnCurrentSector(
-                scores,
-                stocksResponse.data?.company || [],
-            ));
+            setCurrentStocks(currentSector === 'ALL'
+                ? scores
+                : filterStocksBasedOnCurrentSector(
+                    scores,
+                    stocksResponse.data?.company || [],
+                ));
 
             const result = response.data;
             const failures = result.categories.failed + result.stocks.failed;
@@ -118,7 +124,7 @@ export const StocksList: React.FC = () => {
                         <p>Sectors:</p>
                         <Select
                             key={'sector-selector'}
-                            defaultValue={currentSector ?? ' '}
+                            value={currentSector}
                             onChange={handleSectorChange}
                             className='sector-selector'
                         >
