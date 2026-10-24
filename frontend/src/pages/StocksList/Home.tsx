@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 
-import {Button, Grid, TextField} from '@mui/material';
-import './StocksList.css';
+import {AppBar, Box, Button, Container, Paper, TextField, Toolbar, Typography} from '@mui/material';
 import {seedThis} from '../../services/StockService';
 import {StocksDetail} from "./StocksDetail";
 import {getAllStockScores} from "../../services/ScoreService";
@@ -10,8 +9,9 @@ import {getAllStockScores} from "../../services/ScoreService";
 // @ts-ignore
 export const Home = () => {
     let [stockScores, setStockScores] = useState<any[]>([]);
-    let [searchStockId, setSearchStockId] = useState([]);
+    let [searchStockId, setSearchStockId] = useState('');
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
+    let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
 
     function setTextToSearch(event: any) {
         let textToSearch = event.target.value;
@@ -28,39 +28,58 @@ export const Home = () => {
                 return searchStockId === stockId;
             });
             currentStockData && currentStockData[0] && setCurrentBreakdown(currentStockData[0].scoreBreakdown);
+        toggleBreakdownVisible(true);
         });
     }
 
 
     return (
-        <div>
-            <Grid container>
-                <Grid item xs={12} md={12}>
-                    <div className='sector-container'>
-                        <div className='menu-container'>
-                            <div className='menu-item'>
-                                <TextField label="Search Stock"
-                                           variant="outlined"
-                                           onChange={setTextToSearch}
-                                           value={searchStockId}
-                                /></div>
-                            <div className='menu-item'>
-                                <Button variant="contained" onClick={addStock}>Add</Button>
-                            </div>
-                        </div>
-                    </div>
-                </Grid>
-                <Grid item xs={12} md={12}>
-                    <div className='stocks-container'>
-                        <StocksDetail
-                            stockId={searchStockId}
-                            isBreakdownVisible={true}
-                            toggleBreakdownVisible={true}
-                            currentBreakdown={currentBreakdown}
-                        />
-                    </div>
-                </Grid>
-            </Grid>
-        </div>
+        <Box sx={{minHeight: '100vh', bgcolor: 'background.default'}}>
+            <AppBar
+                position="sticky"
+                elevation={0}
+                sx={{bgcolor: 'background.paper', color: 'text.primary', borderBottom: '1px solid', borderColor: 'divider'}}
+            >
+                <Container maxWidth="md">
+                    <Toolbar disableGutters sx={{minHeight: 64, gap: 1.5}}>
+                        <Box sx={{
+                            width: 38,
+                            height: 38,
+                            borderRadius: 2,
+                            background: 'linear-gradient(135deg, #4f46e5, #9333ea)',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontWeight: 800,
+                            fontSize: 18,
+                            flexShrink: 0,
+                        }}>
+                            S
+                        </Box>
+                        <Typography sx={{fontWeight: 800, fontSize: 17}}>Stock Scores</Typography>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+            <Container maxWidth="md" sx={{pt: 6}}>
+                <Paper sx={{p: 2, borderRadius: 2, display: 'flex', gap: 1.5}}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Search stock"
+                        variant="outlined"
+                        onChange={setTextToSearch}
+                        value={searchStockId}
+                    />
+                    <Button variant="contained" disableElevation onClick={addStock}>Add</Button>
+                </Paper>
+            </Container>
+            <StocksDetail
+                stockId={searchStockId}
+                isBreakdownVisible={isBreakdownVisible}
+                toggleBreakdownVisible={toggleBreakdownVisible}
+                currentBreakdown={currentBreakdown}
+            />
+        </Box>
     );
 }
