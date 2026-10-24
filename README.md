@@ -2,6 +2,16 @@
 
 ## Start Application
 
+```sh
+make run          # starts scraper + backend + frontend, waits for each to be ready
+make stop         # stops all three
+make restart      # stop + run
+make status       # check what's running
+make logs         # tail all service logs
+```
+
+Services: scaper http://localhost:9000, backend http://localhost:8081, frontend http://localhost:3000
+
 ## REST API
 ### backend(Port : 8081)
 | REST METHOD   |      API      | Functionality |
