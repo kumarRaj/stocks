@@ -91,6 +91,7 @@ app.get('/ping', function (req, res) {
  */
 app.post('/stockDetails', async function (req, res) {
     const stockId = req.query.stockId;
+    const override = req.query.force === 'true';
     let stocks = new Set()
     stockId && stocks.add(stockId)
     const requestBody = req.body || []
@@ -98,7 +99,7 @@ app.post('/stockDetails', async function (req, res) {
     const failedStocks = []
     for (const stockId of stocks) {
         try {
-            await scraper.stockDetailsHandler(stockId)
+            await scraper.stockDetailsHandler(stockId, {override})
         } catch (error) {
             failedStocks.push({
                 stockId: stockId,

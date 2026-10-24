@@ -2,6 +2,8 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const parser = require("./parseHTML.js")
 const fileSystem = require("./fileSystem")
+const {isFresh} = require("./utils")
+const resources = require("./constants/resources")
 
 const HTTP_TOO_MANY_REQUESTS = 429;
 const SLEEP = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,13 +20,34 @@ class RateLimitRetriesExhaustedError extends Error {
     }
 }
 
-const stockDetailsHandler = (exports.handler = async function (event) {
-    // TODO: Fetch only if it doesn't exist
+const stockDetailsHandler = (exports.handler = async function (event, options = {}) {
+    if (!options.override) {
+        const cached = cachedStockDetails(event);
+        if (cached) {
+            console.log("Skipping stock details for: " + event + " (fresh cache)")
+            return cached;
+        }
+    }
     console.log("Fetching stock details for: " + event)
     const ratios = await withRateLimitRetry(event, (stockId) => getStockDetails(stockId));
     await fileSystem.save({lastUpdatedAt: new Date(), ...ratios}, "data", ratios.StockId);
     return ratios;
 });
+
+function cachedStockDetails(stockId) {
+    const metadata = fileSystem.readFileMetaData("data", stockId);
+    if (!metadata || !isFresh(metadata, resources.ttl.company)) return null;
+    const contents = fileSystem.readFile(metadata.filePath);
+    try {
+        const cached = JSON.parse(contents);
+        const hasDetails = Object.keys(cached).some(key =>
+            key !== 'StockId' && key !== 'lastUpdatedAt'
+        );
+        return hasDetails ? cached : null;
+    } catch (error) {
+        return null;
+    }
+}
 
 function withRateLimitRetry(stockId, task, attempt = 0) {
     return task(stockId).catch(async (error) => {
@@ -55,9 +78,22 @@ function retryDelayFor(error, attempt) {
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/consolidated`, {timeout: 10000})
+    .get(`https://www.screener.in/company/${stockId}/consolidated/`, {timeout: 10000})
     .then((response) => {
-      const html = cheerio.load(response.data);
+      const ratios = extractStockDetails(cheerio.load(response.data), stockId);
+      const hasData = Number.isFinite(ratios.MarketCap.value)
+          || Number.isFinite(ratios.Dividend.value)
+          || ratios.OPM.data.length > 0;
+      if (hasData) return ratios;
+
+      console.log(`Consolidated page has no data for ${stockId}, falling back to the standalone page`);
+      return axios
+        .get(`https://www.screener.in/company/${stockId}/`, {timeout: 10000})
+        .then((standaloneResponse) => extractStockDetails(cheerio.load(standaloneResponse.data), stockId));
+    });
+}
+
+function extractStockDetails(html, stockId) {
       const rawRatios = [];
       html("li", "#top-ratios").each((i, el) => {
         const stringValues = html(el)
@@ -70,14 +106,11 @@ function getStockDetails(stockId) {
       });
 
       let ratios = {StockId: stockId};
-      const getMarketCap = () => parser.parse(rawRatios[0][1].trim());
-      const getPe = () => parser.parse(rawRatios[3][0] ? rawRatios[3][0].trim() : "-999999"  );
-      const getDividend = () => parser.parse(rawRatios[5][0].trim());
-      const getFaceValue = () => parser.parse(rawRatios[8][1].trim());
-      ratios["MarketCap"] = { unit : "Cr", value : getMarketCap() };
-      ratios["PE"] = { unit : "", value : getPe() };
-      ratios["Dividend"] = { unit : "%", value : getDividend() }
-      ratios["FaceValue"] = { unit : "", value : getFaceValue() }
+      const safeParse = (raw) => raw ? parser.parse(String(raw).trim()) : parser.parse("-999999");
+      ratios["MarketCap"] = {unit: "Cr", value: safeParse(rawRatios[0]?.[1])};
+      ratios["PE"] = {unit: "", value: safeParse(rawRatios[3]?.[0] ?? "-999999")};
+      ratios["Dividend"] = {unit: "%", value: safeParse(rawRatios[5]?.[0])};
+      ratios["FaceValue"] = {unit: "", value: safeParse(rawRatios[8]?.[1])}
       ratios["OPM"] = getOPM(html);
       ratios["NPM"] = getNPM(html);
       ratios["Debt"]= {
@@ -85,8 +118,7 @@ function getStockDetails(stockId) {
         "Borrowings": getBorrowing(html),
         "OtherLiabilities": getOtherLiabilities(html)
       };
-        return ratios;
-      });
+      return ratios;
 }
 
 function getOPM(html) {

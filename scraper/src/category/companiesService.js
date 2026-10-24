@@ -23,6 +23,7 @@ async function seedCompanies(override = false, companies = [], onlyCategory = nu
                     key !== 'StockId' && key !== 'lastUpdatedAt'
                 );
                 if (hasDetails) {
+                    console.log("Skipping stock details for: " + file + " (fresh cache)")
                     skipped += 1;
                     continue;
                 }
