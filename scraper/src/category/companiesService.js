@@ -3,10 +3,12 @@ const {stockDetailsHandler, RateLimitRetriesExhaustedError} = require("../index"
 const resources = require("../constants/resources");
 const {isFresh} = require("../utils");
 
-async function seedCompanies(override = false, companies = []) {
+async function seedCompanies(override = false, companies = [], onlyCategory = null) {
     const files = [...new Set([
         ...companies,
-        ...fileSystem.readFileNamesFromDirectory("data"),
+        ...(onlyCategory && onlyCategory !== 'ALL'
+            ? []
+            : fileSystem.readFileNamesFromDirectory("data")),
     ])];
     const errors = [];
     let updated = 0;

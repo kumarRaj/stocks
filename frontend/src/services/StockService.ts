@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export const seed = () => {
+export const seed = (category?: string) => {
     let endpoint = `${import.meta.env.REACT_APP_SCRAPER_URL}/stock/seed`;
-    return axios.post(endpoint, {});
+    return axios.post(endpoint, category && category !== 'ALL' ? {category} : {});
 }
 
 export const seedThis = (stockId: String) => {

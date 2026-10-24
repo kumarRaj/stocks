@@ -189,6 +189,18 @@ app.post('/stock/pe', async function (req, res) {
  * /stock/seed:
  *   post:
  *     summary: Seed stock categories and companies
+ *     description: Seeds all categories by default. Optionally restricts the run to one category via the request body.
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               category:
+ *                 type: string
+ *                 description: Only seed this category and its companies (e.g. "NIFTY50"). Omit or use "ALL" for everything.
+ *                 example: NIFTY50
  *     responses:
  *       200:
  *         description: Seeding finished; the response includes updated, skipped, and failed counts.
@@ -197,10 +209,13 @@ app.post('/stock/pe', async function (req, res) {
  */
 app.post('/stock/seed', async function (req, res) {
     try {
-        console.log("Seeding all categories")
-        const categorySummary = await categories.seedCategories(false)
+        const requestedCategory = (req.body && req.body.category) || null;
+        console.log(requestedCategory
+            ? `Seeding category ${requestedCategory}`
+            : "Seeding all categories")
+        const categorySummary = await categories.seedCategories(false, requestedCategory)
         console.log("Seeding all companies")
-        const companySummary = await seedCompanies(false, categorySummary.companyNames)
+        const companySummary = await seedCompanies(false, categorySummary.companyNames, requestedCategory)
         const summary = {
             success: categorySummary.failed === 0 && companySummary.failed === 0 && companySummary.aborted !== true,
             aborted: companySummary.aborted === true,
@@ -218,7 +233,9 @@ app.post('/stock/seed', async function (req, res) {
 
         if (categorySummary.available === 0) {
             return res.status(502).json({
-                error: 'No stock categories could be loaded from Nifty Indices.',
+                error: requestedCategory
+                    ? `No stock categories could be loaded for ${requestedCategory}.`
+                    : 'No stock categories could be loaded from Nifty Indices.',
                 summary,
             })
         }

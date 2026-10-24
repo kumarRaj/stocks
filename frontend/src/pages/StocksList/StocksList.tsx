@@ -11,15 +11,27 @@ import {StocksDetail} from "./StocksDetail";
 export const StocksList: React.FC = () => {
     const navigate = useNavigate();
     let [sectors, setSectors] = useState<string[]>([]);
-    let [searchStockId, setSearchStockId] = useState([]);
+    let [searchStockId, setSearchStockId] = useState('');
     let [stockScores, setStockScores] =  useState<any[]>([]);
     let [currentStocks, setCurrentStocks] = useState<any[]>([]);
+    let [sectorStocks, setSectorStocks] = useState<any[]>([]);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
     let [currentSector, setCurrentSector] = useState('');
     let [isSeeding, setIsSeeding] = useState(false);
     let [seedMessage, setSeedMessage] = useState('');
+
+    function getSearchedStocks(query: string, stocks: any[]) {
+        const stockIds = [...new Set(query
+            .split(/[\s,]+/)
+            .map(stockId => stockId.trim().toUpperCase())
+            .filter(Boolean))];
+        if (stockIds.length === 0) return null;
+
+        const stockIdsToFind = new Set(stockIds);
+        return stocks.filter((stock: any) => stockIdsToFind.has(String(stock.stockId).toUpperCase()));
+    }
 
     // on component mount
     useEffect(() => {
@@ -41,7 +53,9 @@ export const StocksList: React.FC = () => {
     useEffect(() => {
         if (!currentSector) return;
         if (currentSector === 'ALL') {
-            setCurrentStocks([...stockScores]);
+            const stocks = [...stockScores];
+            setSectorStocks(stocks);
+            setCurrentStocks(getSearchedStocks(searchStockId, stockScores) || stocks);
             return;
         }
         getStocksBySector(currentSector)
@@ -49,7 +63,9 @@ export const StocksList: React.FC = () => {
                 let companies = response.data.company;
                 if (!response.data)
                     companies = stockScores.map((stock: any) => stock.stockId);
-                setCurrentStocks(filterStocksBasedOnCurrentSector(stockScores, companies));
+                const stocks = filterStocksBasedOnCurrentSector(stockScores, companies);
+                setSectorStocks(stocks);
+                setCurrentStocks(getSearchedStocks(searchStockId, stockScores) || stocks);
             })
     }, [currentSector, stockScores]);
 
@@ -58,7 +74,7 @@ export const StocksList: React.FC = () => {
     }
 
     const handleSectorChange = (event: any) => {
-        setSearchStockId([]);
+        setSearchStockId('');
         setCurrentSector(event.target.value);
     }
 
@@ -83,12 +99,14 @@ export const StocksList: React.FC = () => {
             setSectors([...sectorsData, 'ALL']);
             const scores = scoresResponse.data || [];
             setStockScores(scores);
-            setCurrentStocks(currentSector === 'ALL'
+            const stocks = currentSector === 'ALL'
                 ? scores
                 : filterStocksBasedOnCurrentSector(
                     scores,
                     stocksResponse.data?.company || [],
-                ));
+                );
+            setSectorStocks(stocks);
+            setCurrentStocks(getSearchedStocks(searchStockId, scores) || stocks);
 
             const result = response.data;
             if (result.stocks?.aborted) {
@@ -111,15 +129,18 @@ export const StocksList: React.FC = () => {
     }
 
     function handleSearch(event:any) {
-        let textToSearch = event.target.value;
+        const textToSearch = event.target.value;
         setSearchStockId(textToSearch);
-        let stocksToSearch = textToSearch.split(',');
-        const result: any[] = []
-        stocksToSearch.forEach((stockToSearch: any) => {
-            result.push(...stockScores.filter((stock: any) => (stock.stockId.includes(stockToSearch.trim().toUpperCase()))));
-        });
-        setCurrentStocks([...result.sort((a: any, b: any) => b.score - a.score)]);
+        const result = getSearchedStocks(textToSearch, stockScores);
+        setCurrentStocks(result || sectorStocks);
     }
+
+    const searchedStockIds = [...new Set(searchStockId
+        .split(/[\s,]+/)
+        .map(stockId => stockId.trim().toUpperCase())
+        .filter(Boolean))];
+    const availableStockIds = new Set(stockScores.map((stock: any) => String(stock.stockId).toUpperCase()));
+    const missingStockIds = searchedStockIds.filter(stockId => !availableStockIds.has(stockId));
     return (
         <Grid container>
             <Grid item xs={12} md={12}>
@@ -151,10 +172,19 @@ export const StocksList: React.FC = () => {
                             {seedMessage && <span role="status" aria-live="polite">{seedMessage}</span>}
                         </div>
                         <div className='menu-item'>
-                            <TextField style={{ backgroundColor: 'whiteSmoke' }} label="Search Stock" variant="outlined"
-                                                              onChange={handleSearch}
-                                                              value={searchStockId}
-                        /></div>
+                            <TextField
+                                size="small"
+                                style={{ backgroundColor: 'whiteSmoke' }}
+                                label="Search Stock"
+                                placeholder={'TCS, INFY\nRELIANCE'}
+                                helperText={missingStockIds.length > 0 ? `No data for: ${missingStockIds.join(', ')}` : undefined}
+                                variant="outlined"
+                                multiline
+                                minRows={2}
+                                maxRows={4}
+                                onChange={handleSearch}
+                                value={searchStockId}
+                            /></div>
                     </div>
                 </div>
             </Grid>

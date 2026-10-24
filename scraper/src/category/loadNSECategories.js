@@ -77,15 +77,35 @@ function parseCsvRow(line) {
     return values;
 }
 
-async function seedCategories(override = false) {
+function categoryMatchesRequest(categoryName, onlyCategory) {
+    if (!onlyCategory || onlyCategory === 'ALL') return true;
+    return categoryName.replace(/[\s]/g, '').toLowerCase()
+        === String(onlyCategory).replace(/[\s]/g, '').toLowerCase();
+}
+
+async function readCategoryNames() {
+    try {
+        const metadata = fileSystem.readFileMetaData('category', 'CategoryNames');
+        if (!metadata) return [];
+        const contents = await fileSystem.readFile(metadata.filePath);
+        const parsed = JSON.parse(contents);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+async function seedCategories(override = false, onlyCategory = null) {
     const categories = await generateCategories();
+    const requestedEntries = Object.entries(categories)
+        .filter(([categoryName]) => categoryMatchesRequest(categoryName, onlyCategory));
     const availableCategories = [];
     const companyNames = new Set();
     const errors = [];
     let updated = 0;
     let skipped = 0;
 
-    for (const [categoryName, nseUrl] of Object.entries(categories)) {
+    for (const [categoryName, nseUrl] of requestedEntries) {
         const indexName = new URL(nseUrl).searchParams.get('index');
         const metadata = fileSystem.readFileMetaData('category', categoryName);
         let cachedError = null;
@@ -126,9 +146,14 @@ async function seedCategories(override = false) {
         }
     }
 
-    await saveCategoryNames([...new Set(availableCategories)]);
+    if (onlyCategory && onlyCategory !== 'ALL') {
+        const existingNames = await readCategoryNames();
+        await saveCategoryNames([...new Set([...existingNames, ...availableCategories])]);
+    } else {
+        await saveCategoryNames(availableCategories);
+    }
     return {
-        total: Object.keys(categories).length,
+        total: requestedEntries.length,
         available: availableCategories.length,
         updated,
         skipped,
