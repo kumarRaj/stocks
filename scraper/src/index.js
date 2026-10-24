@@ -2,19 +2,18 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const parser = require("./parseHTML.js")
 const fileSystem = require("./fileSystem")
-const lastUpdatedAt = new Date()
 
 const stockDetailsHandler = (exports.handler = async function (event) {
     // TODO: Fetch only if it doesn't exist
     console.log("Fetching stock details for: " + event)
     const ratios = await getStockDetails(event);
-    await fileSystem.save({lastUpdatedAt, ...ratios}, "data", ratios.StockId);
+    await fileSystem.save({lastUpdatedAt: new Date(), ...ratios}, "data", ratios.StockId);
     return ratios;
 });
 
 function getStockDetails(stockId) {
   return axios
-    .get(`https://www.screener.in/company/${stockId}/consolidated`, {timeout: 2000})
+    .get(`https://www.screener.in/company/${stockId}/consolidated`, {timeout: 10000})
     .then((response) => {
       const html = cheerio.load(response.data);
       const rawRatios = [];
@@ -45,9 +44,6 @@ function getStockDetails(stockId) {
         "OtherLiabilities": getOtherLiabilities(html)
       };
         return ratios;
-      })
-      .catch((err) => {
-          console.log("Error while fetching stock details for " + stockId + " : " + err);
       });
 }
 

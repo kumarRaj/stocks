@@ -191,20 +191,39 @@ app.post('/stock/pe', async function (req, res) {
  *     summary: Seed stock categories and companies
  *     responses:
  *       200:
- *         description: Seeding completed successfully
- *       500:
- *         description: Seeding failed
+ *         description: Seeding finished; the response includes updated, skipped, and failed counts.
+ *       502:
+ *         description: No stock categories could be loaded from Nifty Indices.
  */
 app.post('/stock/seed', async function (req, res) {
     try {
         console.log("Seeding all categories")
-        await categories.seedCategories(false)
+        const categorySummary = await categories.seedCategories(false)
         console.log("Seeding all companies")
-        await seedCompanies(false)
-        res.end()
+        const companySummary = await seedCompanies(false, categorySummary.companyNames)
+        const summary = {
+            success: categorySummary.failed === 0 && companySummary.failed === 0,
+            categories: {
+                total: categorySummary.total,
+                available: categorySummary.available,
+                updated: categorySummary.updated,
+                skipped: categorySummary.skipped,
+                companies: categorySummary.companies,
+                failed: categorySummary.failed,
+                errors: categorySummary.errors,
+            },
+            stocks: companySummary,
+        }
+
+        if (categorySummary.available === 0) {
+            return res.status(502).json({
+                error: 'No stock categories could be loaded from Nifty Indices.',
+                summary,
+            })
+        }
+        res.json(summary)
     } catch (error) {
-        res.status(error.status || 500);
-        res.json({
+        res.status(error.status || 500).json({
             error: {
                 message: error.message,
             },

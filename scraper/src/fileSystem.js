@@ -1,35 +1,18 @@
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 
+const dataRoot = path.resolve(process.env.STOCKS_DATA_DIR || path.join(os.homedir(), 'stocks'));
 
 async function save(data, additionalDirectory = '', fileName) {
-    let baseDir = os.homedir() + "/stocks/"
-    if (additionalDirectory !== '')
-        baseDir = baseDir + additionalDirectory + '/'
-    if (!fs.existsSync(baseDir)) {
-        fs.mkdirSync(baseDir, {recursive: true})
-    }
-
-    fs.access(baseDir, fs.constants.F_OK, (err) => {
-        if (err) {
-            // parent does not exist, create it
-            fs.mkdirSync(baseDir, {recursive: true});
-        } else {
-            // file exists, append to it
-        }
-    });
-
-    fs.writeFile(baseDir + fileName, JSON.stringify(data), error => {
-        if (error) {
-            console.error(error)
-        }
-    })
+    const directory = path.join(dataRoot, additionalDirectory);
+    await fs.promises.mkdir(directory, { recursive: true });
+    await fs.promises.writeFile(path.join(directory, fileName), JSON.stringify(data));
 }
 
-// Should check if file exists, if not should not throw exception. Should return a date two years past
+// Return null for a file that has not been seeded yet.
 function readFileMetaData(additionalDirectory = '', fileName) {
-    let baseDir = os.homedir() + "/stocks/";
-    const filePath = baseDir + additionalDirectory + '/' + fileName;
+    const filePath = path.join(dataRoot, additionalDirectory, fileName);
     try {
         fs.accessSync(filePath, fs.constants.F_OK);
         
@@ -37,11 +20,8 @@ function readFileMetaData(additionalDirectory = '', fileName) {
         const lastModified = fileStats.mtime;
         return { filePath, lastModified, size: fileStats.size };
     } catch (err) {
-        // If the file does not exist, return a date two years past
-        const twoYearsAgo = new Date();
-        twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-        console.error(`[readFileMetaData] file not found, returning date two years past: ${twoYearsAgo}`);
-        return { filePath, lastModified: twoYearsAgo };
+        if (err.code === 'ENOENT') return null;
+        throw err;
     }
 }
 
@@ -59,13 +39,12 @@ async function readFile(filePath) {
 }
 
 function readFileNamesFromDirectory(directoryPath) {
-    console.log(os.homedir())
-    let baseDir = os.homedir() + "/stocks/"
     try {
-        return fs.readdirSync(baseDir + directoryPath);
+        return fs.readdirSync(path.join(dataRoot, directoryPath));
     } catch (err) {
+        if (err.code === 'ENOENT') return [];
         console.error(err);
-        return [];
+        throw err;
     }
 }
 

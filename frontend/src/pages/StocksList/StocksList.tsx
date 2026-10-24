@@ -10,7 +10,7 @@ import {StocksDetail} from "./StocksDetail";
 
 export const StocksList: React.FC = () => {
     const navigate = useNavigate();
-    let [sectors, setSectors] = useState([]);
+    let [sectors, setSectors] = useState<string[]>([]);
     let [searchStockId, setSearchStockId] = useState([]);
     let [stockScores, setStockScores] =  useState<any[]>([]);
     let [currentStocks, setCurrentStocks] = useState<any[]>([]);
@@ -18,6 +18,8 @@ export const StocksList: React.FC = () => {
     let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
     let [currentSector, setCurrentSector] = useState('NIFTY50');
+    let [isSeeding, setIsSeeding] = useState(false);
+    let [seedMessage, setSeedMessage] = useState('');
 
     // on component mount
     useEffect(() => {
@@ -63,8 +65,39 @@ export const StocksList: React.FC = () => {
         setSelectedStock(selectedStockId);
     }
 
-    const handleSeedButton = () => {
-        seed();
+    const handleSeedButton = async () => {
+        setIsSeeding(true);
+        setSeedMessage('Fetching categories and stock details…');
+        try {
+            const response = await seed();
+            const [sectorsResponse, scoresResponse, stocksResponse] = await Promise.all([
+                getAllSectors(),
+                getAllStockScores(),
+                getStocksBySector(currentSector),
+            ]);
+            const sectorsData = sectorsResponse.data || [];
+            setSectors([...sectorsData, 'ALL']);
+            const scores = scoresResponse.data || [];
+            setStockScores(scores);
+            setCurrentStocks(filterStocksBasedOnCurrentSector(
+                scores,
+                stocksResponse.data?.company || [],
+            ));
+
+            const result = response.data;
+            const failures = result.categories.failed + result.stocks.failed;
+            setSeedMessage(result.success
+                ? `Seed complete: ${result.categories.available} categories and ${result.stocks.updated} stocks updated.`
+                : `Seed finished with ${failures} errors. ${result.stocks.updated} stocks updated.`);
+        } catch (error) {
+            const responseError = (error as any)?.response?.data?.error;
+            const message = typeof responseError === 'string'
+                ? responseError
+                : responseError?.message || (error as any)?.message || 'Seed failed.';
+            setSeedMessage(`Seed failed: ${message}`);
+        } finally {
+            setIsSeeding(false);
+        }
     }
 
     function handleSearch(event:any) {
@@ -102,7 +135,10 @@ export const StocksList: React.FC = () => {
                     </div>
                     <div className='menu-container'>
                         <div className='menu-item'>
-                            <Button variant="contained" onClick={handleSeedButton}>Seed</Button>
+                            <Button variant="contained" onClick={handleSeedButton} disabled={isSeeding}>
+                                {isSeeding ? 'Seeding…' : 'Seed'}
+                            </Button>
+                            {seedMessage && <span role="status" aria-live="polite">{seedMessage}</span>}
                         </div>
                         <div className='menu-item'>
                             <TextField style={{ backgroundColor: 'whiteSmoke' }} label="Search Stock" variant="outlined"

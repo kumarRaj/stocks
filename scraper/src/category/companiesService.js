@@ -3,21 +3,41 @@ const scraper = require("../index")
 const resources = require("../constants/resources");
 const {isFresh} = require("../utils");
 
-async function seedCompanies(override = false) {
-    let files = fileSystem.readFileNamesFromDirectory("data");
+async function seedCompanies(override = false, companies = []) {
+    const files = [...new Set([
+        ...companies,
+        ...fileSystem.readFileNamesFromDirectory("data"),
+    ])];
+    const errors = [];
+    let updated = 0;
+    let skipped = 0;
     for (const file of files) {
-        console.log("Fetching stock details for: " + file)
-        let fileMetaData = fileSystem.readFileMetaData("data", file);
+        const fileMetaData = fileSystem.readFileMetaData("data", file);
         if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.company)) {
-            console.log("Skipping because the data probably hasn't changed for: " + file)
-            continue;
+            const contents = await fileSystem.readFile(fileMetaData.filePath);
+            try {
+                const cachedCompany = JSON.parse(contents);
+                const hasDetails = Object.keys(cachedCompany).some(key =>
+                    key !== 'StockId' && key !== 'lastUpdatedAt'
+                );
+                if (hasDetails) {
+                    skipped += 1;
+                    continue;
+                }
+            } catch (error) {
+                // Re-fetch malformed or incomplete cached files.
+            }
         }
         try {
+            console.log("Fetching stock details for: " + file)
             await scraper.stockDetailsHandler(file);
+            updated += 1;
         } catch (error) {
-            console.log("Error saving stock details for: " + file)
+            console.error("Error saving stock details for: " + file, error.message);
+            errors.push({ stockId: file, message: error.message });
         }
     }
+    return { total: files.length, updated, skipped, failed: errors.length, errors };
 }
 
 module.exports = { seedCompanies };

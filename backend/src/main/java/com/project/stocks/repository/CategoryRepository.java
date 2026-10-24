@@ -13,13 +13,14 @@ import java.util.List;
 public class CategoryRepository {
 
     public static final String USER_HOME = "user.home";
-    String homeDirectory = System.getProperty(USER_HOME);
-    private final String CATEGORY_NAMES = "/stocks/category/CategoryNames";
-    private final String CATEGORY_LIST = "/stocks/category/";
+    private final String dataDirectory = System.getenv().getOrDefault(
+            "STOCKS_DATA_DIR", System.getProperty(USER_HOME) + "/stocks");
+    private final String CATEGORY_NAMES = "/category/CategoryNames";
+    private final String CATEGORY_LIST = "/category/";
 
     public Category getCategoryDetails(String categoryName) {
 
-        String filePath = homeDirectory + CATEGORY_LIST + categoryName;
+        String filePath = dataDirectory + CATEGORY_LIST + categoryName;
         if (!File.exists(filePath)) {
             return new Category(categoryName, Collections.emptyList());
         }
@@ -31,7 +32,7 @@ public class CategoryRepository {
 
     // Todo: Check for file existence before reading
     public List<String> getCategoryNames() {
-        String filePath = homeDirectory + CATEGORY_NAMES;
+        String filePath = dataDirectory + CATEGORY_NAMES;
         if (!File.exists(filePath)) {
             return Collections.emptyList();
         }

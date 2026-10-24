@@ -12,11 +12,12 @@ import java.util.Optional;
 @Component
 public class StockRepository {
 
-    String homeDirectory = System.getProperty("user.home");
+    String dataDirectory = System.getenv().getOrDefault(
+            "STOCKS_DATA_DIR", System.getProperty("user.home") + "/stocks");
 
     // TODO: Refactor this to be able to test it
     public Stock getStockDetails(String stockId) {
-        String filePath = homeDirectory + "/stocks/data/" + stockId;
+        String filePath = dataDirectory + "/data/" + stockId;
         String result = File.readFile(filePath);
         DataMapper<Stock> dataMapper = DataMapper.getInstance();
         Stock stock = dataMapper.map(result, Stock.class);
@@ -29,17 +30,17 @@ public class StockRepository {
     }
 
     public boolean isPresent(String stockId) {
-        String filePath = homeDirectory + "/stocks/data/" + stockId;
+        String filePath = dataDirectory + "/data/" + stockId;
         return File.exists(filePath);
     }
 
     public List<String> getAllStockNames() {
-        String filePath = homeDirectory + "/stocks/data";
+        String filePath = dataDirectory + "/data";
         return File.getFilesInADirectory(filePath);
     }
 
     private Optional<PeDetail> getPEDetails(String stockId) {
-        String filePath = homeDirectory + "/stocks/PE/" + stockId;
+        String filePath = dataDirectory + "/PE/" + stockId;
         if (!File.exists(filePath))
             return Optional.empty();
         String result = File.readFile(filePath);

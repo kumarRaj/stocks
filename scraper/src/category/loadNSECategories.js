@@ -1,99 +1,170 @@
-const { json } = require('express/lib/response');
+const path = require('path');
 const resources = require('../constants/resources');
-const fileSystem = require("../fileSystem");
-const { isFresh, fetchWithTimeout, fetchJsonWithTimeout } = require("../utils");
-let cookie = ''
+const fileSystem = require('../fileSystem');
+const { isFresh, fetchWithTimeout } = require('../utils');
 
-const requestOptions = {
-    method: "GET",
-    redirect: "follow"
-    // signal: AbortSignal.timeout(5000)
+const constituentFiles = {
+    'NIFTY 50': 'ind_nifty50list.csv',
+    'NIFTY AUTO': 'ind_niftyautolist.csv',
+    'NIFTY BANK': 'ind_niftybanklist.csv',
+    'NIFTY ENERGY': 'ind_niftyenergylist.csv',
+    'NIFTY FINANCIAL SERVICES': 'ind_niftyfinancialserviceslist.csv',
+    'NIFTY FINANCIAL SERVICES 25/50': 'ind_niftyfinancialservices25-50list.csv',
+    'NIFTY FMCG': 'ind_niftyfmcglist.csv',
+    'NIFTY IT': 'ind_niftyitlist.csv',
+    'NIFTY MEDIA': 'ind_niftymedialist.csv',
+    'NIFTY METAL': 'ind_niftymetallist.csv',
+    'NIFTY PHARMA': 'ind_niftypharmalist.csv',
+    'NIFTY PSU BANK': 'ind_niftypsubanklist.csv',
+    'NIFTY REALTY': 'ind_niftyrealtylist.csv',
+    'NIFTY PRIVATE BANK': 'ind_niftyprivatebanklist.csv',
+    'NIFTY HEALTHCARE INDEX': 'ind_niftyhealthcarelist.csv',
+    'NIFTY CONSUMER DURABLES': 'ind_niftyconsumerdurableslist.csv',
+    'NIFTY OIL & GAS': 'ind_niftyoilgaslist.csv',
 };
 
-async function getCompanyNames(url) {    
-    let initialres;
-    try {
-        if (cookie == ''){
-            initialres = await fetchWithTimeout("https://www.nseindia.com/", requestOptions);
-            cookie = initialres.headers.get('set-cookie')
-            console.log(cookie)
-            console.log("Got headers successfully. Using cookie from here");
-        }
-        else {
-            console.log("Using cookie from previous call")
-        }
-        
-    } catch (err) {
-        const exception = `[initial call] error: ${err.message || 'An unknown error occurred'}`;
-        console.error(exception);
-        throw exception
+const constituentBaseUrl = 'https://www.niftyindices.com/IndexConstituent/';
+
+async function getCompanyNames(url) {
+    const response = await fetchWithTimeout(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'text/csv, */*',
+            'User-Agent': 'Mozilla/5.0',
+        },
+    });
+    if (!response.ok) {
+        throw new Error(`Constituent download failed with HTTP ${response.status}`);
     }
 
-    const options = {
-        headers: {
-            'Cookie': cookie
-        },
-        ...requestOptions
-    };
+    const csv = (await response.text()).replace(/^\uFEFF/, '');
+    const lines = csv.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length < 2) throw new Error('Constituent CSV is empty');
 
-    console.log("Calling at: " + url);
-    const finalres = await fetchJsonWithTimeout(url, options);
-    const companies = await finalres.json()?.data;
-    const companyNames = companies.map(company => company.symbol);
-    console.log(`Got company names ${companyNames}`);
-    return companyNames;
-    // const message = "[second call] second call to nseindia fails:" + err.message
-    // console.error(message);
+    const headers = parseCsvRow(lines[0]).map(header => header.trim().toLowerCase());
+    const symbolIndex = headers.indexOf('symbol');
+    if (symbolIndex === -1) throw new Error('Constituent CSV has no Symbol column');
+
+    const symbols = [...new Set(lines.slice(1)
+        .map(line => parseCsvRow(line)[symbolIndex]?.trim())
+        .filter(Boolean))];
+    if (symbols.length === 0) throw new Error('Constituent CSV contains no stock symbols');
+    return symbols;
 }
 
-async function createCompanyFiles(companies) {
-    console.log("Creating files for " + companies);
-    for (const company of companies) {
-        await fileSystem.save({ 'StockId': company }, "data", company);
+function parseCsvRow(line) {
+    const values = [];
+    let value = '';
+    let quoted = false;
+
+    for (let index = 0; index < line.length; index += 1) {
+        const character = line[index];
+        if (character === '"') {
+            if (quoted && line[index + 1] === '"') {
+                value += '"';
+                index += 1;
+            } else {
+                quoted = !quoted;
+            }
+        } else if (character === ',' && !quoted) {
+            values.push(value);
+            value = '';
+        } else {
+            value += character;
+        }
     }
+    values.push(value);
+    return values;
 }
 
 async function seedCategories(override = false) {
-    let categories = await generateCategories();
+    const categories = await generateCategories();
+    const availableCategories = [];
+    const companyNames = new Set();
+    const errors = [];
+    let updated = 0;
+    let skipped = 0;
 
-    for (const name in categories) {
-        let fileMetaData = fileSystem.readFileMetaData("category", name);
-        if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.categories)) {
-            console.log("Skipping because the data probably hasn't changed for: " + name);
-            continue;
+    for (const [categoryName, nseUrl] of Object.entries(categories)) {
+        const indexName = new URL(nseUrl).searchParams.get('index');
+        const metadata = fileSystem.readFileMetaData('category', categoryName);
+        let cachedError = null;
+        if (!override && metadata && isFresh(metadata, resources.ttl.categories)) {
+            try {
+                await addStoredCompanies(metadata, categoryName, companyNames);
+                availableCategories.push(categoryName);
+                skipped += 1;
+                continue;
+            } catch (error) {
+                cachedError = error;
+            }
         }
-        let url = categories[name];
-        try {
-            let companies = await getCompanyNames(url);
-            let result = { name: name, company: companies };
-            fileSystem.save(result, "category", result.name);
-            createCompanyFiles(companies);    
-        } catch (error) {
 
-            console.log(`Error while getting data for ${name} in ${url}`, error.message)
+        const fileName = constituentFiles[indexName];
+        try {
+            if (!fileName) throw new Error(`No constituent CSV is configured for ${indexName}`);
+            const companies = await getCompanyNames(constituentBaseUrl + fileName);
+            await fileSystem.save({ name: categoryName, company: companies }, 'category', categoryName);
+            companies.forEach(company => companyNames.add(company));
+            availableCategories.push(categoryName);
+            updated += 1;
+        } catch (error) {
+            if (metadata) {
+                try {
+                    await addStoredCompanies(metadata, categoryName, companyNames);
+                    availableCategories.push(categoryName);
+                } catch (storedError) {
+                    cachedError = storedError;
+                }
+            }
+            errors.push({
+                category: categoryName,
+                message: cachedError
+                    ? `${error.message}; cached category is unusable: ${cachedError.message}`
+                    : error.message,
+            });
         }
     }
-    saveCategoryNames(categories);
+
+    await saveCategoryNames([...new Set(availableCategories)]);
+    return {
+        total: Object.keys(categories).length,
+        available: availableCategories.length,
+        updated,
+        skipped,
+        companies: companyNames.size,
+        companyNames: [...companyNames],
+        failed: errors.length,
+        errors,
+    };
+}
+
+async function addStoredCompanies(metadata, categoryName, companyNames) {
+    const contents = await fileSystem.readFile(metadata.filePath);
+    if (!contents) throw new Error(`Could not read cached category ${categoryName}`);
+    const category = JSON.parse(contents);
+    if (!Array.isArray(category.company)) {
+        throw new Error(`Cached category ${categoryName} has no company list`);
+    }
+    category.company.forEach(company => companyNames.add(company));
 }
 
 async function generateCategories() {
-    const baseUrl = "https://www.nseindia.com/api/equity-stockIndices?index=";
-    let text = await fileSystem.readFile("src/constants/categories.json");
-    let fileCategories = JSON.parse(text);
+    const categoriesPath = path.join(__dirname, '../constants/categories.json');
+    const text = await fileSystem.readFile(categoriesPath);
+    if (!text) throw new Error(`Could not read category list at ${categoriesPath}`);
 
-    const indices = ["NIFTY 50"];
-    indices.push(...fileCategories["Sectoral Indices"]);
-    console.log("indices", indices);
-    return indices.reduce((acc, index) => {
-        // console.log(index)
-        const key = index.replace(/[\\/:*?"<>|]/g, ''); // remove special characters from the index name
-        acc[key] = baseUrl + encodeURIComponent(index); // encode the index name and append to the base URL
-        return acc;
+    const fileCategories = JSON.parse(text);
+    const indices = ['NIFTY 50', ...(fileCategories['Sectoral Indices'] || [])];
+    return indices.reduce((result, index) => {
+        const key = index.replace(/[\s\\/:*?"<>|]/g, '');
+        result[key] = `https://www.nseindia.com/api/equity-stockIndices?index=${encodeURIComponent(index)}`;
+        return result;
     }, {});
 }
 
 async function saveCategoryNames(categories) {
-    await fileSystem.save(Object.keys(categories), "category", "CategoryNames");
+    await fileSystem.save(categories, 'category', 'CategoryNames');
 }
 
 module.exports = { seedCategories, generateCategories };
