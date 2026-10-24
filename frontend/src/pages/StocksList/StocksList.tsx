@@ -229,7 +229,7 @@ export const StocksList: React.FC = () => {
                         size="small"
                         value={currentSector}
                         onChange={handleSectorChange}
-                        sx={{minWidth: 220, fontWeight: 600}}
+                        sx={{width: {xs: '100%', sm: 220}, fontWeight: 600}}
                     >
                         {sectors.map(sector => (
                             <MenuItem key={sector} value={sector}>{sector}</MenuItem>
@@ -244,7 +244,7 @@ export const StocksList: React.FC = () => {
                         maxRows={4}
                         value={searchStockId}
                         onChange={handleSearch}
-                        sx={{width: {xs: '100%', sm: 240}}}
+                        sx={{width: {xs: '100%', sm: 220}}}
                     />
                     <ToggleButtonGroup
                         size="small"
