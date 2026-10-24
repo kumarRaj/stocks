@@ -23,7 +23,7 @@ const constituentFiles = {
     'NIFTY OIL & GAS': 'ind_niftyoilgaslist.csv',
 };
 
-const constituentBaseUrl = 'https://www.niftyindices.com/IndexConstituent/';
+const constituentBaseUrl = 'https://nsearchives.nseindia.com/content/indices/';
 
 async function getCompanyNames(url) {
     const response = await fetchWithTimeout(url, {
