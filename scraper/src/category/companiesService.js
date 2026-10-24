@@ -1,5 +1,5 @@
 const fileSystem = require("../fileSystem");
-const scraper = require("../index")
+const {stockDetailsHandler, RateLimitRetriesExhaustedError} = require("../index");
 const resources = require("../constants/resources");
 const {isFresh} = require("../utils");
 
@@ -11,7 +11,7 @@ async function seedCompanies(override = false, companies = []) {
     const errors = [];
     let updated = 0;
     let skipped = 0;
-    for (const file of files) {
+    for (const [index, file] of files.entries()) {
         const fileMetaData = fileSystem.readFileMetaData("data", file);
         if (!override && fileMetaData && isFresh(fileMetaData, resources.ttl.company)) {
             const contents = await fileSystem.readFile(fileMetaData.filePath);
@@ -30,9 +30,21 @@ async function seedCompanies(override = false, companies = []) {
         }
         try {
             console.log("Fetching stock details for: " + file)
-            await scraper.stockDetailsHandler(file);
+            await stockDetailsHandler(file);
             updated += 1;
         } catch (error) {
+            if (error instanceof RateLimitRetriesExhaustedError) {
+                return {
+                    total: files.length,
+                    updated,
+                    skipped,
+                    failed: errors.length,
+                    errors,
+                    aborted: true,
+                    unattempted: files.length - index - 1,
+                    abortReason: error.message,
+                };
+            }
             console.error("Error saving stock details for: " + file, error.message);
             errors.push({ stockId: file, message: error.message });
         }

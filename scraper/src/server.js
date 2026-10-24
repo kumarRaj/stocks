@@ -202,7 +202,8 @@ app.post('/stock/seed', async function (req, res) {
         console.log("Seeding all companies")
         const companySummary = await seedCompanies(false, categorySummary.companyNames)
         const summary = {
-            success: categorySummary.failed === 0 && companySummary.failed === 0,
+            success: categorySummary.failed === 0 && companySummary.failed === 0 && companySummary.aborted !== true,
+            aborted: companySummary.aborted === true,
             categories: {
                 total: categorySummary.total,
                 available: categorySummary.available,

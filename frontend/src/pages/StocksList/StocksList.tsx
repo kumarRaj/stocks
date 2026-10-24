@@ -91,6 +91,10 @@ export const StocksList: React.FC = () => {
                 ));
 
             const result = response.data;
+            if (result.stocks?.aborted) {
+                setSeedMessage(`Seed stopped after rate limits: ${result.stocks.abortReason}. ${result.stocks.updated} updated, ${result.stocks.unattempted} not attempted. Try again later.`);
+                return;
+            }
             const failures = result.categories.failed + result.stocks.failed;
             setSeedMessage(result.success
                 ? `Seed complete: ${result.categories.available} categories and ${result.stocks.updated} stocks updated.`

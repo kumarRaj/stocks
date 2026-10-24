@@ -9,6 +9,15 @@ const RETRY_MAX_ATTEMPTS = 5;
 const RETRY_BASE_DELAY_MS = 2000;
 const RETRY_MAX_DELAY_MS = 60000;
 
+class RateLimitRetriesExhaustedError extends Error {
+    constructor(stockId, cause) {
+        super(`Rate limit retries exhausted for ${stockId}`);
+        this.name = "RateLimitRetriesExhaustedError";
+        this.stockId = stockId;
+        this.cause = cause;
+    }
+}
+
 const stockDetailsHandler = (exports.handler = async function (event) {
     // TODO: Fetch only if it doesn't exist
     console.log("Fetching stock details for: " + event)
@@ -19,8 +28,11 @@ const stockDetailsHandler = (exports.handler = async function (event) {
 
 function withRateLimitRetry(stockId, task, attempt = 0) {
     return task(stockId).catch(async (error) => {
-        if (!isRateLimited(error) || attempt >= RETRY_MAX_ATTEMPTS) {
+        if (!isRateLimited(error)) {
             throw error;
+        }
+        if (attempt >= RETRY_MAX_ATTEMPTS) {
+            throw new RateLimitRetriesExhaustedError(stockId, error);
         }
         const delay = retryDelayFor(error, attempt);
         console.log(`Rate limited for ${stockId}, retrying after ${Math.round(delay / 1000)}s (attempt ${attempt + 1} of ${RETRY_MAX_ATTEMPTS})`);
@@ -133,4 +145,4 @@ function getOtherLiabilities(html) {
   return otherLiability
 }
 
-module.exports = {stockDetailsHandler};
+module.exports = {stockDetailsHandler, RateLimitRetriesExhaustedError};
