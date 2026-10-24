@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
-import {AppBar, Box, Button, Container, Paper, TextField, Toolbar, Typography} from '@mui/material';
-import {seedThis} from '../../services/StockService';
+import {AppBar, Alert, Box, Button, Container, Paper, TextField, Toolbar, Typography} from '@mui/material';
+import {seedThese} from '../../services/StockService';
 import {StocksDetail} from "./StocksDetail";
 import {getAllStockScores} from "../../services/ScoreService";
 
@@ -10,8 +10,10 @@ import {getAllStockScores} from "../../services/ScoreService";
 export const Home = () => {
     let [stockScores, setStockScores] = useState<any[]>([]);
     let [searchStockId, setSearchStockId] = useState('');
+    let [addedStockIds, setAddedStockIds] = useState<string[]>([]);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
+    let [seedFailures, setSeedFailures] = useState<any[]>([]);
 
     function setTextToSearch(event: any) {
         let textToSearch = event.target.value;
@@ -19,17 +21,22 @@ export const Home = () => {
     }
 
     function addStock(event: any) {
-        seedThis(`${searchStockId}`);
-        getAllStockScores().then((stockScores: any) => {
-            let data = stockScores.data;
-            setStockScores(data);
-            let currentStockData = data.filter((currentStock: any) => {
-                let {stockId, scoreBreakdown, score} = currentStock;
-                return searchStockId === stockId;
+        const stockIds = searchStockId.split(/[\s,]+/).filter(Boolean)
+            .filter((stockId, index, all) => all.indexOf(stockId) === index);
+        if (!stockIds.length) return;
+        seedThese(stockIds)
+            .then((response: any) => {
+                setSeedFailures(Array.isArray(response.data) ? response.data : []);
+                return getAllStockScores();
+            })
+            .then((response: any) => {
+                let data = response.data;
+                setStockScores(data);
+                setAddedStockIds(stockIds);
+                let matchedStocks = data.filter((currentStock: any) => stockIds.includes(currentStock.stockId));
+                setCurrentBreakdown(matchedStocks[0]?.scoreBreakdown);
+                toggleBreakdownVisible(true);
             });
-            currentStockData && currentStockData[0] && setCurrentBreakdown(currentStockData[0].scoreBreakdown);
-        toggleBreakdownVisible(true);
-        });
     }
 
 
@@ -66,16 +73,35 @@ export const Home = () => {
                     <TextField
                         size="small"
                         fullWidth
-                        label="Search stock"
+                        label="Search stocks"
+                        helperText="Separate multiple tickers with commas or spaces"
                         variant="outlined"
                         onChange={setTextToSearch}
                         value={searchStockId}
                     />
                     <Button variant="contained" disableElevation onClick={addStock}>Add</Button>
                 </Paper>
+                {seedFailures.length > 0 && (
+                    <Alert
+                        severity="warning"
+                        sx={{mt: 1.5, borderRadius: 2}}
+                        onClose={() => setSeedFailures([])}
+                    >
+                        <Typography variant="body2" sx={{fontWeight: 600}}>
+                            {seedFailures.length === 1
+                                ? '1 stock could not be added:'
+                                : `${seedFailures.length} stocks could not be added:`}
+                        </Typography>
+                        {seedFailures.map((failure: any) => (
+                            <Typography key={failure.stockId} variant="body2">
+                                {failure.stockId} — {failure.message}
+                            </Typography>
+                        ))}
+                    </Alert>
+                )}
             </Container>
             <StocksDetail
-                stockId={searchStockId}
+                stockId={addedStockIds[0] ?? searchStockId}
                 isBreakdownVisible={isBreakdownVisible}
                 toggleBreakdownVisible={toggleBreakdownVisible}
                 currentBreakdown={currentBreakdown}

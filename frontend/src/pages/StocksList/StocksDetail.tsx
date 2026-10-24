@@ -8,7 +8,7 @@ import {breakdownSum, SCORE_TOTAL, ScoreRing, scoreTone} from './scoreView';
 export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, toggleBreakdownVisible}) => {
 
     const handleSeedButton = () => {
-        seedThis(`${stockId}`);
+        seedThis(`${stockId}`, true);
     }
 
     function formattedDate(date: string): string {
