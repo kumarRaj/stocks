@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {getAllSectors, getStocksBySector} from '../../services/SectorService';
+import {seed, seedThese} from '../../services/StockService';
 import {getAllStockScores} from '../../services/ScoreService';
-import {seed} from '../../services/StockService';
 
 import {
     Alert,
@@ -20,8 +20,6 @@ import {
     Skeleton,
     Stack,
     TextField,
-    ToggleButton,
-    ToggleButtonGroup,
     Toolbar,
     Typography,
 } from '@mui/material';
@@ -43,20 +41,37 @@ export const StocksList: React.FC = () => {
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
     let [currentSector, setCurrentSector] = useState('');
     let [isSeeding, setIsSeeding] = useState(false);
+    let [isAdding, setIsAdding] = useState(false);
+    let [addFailures, setAddFailures] = useState<any[]>([]);
     let [seedMessage, setSeedMessage] = useState('');
     let [seedStatus, setSeedStatus] = useState<SeedStatus>('info');
-    let [sortBy, setSortBy] = useState<'score' | 'name'>('score');
     let [isLoading, setIsLoading] = useState(true);
 
     const getSearchedStocks = (query: string, stocks: any[]) => {
-        const stockIds = Array.from(new Set(query
-            .split(/[\s,]+/)
+        const tokens = query.split(/[\s,]+/)
             .map(stockId => stockId.trim().toUpperCase())
-            .filter(Boolean)));
-        if (stockIds.length === 0) return null;
+            .filter(Boolean);
+        if (tokens.length === 0) return null;
 
-        const stockIdsToFind = new Set(stockIds);
-        return stocks.filter((stock: any) => stockIdsToFind.has(String(stock.stockId).toUpperCase()));
+        const rankFor = (token: string, stockId: string): number | null => {
+            const id = String(stockId).toUpperCase();
+            if (id === token) return 0;
+            if (id.startsWith(token)) return 1;
+            if (id.includes(token)) return 2;
+            if (id.length >= 3 && token.startsWith(id)) return 1;
+            return null;
+        };
+
+        return stocks
+            .map((stock: any) => {
+                const ranks = tokens
+                    .map(token => rankFor(token, stock.stockId))
+                    .filter(rank => rank !== null);
+                return ranks.length === 0 ? null : {stock, rank: Math.min(...ranks)};
+            })
+            .filter(Boolean)
+            .sort((a: any, b: any) => a.rank - b.rank)
+            .map((entry: any) => entry.stock);
     };
 
     // on component mount
@@ -70,6 +85,7 @@ export const StocksList: React.FC = () => {
                 setStockScores(stockScores.data);
                 setCurrentSector(sectorsData.includes('NIFTY 50') ? 'NIFTY 50' : withAll[0]);
             })
+            .catch(() => {})
             .finally(() => setIsLoading(false));
     }, []);
 
@@ -163,6 +179,22 @@ export const StocksList: React.FC = () => {
         }
     }
 
+    const addStocks = (tokens: string[]) => {
+        if (!tokens.length) return;
+        setIsAdding(true);
+        setAddFailures([]);
+        seedThese(tokens)
+            .then(response => {
+                setAddFailures(Array.isArray(response?.data) ? response.data : []);
+                return getAllStockScores();
+            })
+            .then(response => {
+                setStockScores(response.data || []);
+            })
+            .catch(() => setAddFailures(tokens.map(token => ({stockId: token, message: 'Adding failed'}))))
+            .finally(() => setIsAdding(false));
+    }
+
     function handleSearch(event: any) {
         const textToSearch = event.target.value;
         setSearchStockId(textToSearch);
@@ -178,18 +210,16 @@ export const StocksList: React.FC = () => {
         .split(/[\s,]+/)
         .map(stockId => stockId.trim().toUpperCase())
         .filter(Boolean)));
-    const availableStockIds = new Set(stockScores.map((stock: any) => String(stock.stockId).toUpperCase()));
-    const missingStockIds = searchedStockIds.filter(stockId => !availableStockIds.has(stockId));
+    const missingStockIds = searchedStockIds
+        .filter(token => !stockScores.some((stock: any) => {
+            const id = String(stock.stockId).toUpperCase();
+            return id.includes(token) || (id.length >= 3 && token.startsWith(id));
+        }));
 
     const orderedStocks = useMemo(() => {
         const copy = [...currentStocks];
-        if (sortBy === 'name') {
-            copy.sort((a: any, b: any) => String(a.stockId).localeCompare(String(b.stockId)));
-        } else {
-            copy.sort((a: any, b: any) => b.score - a.score);
-        }
-        return copy;
-    }, [currentStocks, sortBy]);
+        return copy.sort((a: any, b: any) => b.score - a.score);
+    }, [currentStocks]);
 
     return (
         <Box sx={{minHeight: '100vh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column'}}>
@@ -223,9 +253,18 @@ export const StocksList: React.FC = () => {
                                 screener.in · fundamental score
                             </Typography>
                         </Stack>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{color: 'text.primary', borderColor: 'divider', flexShrink: 0}}
+                            onClick={handleSeedButton}
+                            disabled={isSeeding}
+                        >
+                            {isSeeding ? 'Seeding…' : 'Seed data'}
+                        </Button>
                     </Toolbar>
                 </Container>
-                {isSeeding && <LinearProgress sx={{position: 'absolute', bottom: 0, left: 0, right: 0}}/>}
+                {(isSeeding || isAdding) && <LinearProgress sx={{position: 'absolute', bottom: 0, left: 0, right: 0}}/>}
             </AppBar>
 
             <Container maxWidth="xl" sx={{pt: 2.5, flexGrow: 1}}>
@@ -245,7 +284,7 @@ export const StocksList: React.FC = () => {
                     </Select>
                     <TextField
                         size="small"
-                        placeholder="Search symbols: TCS, INFY"
+                        placeholder="Search symbols (partial ok): TCS, INF"
                         multiline
                         minRows={1}
                         maxRows={1}
@@ -256,29 +295,38 @@ export const StocksList: React.FC = () => {
                             '& .MuiInputBase-root': {height: 40},
                         }}
                     />
-                    <ToggleButtonGroup
-                        size="small"
-                        exclusive
-                        value={sortBy}
-                        onChange={(_, value) => value && setSortBy(value)}
-                    >
-                        <ToggleButton value="score">Top score</ToggleButton>
-                        <ToggleButton value="name">A–Z</ToggleButton>
-                    </ToggleButtonGroup>
-                    <Box sx={{flexGrow: 1}}/>
                     <Button
                         variant="contained"
                         disableElevation
-                        onClick={handleSeedButton}
-                        disabled={isSeeding}
+                        onClick={() => addStocks(searchedStockIds)}
+                        disabled={isAdding}
                     >
-                        {isSeeding ? 'Seeding…' : 'Seed data'}
+                        {isAdding ? 'Adding…' : 'Add'}
                     </Button>
                 </Paper>
 
                 {missingStockIds.length > 0 && (
                     <Alert severity="warning" sx={{mt: 2}}>
-                        No data for: {missingStockIds.join(', ')}
+                        No data for: {missingStockIds.join(', ')} — these symbols are not seeded yet. Use the Add button to seed them.
+                    </Alert>
+                )}
+
+                {addFailures.length > 0 && (
+                    <Alert
+                        severity="error"
+                        onClose={() => setAddFailures([])}
+                        sx={{mt: 1.5}}
+                    >
+                        <Typography variant="body2" sx={{fontWeight: 600}}>
+                            {addFailures.length === 1
+                                ? 'Could not add 1 symbols:'
+                                : `Could not add ${addFailures.length} symbols:`}
+                        </Typography>
+                        {addFailures.map((failure: any) => (
+                            <Typography key={failure.stockId} variant="body2">
+                                {failure.stockId} — {failure.message}
+                            </Typography>
+                        ))}
                     </Alert>
                 )}
 
