@@ -9,13 +9,13 @@ endef
 
 define start_if_free
 if lsof -ti tcp:$(1) >/dev/null 2>&1; then \
-  echo "$(2)  already running on port $(1) (use make restart to reload)"; \
+  echo "$(2)   already running on port $(1) (use make restart to reload)"; \
 else \
   nohup sh -c 'cd $(3) && $(4)' > $(LOG_DIR)/$(2).log 2>&1 & \
   if $(call wait_for,$(5)); then \
-    echo "$(2)  started -> $(5)"; \
+    echo "$(2)   started -> $(5)"; \
   else \
-    echo "$(2)  FAILED to start, see $(LOG_DIR)/$(2).log"; \
+    echo "$(2)   FAILED to start, see $(LOG_DIR)/$(2).log"; \
   fi; \
 fi
 endef
@@ -24,8 +24,8 @@ endef
 
 run: install
 	@mkdir -p $(LOG_DIR)
-	@$(call start_if_free,9000,scraper ,scraper,npm start,$(SCRAPER_URL)/ping)
-	@$(call start_if_free,8081,backend ,backend,./gradlew bootRun,$(BACKEND_URL)/health)
+	@$(call start_if_free,9000,scraper,scraper,npm start,$(SCRAPER_URL)/ping)
+	@$(call start_if_free,8081,backend,backend,./gradlew bootRun,$(BACKEND_URL)/health)
 	@$(call start_if_free,3000,frontend,frontend,npm start,$(FRONTEND_URL))
 
 restart: stop run
