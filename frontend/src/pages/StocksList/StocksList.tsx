@@ -337,7 +337,7 @@ export const StocksList: React.FC = () => {
                 )}
 
                 <Grid container spacing={1.5} sx={{mt: 0.5}}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{xs: 12, sm: 4}}>
                         <Paper sx={{p: 1.75, px: 2.25, borderRadius: 2}}>
                             <Typography variant="overline" color="text.secondary" sx={{letterSpacing: 1}}>
                                 Stocks in view
@@ -367,7 +367,7 @@ export const StocksList: React.FC = () => {
                 <Grid container spacing={2} sx={{mt: 1, mb: 6}} key={currentStocks.length}>
                     {isLoading
                         ? Array.from({length: 8}).map((_, index) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                            <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={index}>
                                 <Card variant="outlined" sx={{borderRadius: 2}}>
                                     <CardContent sx={{display: 'flex', alignItems: 'center', gap: 2}}>
                                         <Skeleton variant="circular" width={54} height={54}/>
@@ -382,7 +382,7 @@ export const StocksList: React.FC = () => {
                         : orderedStocks.map((currentStock: any) => {
                             let {stockId, scoreBreakdown, score} = currentStock;
                             return (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={stockId}>
+                                <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={stockId}>
                                     <Card
                                         variant="outlined"
                                         onClick={() => handleBreakdownToggle(scoreBreakdown, stockId)}

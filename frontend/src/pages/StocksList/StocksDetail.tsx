@@ -63,10 +63,10 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
             anchor="right"
             open={isBreakdownVisible}
             onClose={() => toggleBreakdownVisible(false)}
-            PaperProps={{sx: {width: 400, maxWidth: '100vw', display: 'flex', flexDirection: 'column'}}}
+            slotProps={{paper: {sx: {width: 400, maxWidth: '100vw', display: 'flex', flexDirection: 'column'}}}}
         >
             <Box sx={{bgcolor: '#0f172a', color: '#fff', p: 2.5}}>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                     <ScoreRing score={score} size={58}/>
                     <Box sx={{minWidth: 0, flexGrow: 1}}>
                         <Typography noWrap sx={{fontWeight: 800, fontSize: 18}}>{stockId}</Typography>
@@ -97,7 +97,7 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
                             : 0;
                         return (
                             <Box key={metric.label} sx={{mb: 2}}>
-                                <Stack direction="row" alignItems="center" spacing={0.5}>
+                                <Stack direction="row" spacing={0.5} sx={{alignItems: 'center'}}>
                                     <Typography variant="body2" sx={{fontWeight: 600}}>{metric.label}</Typography>
                                     <Tooltip title={metric.info}>
                                         <span style={{
