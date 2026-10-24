@@ -336,7 +336,7 @@ export const StocksList: React.FC = () => {
                     </Alert>
                 )}
 
-                <Grid container spacing={1.5} sx={{mt: 0.5}}>
+                <Grid container spacing={1.5} sx={{mt: 2, mb: 2}}>
                     <Grid size={{xs: 12, sm: 4}}>
                         <Paper sx={{p: 1.75, px: 2.25, borderRadius: 2}}>
                             <Typography variant="overline" color="text.secondary" sx={{letterSpacing: 1}}>
