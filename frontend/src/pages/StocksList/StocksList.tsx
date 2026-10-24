@@ -37,6 +37,7 @@ export const StocksList: React.FC = () => {
     let [stockScores, setStockScores] = useState<any[]>([]);
     let [currentStocks, setCurrentStocks] = useState<any[]>([]);
     let [sectorStocks, setSectorStocks] = useState<any[]>([]);
+    let [sectorCompanyTotal, setSectorCompanyTotal] = useState<number | null>(null);
     let [currentBreakdown, setCurrentBreakdown] = useState<any>({});
     let [selectedStock, setSelectedStock] = useState('');
     let [isBreakdownVisible, toggleBreakdownVisible] = useState(false);
@@ -77,13 +78,18 @@ export const StocksList: React.FC = () => {
         if (currentSector === 'ALL') {
             const stocks = [...stockScores];
             setSectorStocks(stocks);
+            setSectorCompanyTotal(null);
             setCurrentStocks(getSearchedStocks(searchStockId, stockScores) || stocks);
             return;
         }
         getStocksBySector(currentSector)
             .then(response => {
-                const companies = response.data?.company || stockScores.map((stock: any) => stock.stockId);
-                const stocks = filterStocksBasedOnCurrentSector(stockScores, companies);
+                const companies = response.data?.company;
+                setSectorCompanyTotal(companies ? new Set(companies).size : null);
+                const stocks = filterStocksBasedOnCurrentSector(
+                    stockScores,
+                    companies || stockScores.map((stock: any) => stock.stockId),
+                );
                 setSectorStocks(stocks);
                 setCurrentStocks(getSearchedStocks(searchStockId, stockScores) || stocks);
             })
@@ -120,11 +126,13 @@ export const StocksList: React.FC = () => {
             setSectors([...sectorsData, 'ALL']);
             const scores = scoresResponse.data || [];
             setStockScores(scores);
+            const companies = stocksResponse.data?.company;
+            setSectorCompanyTotal(currentSector === 'ALL' || !companies ? null : new Set(companies).size);
             const stocks = currentSector === 'ALL'
                 ? scores
                 : filterStocksBasedOnCurrentSector(
                     scores,
-                    stocksResponse.data?.company || [],
+                    companies || scores.map((stock: any) => stock.stockId),
                 );
             setSectorStocks(stocks);
             setCurrentStocks(getSearchedStocks(searchStockId, scores) || stocks);
@@ -237,14 +245,16 @@ export const StocksList: React.FC = () => {
                     </Select>
                     <TextField
                         size="small"
-                        placeholder={'Search: TCS, INFY\nRELIANCE'}
-                        helperText={missingStockIds.length > 0 ? `No data for: ${missingStockIds.join(', ')}` : undefined}
+                        placeholder="Search symbols: TCS, INFY"
                         multiline
-                        minRows={2}
-                        maxRows={4}
+                        minRows={1}
+                        maxRows={1}
                         value={searchStockId}
                         onChange={handleSearch}
-                        sx={{width: {xs: '100%', sm: 220}}}
+                        sx={{
+                            width: {xs: '100%', sm: 440},
+                            '& .MuiInputBase-root': {height: 40},
+                        }}
                     />
                     <ToggleButtonGroup
                         size="small"
@@ -266,6 +276,12 @@ export const StocksList: React.FC = () => {
                     </Button>
                 </Paper>
 
+                {missingStockIds.length > 0 && (
+                    <Alert severity="warning" sx={{mt: 2}}>
+                        No data for: {missingStockIds.join(', ')}
+                    </Alert>
+                )}
+
                 {seedMessage && (
                     <Alert severity={seedStatus} onClose={() => setSeedMessage('')} sx={{mt: 2}}>
                         {seedMessage}
@@ -281,6 +297,13 @@ export const StocksList: React.FC = () => {
                             {isLoading
                                 ? <Skeleton width={110} height={26}/>
                                 : <Typography sx={{fontWeight: 800, fontSize: 18, lineHeight: 1.2}}>{orderedStocks.length}</Typography>}
+                            {!isLoading && (
+                                <Typography variant="caption" color="text.secondary">
+                                    {sectorCompanyTotal === null
+                                        ? `${stockScores.length} companies seeded`
+                                        : `${sectorStocks.length} of ${sectorCompanyTotal} companies seeded`}
+                                </Typography>
+                            )}
                         </Paper>
                     </Grid>
                 </Grid>
