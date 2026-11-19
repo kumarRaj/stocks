@@ -1,11 +1,36 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {Alert, Box, Button, Divider, Drawer, LinearProgress, Link, Stack, Tooltip, Typography} from '@mui/material';
+import {Alert, Box, Button, Divider, Drawer, LinearProgress, Link, Stack, TextField, Tooltip, Typography} from '@mui/material';
 import {seedThis} from '../../services/StockService';
 import {breakdownSum, SCORE_TOTAL, ScoreRing, scoreTone} from './scoreView';
 
 // @ts-ignore
-export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, toggleBreakdownVisible}) => {
+export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, toggleBreakdownVisible, quantity, saveQuantity, holdingsReady}) => {
+    const [quantityInput, setQuantityInput] = useState('0');
+    const [saving, setSaving] = useState(false);
+    const [holdingError, setHoldingError] = useState('');
+
+    useEffect(() => {
+        setQuantityInput(String(quantity));
+        setHoldingError('');
+    }, [stockId, quantity]);
+
+    const handleSaveQuantity = async () => {
+        const value = Number(quantityInput);
+        if (!/^\d+$/.test(quantityInput) || !Number.isInteger(value) || value > 2147483647) {
+            setHoldingError('Enter a whole number between 0 and 2,147,483,647.');
+            return;
+        }
+        setSaving(true);
+        setHoldingError('');
+        try {
+            await saveQuantity(stockId, value);
+        } catch {
+            setHoldingError('Could not save your holding. Please try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
 
     const handleSeedButton = () => {
         seedThis(`${stockId}`, true);
@@ -98,6 +123,25 @@ export const StocksDetail = ({isBreakdownVisible, currentBreakdown, stockId, tog
             </Box>
             <Divider/>
             <Box sx={{flexGrow: 1, overflowY: 'auto', p: 2.5}}>
+                <Box sx={{mb: 3}}>
+                    <Typography variant="subtitle2" sx={{mb: 1}}>Shares owned</Typography>
+                    <Stack direction="row" spacing={1}>
+                        <TextField
+                            size="small"
+                            label="Quantity"
+                            type="number"
+                            value={quantityInput}
+                            onChange={event => setQuantityInput(event.target.value)}
+                            slotProps={{htmlInput: {min: 0, step: 1}}}
+                            fullWidth
+                        />
+                        <Button variant="contained" onClick={handleSaveQuantity} disabled={saving || !holdingsReady}>
+                            {saving ? 'Saving…' : 'Save'}
+                        </Button>
+                    </Stack>
+                    <Typography variant="caption" color="text.secondary">Set to 0 to remove this holding.</Typography>
+                    {holdingError && <Alert severity="error" sx={{mt: 1}}>{holdingError}</Alert>}
+                </Box>
                 {insufficient && (
                     <Alert severity="warning" sx={{mb: 2}}>
                         <Typography variant="body2" sx={{fontWeight: 600}}>

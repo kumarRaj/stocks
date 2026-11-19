@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {getAllSectors, getStocksBySector} from '../../services/SectorService';
 import {seed, seedThese} from '../../services/StockService';
 import {getAllStockScores} from '../../services/ScoreService';
+import {getHoldings, saveHolding} from '../../services/HoldingsService';
 
 import {
     Alert,
@@ -12,6 +13,8 @@ import {
     Card,
     CardContent,
     Container,
+    Checkbox,
+    FormControlLabel,
     Grid,
     LinearProgress,
     MenuItem,
@@ -46,6 +49,24 @@ export const StocksList: React.FC = () => {
     let [seedMessage, setSeedMessage] = useState('');
     let [seedStatus, setSeedStatus] = useState<SeedStatus>('info');
     let [isLoading, setIsLoading] = useState(true);
+    const [holdings, setHoldings] = useState<Record<string, number>>({});
+    const [holdingsReady, setHoldingsReady] = useState(false);
+    const [holdingsError, setHoldingsError] = useState(false);
+    const [ownedOnly, setOwnedOnly] = useState(false);
+
+    useEffect(() => {
+        getHoldings()
+            .then(response => {
+                setHoldings(response.data);
+                setHoldingsReady(true);
+            })
+            .catch(() => setHoldingsError(true));
+    }, []);
+
+    const saveQuantity = async (stockId: string, quantity: number) => {
+        const response = await saveHolding(stockId, quantity);
+        setHoldings(response.data);
+    };
 
     const getSearchedStocks = (query: string, stocks: any[]) => {
         const tokens = query.split(/[\s,]+/)
@@ -217,11 +238,18 @@ export const StocksList: React.FC = () => {
         }));
 
     const orderedStocks = useMemo(() => {
-        return [...currentStocks].sort((a: any, b: any) => {
+        const existingIds = new Set(stockScores.map(stock => stock.stockId));
+        const ownedStocks = [
+            ...stockScores.filter(stock => (holdings[stock.stockId] ?? 0) > 0),
+            ...Object.keys(holdings).filter(id => holdings[id] > 0 && !existingIds.has(id))
+                .map(stockId => ({stockId, score: 0, scoreBreakdown: null, insufficientData: true})),
+        ];
+        const stocks = ownedOnly ? (getSearchedStocks(searchStockId, ownedStocks) || ownedStocks) : currentStocks;
+        return [...stocks].sort((a: any, b: any) => {
             if (!!a.insufficientData !== !!b.insufficientData) return a.insufficientData ? 1 : -1;
             return b.score - a.score;
         });
-    }, [currentStocks]);
+    }, [currentStocks, holdings, ownedOnly, stockScores, searchStockId]);
 
     return (
         <Box sx={{minHeight: '100vh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column'}}>
@@ -305,7 +333,10 @@ export const StocksList: React.FC = () => {
                     >
                         {isAdding ? 'Adding…' : 'Add'}
                     </Button>
+                    <FormControlLabel control={<Checkbox checked={ownedOnly} onChange={event => setOwnedOnly(event.target.checked)} disabled={!holdingsReady}/>} label="Owned only"/>
                 </Paper>
+
+                {holdingsError && <Alert severity="error" sx={{mt: 2}}>Could not load holdings. Reload the page to try again.</Alert>}
 
                 {missingStockIds.length > 0 && (
                     <Alert severity="warning" sx={{mt: 2}}>
@@ -408,6 +439,11 @@ export const StocksList: React.FC = () => {
                                                         ? 'Insufficient data — not scored'
                                                         : `Score ${score} / ${SCORE_TOTAL}`}
                                                 </Typography>
+                                                {(holdings[stockId] ?? 0) > 0 && (
+                                                    <Typography variant="caption" sx={{display: 'block', fontWeight: 600}}>
+                                                        Owned: {holdings[stockId]} shares
+                                                    </Typography>
+                                                )}
                                             </Box>
                                         </CardContent>
                                     </Card>
@@ -427,6 +463,9 @@ export const StocksList: React.FC = () => {
                 isBreakdownVisible={isBreakdownVisible}
                 toggleBreakdownVisible={toggleBreakdownVisible}
                 currentBreakdown={currentBreakdown}
+                quantity={holdings[selectedStock] ?? 0}
+                saveQuantity={saveQuantity}
+                holdingsReady={holdingsReady}
             />
         </Box>
     );
