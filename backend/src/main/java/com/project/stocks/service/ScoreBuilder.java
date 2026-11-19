@@ -14,13 +14,17 @@ import static com.project.stocks.dto.Logic.Decreasing;
 
 public class ScoreBuilder {
 
+    private static final int MISSING_PE_SENTINEL = -999999;
+
     private ScoreBreakdown scoreBreakdown = new ScoreBreakdown();
 
     public ScoreBuilder withPE(Integer pe) {
+        if (pe == null || pe == MISSING_PE_SENTINEL) {
+            scoreBreakdown.addMissingField("PE");
+            return this;
+        }
         int pEScoreValue;
-        if (pe == null)
-            pEScoreValue = 0;
-        else if (pe >= 1 && pe < 20)
+        if (pe >= 1 && pe < 20)
             pEScoreValue = 5;
         else if (pe >= 20 && pe < 40)
             pEScoreValue = 4;
@@ -49,6 +53,10 @@ public class ScoreBuilder {
 
 
     public ScoreBuilder withOPM(List<YearInfo> opmList) {
+        if (!isScoreable(opmList)) {
+            scoreBreakdown.addMissingField("OPM");
+            return this;
+        }
         int opmScoreValue = calculateYearlyStatistics(opmList, Logic.Increasing);
         scoreBreakdown.setOperatingProfitMargin(opmScoreValue);
         return this;
@@ -60,27 +68,48 @@ public class ScoreBuilder {
     }
 
     public ScoreBuilder withNPM(List<YearInfo> npmList) {
+        if (!isScoreable(npmList)) {
+            scoreBreakdown.addMissingField("NPM");
+            return this;
+        }
         int npmScoreValue = calculateYearlyStatistics(npmList, Logic.Increasing);
         scoreBreakdown.setNetProfitMargin(npmScoreValue);
         return this;
     }
 
     public ScoreBuilder withReserve(List<YearInfo> revenueDetails) {
+        if (!isScoreable(revenueDetails)) {
+            scoreBreakdown.addMissingField("Reserves");
+            return this;
+        }
         int revenueScoreValue = calculateYearlyStatistics(revenueDetails, Logic.Increasing);
         scoreBreakdown.setReserves(revenueScoreValue);
         return this;
     }
 
     public ScoreBuilder withBorrowings(List<YearInfo> borrowingsDetails) {
+        if (!isScoreable(borrowingsDetails)) {
+            scoreBreakdown.addMissingField("Borrowings");
+            return this;
+        }
         int borrowingScoreValue = calculateYearlyStatistics(borrowingsDetails, Decreasing);
         scoreBreakdown.setBorrowings(borrowingScoreValue);
         return this;
     }
 
     public ScoreBuilder withOtherLiabilities(List<YearInfo> otherLiabilitiesDetails) {
+        if (!isScoreable(otherLiabilitiesDetails)) {
+            scoreBreakdown.addMissingField("OtherLiabilities");
+            return this;
+        }
         int liabilitiesScoreValue = calculateYearlyStatistics(otherLiabilitiesDetails, Decreasing);
         scoreBreakdown.setLiabilities(liabilitiesScoreValue);
         return this;
+    }
+
+    private boolean isScoreable(List<YearInfo> yearInfoList) {
+        return yearInfoList != null
+                && getLast6YearsRecordInDescendingOrder(yearInfoList).size() >= 2;
     }
 
     /*

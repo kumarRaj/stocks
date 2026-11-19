@@ -7,15 +7,23 @@ public class Score {
 
     public String stockId;
 
+    private boolean insufficientData = false;
+
     private ScoreBreakdown scoreBreakdown;
 
     public Score(ScoreBreakdown scoreBreakdown) {
         this.scoreBreakdown = scoreBreakdown;
+        this.insufficientData = scoreBreakdown == null || scoreBreakdown.hasMissingFields();
         calculate();
     }
 
     public Score(String stockId) {
         this.stockId = stockId;
+        this.insufficientData = true;
+    }
+
+    public boolean isInsufficientData() {
+        return insufficientData;
     }
 
     public int getScore() {
@@ -35,6 +43,9 @@ public class Score {
     }
 
     private void calculate() {
+        if (insufficientData) {
+            return;
+        }
         score = scoreBreakdown.fetchBreakdownSummation();
     }
 }

@@ -1,6 +1,11 @@
 package com.project.stocks.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScoreBreakdown {
+
+    private List<String> missingFields = new ArrayList<>();
 
     private int pe;
 
@@ -14,6 +19,18 @@ public class ScoreBreakdown {
 
     private int borrowings;
     private String lastUpdatedAt;
+
+    public void addMissingField(String field) {
+        missingFields.add(field);
+    }
+
+    public List<String> getMissingFields() {
+        return missingFields;
+    }
+
+    public boolean hasMissingFields() {
+        return !missingFields.isEmpty();
+    }
 
     public int fetchBreakdownSummation() {
         int sum = pe + operatingProfitMargin + netProfitMargin +

@@ -68,6 +68,48 @@ class ScoreBuilderTest {
     }
 
     @Test
+    void givenPERatioNullScoreShouldBeFlaggedInsufficient() {
+        Score score = scoreBuilder.withPE(null).build();
+
+        assertEquals(true, score.isInsufficientData());
+        assertEquals(true, score.getScoreBreakdown().getMissingFields().contains("PE"));
+    }
+
+    @Test
+    void givenPEMissingSentinelScoreShouldBeFlaggedInsufficient() {
+        Score score = scoreBuilder.withPE(-999999).build();
+
+        assertEquals(true, score.isInsufficientData());
+        assertEquals(0, score.getScore());
+    }
+
+    @Test
+    void givenEmptyOPMListScoreShouldBeFlaggedInsufficient() {
+        Score score = scoreBuilder.withOPM(new ArrayList<>()).build();
+
+        assertEquals(true, score.isInsufficientData());
+        assertEquals(true, score.getScoreBreakdown().getMissingFields().contains("OPM"));
+    }
+
+    @Test
+    void givenAllFieldsPresentScoreShouldNotBeFlaggedInsufficient() {
+        List<YearInfo> yearInfos = new ArrayList<>();
+        yearInfos.add(new YearInfo(2010,1));
+        yearInfos.add(new YearInfo(2011,2));
+
+        Score score = scoreBuilder.withPE(15)
+                .withOPM(yearInfos)
+                .withNPM(yearInfos)
+                .withReserve(yearInfos)
+                .withBorrowings(yearInfos)
+                .withOtherLiabilities(yearInfos)
+                .build();
+
+        assertEquals(false, score.isInsufficientData());
+        assertEquals(8, score.getScore());
+    }
+
+    @Test
     void givenOPMListScoreShouldBe5ForLast6Years() {
         List<YearInfo> opmList = new ArrayList<>();
         opmList.add(new YearInfo(2010,2));

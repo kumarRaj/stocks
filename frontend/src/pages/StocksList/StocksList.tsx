@@ -217,8 +217,10 @@ export const StocksList: React.FC = () => {
         }));
 
     const orderedStocks = useMemo(() => {
-        const copy = [...currentStocks];
-        return copy.sort((a: any, b: any) => b.score - a.score);
+        return [...currentStocks].sort((a: any, b: any) => {
+            if (!!a.insufficientData !== !!b.insufficientData) return a.insufficientData ? 1 : -1;
+            return b.score - a.score;
+        });
     }, [currentStocks]);
 
     return (
@@ -381,6 +383,7 @@ export const StocksList: React.FC = () => {
                         ))
                         : orderedStocks.map((currentStock: any) => {
                             let {stockId, scoreBreakdown, score} = currentStock;
+                            const insufficient = !!currentStock.insufficientData;
                             return (
                                 <Grid size={{xs: 12, sm: 6, md: 4, lg: 3}} key={stockId}>
                                     <Card
@@ -397,11 +400,13 @@ export const StocksList: React.FC = () => {
                                         }}
                                     >
                                         <CardContent sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-                                            <ScoreRing score={score}/>
+                                            <ScoreRing score={score} insufficient={insufficient}/>
                                             <Box sx={{minWidth: 0}}>
                                                 <Typography noWrap sx={{fontWeight: 700}}>{stockId}</Typography>
                                                 <Typography variant="caption" color="text.secondary">
-                                                    Score {score} / {SCORE_TOTAL}
+                                                    {insufficient
+                                                        ? 'Insufficient data — not scored'
+                                                        : `Score ${score} / ${SCORE_TOTAL}`}
                                                 </Typography>
                                             </Box>
                                         </CardContent>

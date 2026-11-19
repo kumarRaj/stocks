@@ -33,13 +33,13 @@ public class StockService {
 
     private Score calculateStockMetrics(Stock stock) {
         ScoreBuilder scoreBuilder = ScoreBuilder.getInstance();
-        scoreBuilder.withPE(stock.getPe().getValue())
+        scoreBuilder.withPE(stock.getPe() == null ? null : stock.getPe().getValue())
                 .withDate(stock.getLastUpdatedAt())
-                .withOPM(stock.getOpmDetails().getYearInfo())
-                .withNPM(stock.getNpmDetails().getYearInfo())
-                .withReserve(stock.getDebt().getReserves().getYearInfo())
-                .withOtherLiabilities(stock.getDebt().getOtherLiabilitiesDetails().getYearInfo())
-                .withBorrowings(stock.getDebt().getBorrowingsDetails().getYearInfo());
+                .withOPM(stock.getOpmDetails() == null ? null : stock.getOpmDetails().getYearInfo())
+                .withNPM(stock.getNpmDetails() == null ? null : stock.getNpmDetails().getYearInfo())
+                .withReserve(stock.getDebt() == null || stock.getDebt().getReserves() == null ? null : stock.getDebt().getReserves().getYearInfo())
+                .withOtherLiabilities(stock.getDebt() == null || stock.getDebt().getOtherLiabilitiesDetails() == null ? null : stock.getDebt().getOtherLiabilitiesDetails().getYearInfo())
+                .withBorrowings(stock.getDebt() == null || stock.getDebt().getBorrowingsDetails() == null ? null : stock.getDebt().getBorrowingsDetails().getYearInfo());
         return scoreBuilder.build();
     }
 
@@ -60,7 +60,12 @@ public class StockService {
             }
         }
 
-        Collections.sort(stockScores, (a, b) -> b.getScore() - a.getScore());
+        Collections.sort(stockScores, (a, b) -> {
+            if (a.isInsufficientData() != b.isInsufficientData()) {
+                return a.isInsufficientData() ? 1 : -1;
+            }
+            return b.getScore() - a.getScore();
+        });
         return stockScores;
     }
 }

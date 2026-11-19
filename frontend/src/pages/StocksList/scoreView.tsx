@@ -24,11 +24,12 @@ interface ScoreRingProps {
     score: number;
     total?: number;
     size?: number;
+    insufficient?: boolean;
 }
 
-export const ScoreRing: React.FC<ScoreRingProps> = ({score, total = SCORE_TOTAL, size = 54}) => {
-    const color = scoreTone(score, total);
-    const pct = total > 0 ? Math.max(0, Math.min(100, (score / total) * 100)) : 0;
+export const ScoreRing: React.FC<ScoreRingProps> = ({score, total = SCORE_TOTAL, size = 54, insufficient = false}) => {
+    const color = insufficient ? '#94a3b8' : scoreTone(score, total);
+    const pct = insufficient ? 0 : (total > 0 ? Math.max(0, Math.min(100, (score / total) * 100)) : 0);
     return (
         <Box sx={{position: 'relative', display: 'inline-flex', flexShrink: 0}}>
             <CircularProgress variant="determinate" value={pct} size={size} thickness={4.5} sx={{color}}/>
@@ -40,7 +41,7 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({score, total = SCORE_TOTAL,
                 justifyContent: 'center',
             }}>
                 <Typography component="span" sx={{fontWeight: 800, fontSize: Math.round(size / 4), color}}>
-                    {score}
+                    {insufficient ? '–' : score}
                 </Typography>
             </Box>
         </Box>
